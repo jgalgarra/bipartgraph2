@@ -1,0 +1,95 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>es.upm.euitt.diatel.jmgarciasanti</groupId>
+  <artifactId>redesbipartitas</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>PFC Redes Bipartitas</name>
+  <description>PFC - Representación gráfica de Redes Bipartitas</description>
+
+  <!-- Versiones de las distintas dependencias -->
+  <properties>
+    <versions.dep.jri>0.9-7</versions.dep.jri>
+    <versions.dep.jetty>9.2.3.v20140905</versions.dep.jetty>
+    <versions.dep.jersey>2.7</versions.dep.jersey>
+    <versions.dep.log4j>1.2.17</versions.dep.log4j>
+    <versions.dep.junit>4.11</versions.dep.junit>
+    <versions.dep.hamcrest>1.3</versions.dep.hamcrest>
+  </properties>
+  
+  <dependencies>
+    <!-- JRI - Interfaz Java para runtime de R -->
+    <dependency>
+      <groupId>com.github.lucarosellini.rJava</groupId>
+      <artifactId>JRI</artifactId>
+      <version>${versions.dep.jri}</version>
+    </dependency>
+
+    <!--  Jetty embebido y Jersey para servicios REST -->
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>${versions.dep.jetty}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>${versions.dep.jetty}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>${versions.dep.jersey}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>${versions.dep.jersey}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-jetty-http</artifactId>
+      <version>${versions.dep.jersey}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-moxy</artifactId>
+      <version>${versions.dep.jersey}</version>
+    </dependency>
+
+    <!-- Log4J -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>${versions.dep.log4j}</version>
+    </dependency>
+
+    <!-- Pruebas con JUnit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${versions.dep.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-core</artifactId>
+      <version>${versions.dep.hamcrest}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -5,7 +5,7 @@
 library(shinyjs)
 
 # control para la seleccion del fichero
-filesInputControl <- function(path, pattern="M_.*050.csv") {
+filesInputControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
   control<-selectInput(

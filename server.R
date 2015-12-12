@@ -65,31 +65,29 @@ shinyServer(function(input, output) {
     return(z)
   })
   
+  nodeData<-reactive({
+    data<-input$nodeData;
+    return(data)
+  })
+  
   output$summary<-renderText({
     return("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer scelerisque non felis sed egestas. Nullam nec lorem orci. In volutpat urna sit amet porta vulputate. Quisque pharetra nunc ut fringilla vestibulum. Quisque mauris augue, vehicula id porttitor feugiat, ornare sed nibh. Etiam sed lectus mauris. Aliquam placerat quam id nibh lobortis euismod. Nam vel feugiat odio. Donec aliquet nibh quis felis aliquam accumsan. Aliquam elementum in neque et condimentum. Nunc et ullamcorper elit, in pellentesque tellus.")
   })
   
   output$zigguratDetails<-renderUI({
     z<-ziggurat()
+    data<-nodeData()
     details<-""
-    df<-z$list_dfs_a[[2]]
-    for (name in names(df)) {
-        label   <- tags$b(name)
-        value   <- paste0(df[[name]])
-        if (length(grep(pattern = "^http", x = value, ignore.case = TRUE))>0) {
-            value <- tags$a(value, href = value)  
-        } else {
-            value <- tags$div(value)
-        }
-        details <- paste(
-                details, 
-                fluidRow(column(4, tags$small(label)), column(6, tags$small(value))), 
-                collapse = ""
-        )
-    }
+    details <- paste(details, detailRow("Tipo", ifelse(data$main$guild=="a", z$name_guild_a, z$name_guild_b)), collapse = "")
+    details <- paste(details, detailRow("kCore", data$main$kcore), collapse = "")
+    details <- paste(details, detailRow("Especies", data$species), collapse = "")
+    #df<-z$list_dfs_a[[2]]
+    #df<-z
+    #for (name in names(df)) {
+    #  details <- paste(details, detailRow(name, df[[name]]), collapse = "")
+    #}
     
     return(HTML(details))
-    #return(HTML(tags$b("")))
   })
     
   output$ziggurat<-renderUI({
@@ -111,4 +109,15 @@ shinyServer(function(input, output) {
     #return(HTML(paste0("", svg[2:length(svg)])))
     return(HTML(paste0(svg$html(),script3)))
   })
+
+  detailRow <- function(label, value) {
+    label   <- tags$b(label)
+    value   <- paste0(value, collapse="")
+    if (length(grep(pattern = "^http", x = value, ignore.case = TRUE))>0) {
+      value <- tags$a(value, href = value)  
+    } else {
+      value <- tags$div(value)
+    }
+    return(fluidRow(column(4, tags$small(label)), column(6, tags$small(value))))
+  }
 })

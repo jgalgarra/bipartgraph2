@@ -8,7 +8,7 @@ configPanel <- function() {
     tabPanel(
       "Datos",
       fluidRow(
-        column(4, filesInputControl("data"))
+        column(4, filesInputControl(path="data", pattern="M_.*.csv"))
       )
     ),
     tabPanel(
@@ -98,8 +98,8 @@ configPanel <- function() {
 # panel con el gragico ziggurat
 zigguratPanel <- function() {
   control<-fluidRow(
-    column(9, h5("Diagrama"),   tags$hr(), uiOutput("ziggurat")),
-    column(3, h5("Informacion"),tags$hr(), uiOutput("zigguratDetails"))
+    column(8, h5("Diagrama"),   tags$hr(), uiOutput("ziggurat")),
+    column(4, h5("Informacion"),tags$hr(), uiOutput("zigguratDetails"))
   )
   return(control)
 }

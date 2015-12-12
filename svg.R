@@ -33,7 +33,7 @@ SVG<-function(scale_factor) {
   
   # crea un rectangulo a partir de un conjunto de datos, con parametros similares
   # a ggplot2::geom_rect
-  this$rect <- function(data, mapping, fill, alpha, color, size=0, linetype=1) {
+  this$rect <- function(idPrefix, data, mapping, fill, alpha, color, size=0, linetype=1) {
     result <- ""
     
     # si solo se ha pasado un color lo utiliza para todos los datos
@@ -49,7 +49,7 @@ SVG<-function(scale_factor) {
     ymax  <- -this$round_coords(eval(mapping$ymax, data)/this$scale_factor)
     # itera para cada rectangulo
     for (i in 1:nrow(data)) {
-      rect2<-this$rect2(id=paste0("rect-", i), xmin=xmin[i], xmax=xmax[i], ymin=ymin[i], ymax=ymax[i], fill=fill[i], alpha=alpha, color=color[i], size=size, linetype=linetype)
+      rect2<-this$rect2(id=paste0(idPrefix, "-", i), xmin=xmin[i], xmax=xmax[i], ymin=ymin[i], ymax=ymax[i], fill=fill[i], alpha=alpha, color=color[i], size=size, linetype=linetype)
       result<-paste0(result, rect2)
     }
     
@@ -78,7 +78,7 @@ SVG<-function(scale_factor) {
     
     # dibuja el borde
     if (size>0) {
-      result <- paste0(result, "<g id=\"stroke-", id , "\" ")
+      result <- paste0(result, "<g id=\"", id , "\" ")
       result <- paste0(result, "fill=\"none\" ")
       result <- paste0(result, "stroke=\"", color , "\" ")
       if (linetype>0 && linetype<7) {
@@ -127,7 +127,7 @@ SVG<-function(scale_factor) {
   
   # crea un texto a partir de un conjunto de datos, con parametros similares
   # a ggplot2::geom_text
-  this$text <- function(data, mapping, label, color, size, angle=0) {
+  this$text <- function(idPrefix, data, mapping, label, color, size, angle=0) {
     result <- ""
     
     # si solo se ha pasado un color lo utiliza para todos los datos
@@ -141,7 +141,7 @@ SVG<-function(scale_factor) {
     y <- -this$round_coords(eval(mapping$y, data)/this$scale_factor)
     # itera para cada texto
     for (i in 1:nrow(data)) {
-      text2<-this$text2(id=paste0("text-", i), x=x[i], y=y[i], label=label[i], color[i], size, angle)
+      text2<-this$text2(id=paste0(idPrefix, "-", i), x=x[i], y=y[i], label=label[i], color[i], size, angle)
       result<-paste0(result, text2)
     }
     

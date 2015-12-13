@@ -40,6 +40,12 @@ configPanel <- function() {
       ),
       fluidRow(
         column(6, heightExpandControl())
+      ),
+      fluidRow(
+        column(3, kcore2TailVerticalSeparationControl()),
+        column(3, kcore1TailDistToCoreControl("1", "Distancia cola-kcore1 (1)")),
+        column(3, kcore1TailDistToCoreControl("2", "Distancia cola-kcore1 (2)")),
+        column(3, innerTailVerticalSeparationControl())
       )
     ),
     tabPanel(

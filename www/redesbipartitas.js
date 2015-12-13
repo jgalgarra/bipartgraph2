@@ -5,7 +5,7 @@ function updateTextEvents(pattern, guild, kcore) {
 	$("text[id*=" + pattern + "]").mouseover(function() {
 	    var fontSize=parseInt($(this).css("font-size").replace("px",""));
 	    $(this).css("font-size", (fontSize+4) + "px");
-	    Shiny.onInputChange("nodeData", {main:$(this).data("main"), species:getSpecies($(this).html())});
+	    Shiny.onInputChange("nodeData", {guild:$(this).data("main").guild, kcore:$(this).data("main").kcore, species:getSpecies($(this).html())});
 	});
 	$("text[id*=" + pattern + "]").mouseout(function() {
 	    var fontSize=parseInt($(this).css("font-size").replace("px",""));
@@ -52,3 +52,7 @@ function getSpecies(strSpecies) {
 	return result;
 }
 
+// muestra la informacion obtenida de la wikipedia para una especie
+function showWiki(id, name) {
+	alert("showWiki(id=" + id + ", name=" + name + ")");
+}

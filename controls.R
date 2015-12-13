@@ -122,7 +122,7 @@ yDisplaceControl <- function(name, description) {
 }
 
 # ampliacion de la altura de la caja
-heightExpandControl <- function(){
+heightExpandControl <- function() {
   control<-sliderInput(
     inputId = "heightExpand",
     label   = controlLabel("Expansión de altura"),
@@ -133,6 +133,47 @@ heightExpandControl <- function(){
   )
   return(control)
 }
+
+# separacion de la cola al kcore-2
+kcore2TailVerticalSeparationControl <- function() {
+  control<-sliderInput(
+      inputId = "kcore2TailVerticalSeparation",
+      label   = controlLabel("Separación de la cola del kCore2"),
+      min     = 0.5,
+      max     = 2.0,
+      value   = 1.0,
+      step    = 0.5
+  )
+  return(control)
+}
+
+# distancia de la cola kcore-1 al core central
+kcore1TailDistToCoreControl <- function(name, description) {
+  control<-sliderInput(
+      inputId = paste0("kcore1TailDistToCore", name),
+      label   = controlLabel(description),
+      min     = 0.5,
+      max     = 2.0,
+      value   = 1.0,
+      step    = 0.1
+  )
+  return(control)
+}
+
+# separacion vertical interna en la cola
+innerTailVerticalSeparationControl <- function() {
+  control<-sliderInput(
+      inputId = "innerTailVerticalSeparation",
+      label   = controlLabel("Separacion vertical interna en la cola"),
+      min     = 0.5,
+      max     = 2.0,
+      value   = 1.0,
+      step    = 0.1
+  )
+  return(control)
+}
+
+
 
 # tamanyo de las etiquetas
 labelsSizeControl <- function(name, description, default) {

@@ -1584,7 +1584,6 @@ def_configuration <- function(paintlinks, displaylabelszig , print_to_file, plot
                               use_spline, spline_points
                               )
 {
-  
   # ENVIRONMENT CONFIGURATION PARAMETERS
   zgg$paintlinks <- paintlinks
   zgg$displaylabelszig <- displaylabelszig

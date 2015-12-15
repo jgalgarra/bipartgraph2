@@ -5,7 +5,16 @@ function updateTextEvents(pattern, guild, kcore) {
 	$("text[id*=" + pattern + "]").mouseover(function() {
 	    var fontSize=parseInt($(this).css("font-size").replace("px",""));
 	    $(this).css("font-size", (fontSize+4) + "px");
-	    Shiny.onInputChange("nodeData", {guild:$(this).data("main").guild, kcore:$(this).data("main").kcore, species:getSpecies($(this).html())});
+	    
+	    // indica el nodo por el que se ha pasado el raton
+	    Shiny.onInputChange("nodeData", {
+	    	guild: 		$(this).data("main").guild, 
+	    	kcore: 		$(this).data("main").kcore, 
+	    	species:	getSpecies($(this).html())
+	    });
+	    
+	    // inicializa el nodo seleccionado
+	    Shiny.onInputChange("speciesData", null);
 	});
 	$("text[id*=" + pattern + "]").mouseout(function() {
 	    var fontSize=parseInt($(this).css("font-size").replace("px",""));
@@ -54,5 +63,9 @@ function getSpecies(strSpecies) {
 
 // muestra la informacion obtenida de la wikipedia para una especie
 function showWiki(id, name) {
-	alert("showWiki(id=" + id + ", name=" + name + ")");
+	//alert("showWiki(id=" + id + ", name=" + name + ")");
+	Shiny.onInputChange("speciesData", {
+    	id:		id, 
+    	name: 	name
+    });
 }

@@ -8,7 +8,24 @@ configPanel <- function() {
     tabPanel(
       "Datos",
       fluidRow(
-        column(4, filesInputControl(path="data", pattern="M_.*.csv"))
+        column(3, tags$h5("Selección de fichero para análisis")),
+        column(9, tags$hr())
+      ),
+      fluidRow(
+        column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis"))
+      ),
+      fluidRow(
+        column(12, filesInputControl(path="data", pattern="M_.*.csv"))
+      ),
+      fluidRow(
+        column(3, tags$h5("Selección de fichero para subir al servidor")),
+        column(9, tags$hr())
+      ),
+      fluidRow(
+        column(12, tags$h6("Seleccione un fichero de datos de su equipo para subir al servidor y poder realizar el análisis posteriormente"))
+      ),
+      fluidRow(
+        column(12, filesUploadControl())
       )
     ),
     tabPanel(
@@ -51,8 +68,8 @@ configPanel <- function() {
     tabPanel(
       "Colores",
       fluidRow(
-          column(1, h5("Clanes")),
-          column(11, hr())
+          column(1, tags$h5("Clanes")),
+          column(11, tags$hr())
       ),
       fluidRow(
         column(4, alphaLevelControl())
@@ -64,8 +81,8 @@ configPanel <- function() {
         column(2, colorControl("GuildB2", "Clan B (2)", "#FF0000"))
       ),
       fluidRow(
-        column(1, h5("Enlaces")),
-        column(11, hr())
+        column(1, tags$h5("Enlaces")),
+        column(11, tags$hr())
       ),
       fluidRow(
         column(4, alphaLevelLinkControl())
@@ -75,22 +92,22 @@ configPanel <- function() {
     tabPanel(
       "Etiquetas",
       fluidRow(
-        column(1, h5("Tamaño")),
-        column(11, hr())
+        column(1, tags$h5("Tamaño")),
+        column(11, tags$hr())
+      ),
+      fluidRow(
+        column(2, labelsSizeControl("kCoreMax", "k-core máximo", 3.5)),
+        column(2, labelsSizeControl("Ziggurat", "Ziggurat", 3)),
+        column(2, labelsSizeControl("kCore1", "k-core 1", 2.5))
       ),
       fluidRow(
         column(2, labelsSizeControl("", "General", 3.5)),
-        column(2, labelsSizeControl("kCoreMax", "k-Core máximo", 3.5)),
-        column(2, labelsSizeControl("kCore1", "k-Core 1", 2.5))
-      ),
-      fluidRow(
-        column(2, labelsSizeControl("Ziggurat", "Ziggurat", 3)),
         column(2, labelsSizeControl("CoreBox", "Core box", 2.5)),
         column(2, labelsSizeControl("Legend", "Leyenda", 4))
       ),
       fluidRow(
-          column(1, h5("Colores")),
-          column(11, hr())
+        column(1, tags$h5("Colores")),
+        column(11, tags$hr())
       ),
       fluidRow(
         column(2, colorControl("LabelGuildA", "Clan A", "#4169E1")),
@@ -104,8 +121,31 @@ configPanel <- function() {
 # panel con el gragico ziggurat
 zigguratPanel <- function() {
   control<-fluidRow(
-    column(8, h5("Diagrama"),   tags$hr(), uiOutput("ziggurat")),
-    column(4, h5("Informacion"),tags$hr(), uiOutput("zigguratDetails"))
+    column(8, 
+      tags$h5("Diagrama"),tags$hr(), uiOutput("ziggurat")
+    ),
+    column(4, 
+      fluidRow(column(12, tags$h5("Informacion"), tags$hr(), uiOutput("zigguratDetails"))),
+      fluidRow(column(12, tags$h5(""))),
+      fluidRow(column(12, tags$h5(""))),
+      fluidRow(column(12, tags$h5("Wiki"), tags$hr(), uiOutput("zigguratWikiDetails")))
+    )
+  )
+  return(control)
+}
+
+# panel con el gragico ziggurat
+polarPanel <- function() {
+  control<-fluidRow(
+      column(8, tags$h5("Diagrama"))
+  )
+  return(control)
+}
+
+# panel con el gragico ziggurat
+histogramPanel <- function() {
+  control<-fluidRow(
+      column(8, tags$h5("Diagrama"))
   )
   return(control)
 }
@@ -128,12 +168,15 @@ footerPanel <- function() {
   return(control)
 }
 
+#
+# interfaz de usuario
+#
 shinyUI(
   navbarPage(
-    title="Redes Bipartitas",
-    theme = shinytheme("united"),
-    header=headerPanel(),
-    footer=footerPanel(),
+    title   = "Redes Bipartitas",
+    theme   = shinytheme("united"),
+    header  = headerPanel(),
+    footer  = footerPanel(),
     
     # controles de entrada para ajustar numero de nodos y numero de enlaces
     tabPanel(
@@ -144,7 +187,17 @@ shinyUI(
     tabPanel(
       "Ziggurat",
       zigguratPanel()
-    ), 
+    ),
+    # panel con el diagrama polar
+    tabPanel(
+      "Polar",
+      polarPanel()
+    ),
+    # panel con los histogramas
+    tabPanel(
+      "Histogramas",
+      histogramPanel()
+    ),
     # acerca de
     tabPanel(
       "Acerca de...",

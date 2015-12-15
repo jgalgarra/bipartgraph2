@@ -9,9 +9,18 @@ filesInputControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
   control<-selectInput(
-      inputId = "dataFile", 
-      label   = controlLabel("Fichero de datos"),
-      choices = filesList
+    inputId = "dataFile", 
+    label   = controlLabel("Fichero de datos"),
+    choices = filesList
+  )
+  return(control)
+}
+
+# control para subida de fichero
+filesUploadControl <- function() {
+  control<-fileInput(
+    inputId = "uploadedFile",
+    label   = controlLabel("Subir fichero")
   )
   return(control)
 }
@@ -19,9 +28,9 @@ filesInputControl <- function(path, pattern) {
 # control para mostrar o no los enlaces
 paintLinksControl <- function() {
   control<-checkboxInput(
-      inputId = "paintLinks",
-      label   = controlLabel("Mostrar enlaces"),
-      value   = TRUE
+    inputId = "paintLinks",
+    label   = controlLabel("Mostrar enlaces"),
+    value   = TRUE
   )
   return(control)
 }
@@ -29,9 +38,9 @@ paintLinksControl <- function() {
 # control para mostrar o no las etiquetas
 displayLabelsControl <- function() {
   control<-checkboxInput(
-      inputId = "displayLabels",
-      label   = controlLabel("Mostrar etiquetas"),
-      value   = TRUE
+    inputId = "displayLabels",
+    label   = controlLabel("Mostrar etiquetas"),
+    value   = TRUE
   )
   return(control)
 }
@@ -39,9 +48,9 @@ displayLabelsControl <- function() {
 # control para invertir los resultados
 flipResultsControl <- function() {
   control<-checkboxInput(
-      inputId = "flipResults",
-      label   = controlLabel("Invertir resultado"),
-      value   = FALSE
+    inputId = "flipResults",
+    label   = controlLabel("Invertir resultado"),
+    value   = FALSE
   )
   return(control)
 }
@@ -49,12 +58,12 @@ flipResultsControl <- function() {
 # control para el factor de escala del grafico SVG
 aspectRatioControl <- function() {
   control<-sliderInput(
-      inputId = "aspectRatio",
-      label   = controlLabel("Relación de aspecto"),
-      min     = 0.1,
-      max     = 1.0,
-      value   = 1.0,
-      step    = 0.1
+    inputId = "aspectRatio",
+    label   = controlLabel("Relación de aspecto"),
+    min     = 0.1,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.1
   )
   return(control)
 }
@@ -62,12 +71,12 @@ aspectRatioControl <- function() {
 # control para el factor de transparencia
 alphaLevelControl <- function() {
   control<-sliderInput(
-      inputId = "alphaLevel",
-      label   = controlLabel("Transparencia"),
-      min     = 0.0,
-      max     = 1.0,
-      value   = 0.2,
-      step    = 0.1
+    inputId = "alphaLevel",
+    label   = controlLabel("Transparencia"),
+    min     = 0.0,
+    max     = 1.0,
+    value   = 0.2,
+    step    = 0.1
   )
   return(control)
 }
@@ -85,12 +94,12 @@ colorControl <- function(name, description, default) {
 # control para el factor de transparencia de los enlaces
 alphaLevelLinkControl <- function() {
   control<-sliderInput(
-      inputId = "alphaLevelLink",
-      label   = controlLabel("Transparencia en enlaces"),
-      min     = 0.0,
-      max     = 1.0,
-      value   = 0.5,
-      step    = 0.1
+    inputId = "alphaLevelLink",
+    label   = controlLabel("Transparencia en enlaces"),
+    min     = 0.0,
+    max     = 1.0,
+    value   = 0.5,
+    step    = 0.1
   )
   return(control)
 }
@@ -98,12 +107,12 @@ alphaLevelLinkControl <- function() {
 # tamanyo de los enlaces
 sizeLinkControl <- function() {
   control<-sliderInput(
-      inputId = "sizeLink",
-      label   = controlLabel("Tamaño de los enlaces"),
-      min     = 0.0,
-      max     = 5.0,
-      value   = 0.5,
-      step    = 0.5
+    inputId = "sizeLink",
+    label   = controlLabel("Tamaño de los enlaces"),
+    min     = 0.0,
+    max     = 5.0,
+    value   = 0.5,
+    step    = 0.5
   )
   return(control)
 }
@@ -111,12 +120,12 @@ sizeLinkControl <- function() {
 # desplazamiento vertical
 yDisplaceControl <- function(name, description) {
   control<-sliderInput(
-      inputId = paste0("yDisplace", name),
-      label   = controlLabel(description),
-      min     = 0.0,
-      max     = 15.0,
-      value   = 11.0,
-      step    = 1.0
+    inputId = paste0("yDisplace", name),
+    label   = controlLabel(description),
+    min     = 0.0,
+    max     = 15.0,
+    value   = 11.0,
+    step    = 1.0
   )
   return(control)
 }
@@ -137,12 +146,12 @@ heightExpandControl <- function() {
 # separacion de la cola al kcore-2
 kcore2TailVerticalSeparationControl <- function() {
   control<-sliderInput(
-      inputId = "kcore2TailVerticalSeparation",
-      label   = controlLabel("Separación de la cola del kCore2"),
-      min     = 0.5,
-      max     = 2.0,
-      value   = 1.0,
-      step    = 0.5
+    inputId = "kcore2TailVerticalSeparation",
+    label   = controlLabel("Separación de la cola del kCore2"),
+    min     = 0.5,
+    max     = 2.0,
+    value   = 1.0,
+    step    = 0.5
   )
   return(control)
 }
@@ -150,12 +159,12 @@ kcore2TailVerticalSeparationControl <- function() {
 # distancia de la cola kcore-1 al core central
 kcore1TailDistToCoreControl <- function(name, description) {
   control<-sliderInput(
-      inputId = paste0("kcore1TailDistToCore", name),
-      label   = controlLabel(description),
-      min     = 0.5,
-      max     = 2.0,
-      value   = 1.0,
-      step    = 0.1
+    inputId = paste0("kcore1TailDistToCore", name),
+    label   = controlLabel(description),
+    min     = 0.5,
+    max     = 2.0,
+    value   = 1.0,
+    step    = 0.1
   )
   return(control)
 }
@@ -163,12 +172,12 @@ kcore1TailDistToCoreControl <- function(name, description) {
 # separacion vertical interna en la cola
 innerTailVerticalSeparationControl <- function() {
   control<-sliderInput(
-      inputId = "innerTailVerticalSeparation",
-      label   = controlLabel("Separacion vertical interna en la cola"),
-      min     = 0.5,
-      max     = 2.0,
-      value   = 1.0,
-      step    = 0.1
+    inputId = "innerTailVerticalSeparation",
+    label   = controlLabel("Separacion vertical interna en la cola"),
+    min     = 0.5,
+    max     = 2.0,
+    value   = 1.0,
+    step    = 0.1
   )
   return(control)
 }
@@ -178,12 +187,12 @@ innerTailVerticalSeparationControl <- function() {
 # tamanyo de las etiquetas
 labelsSizeControl <- function(name, description, default) {
   control<-sliderInput(
-      inputId = paste0("labelsSize", name),
-      label   = controlLabel(description),
-      min     = 1.0,
-      max     = 5.0,
-      value   = default,
-      step    = 0.5
+    inputId = paste0("labelsSize", name),
+    label   = controlLabel(description),
+    min     = 1.0,
+    max     = 5.0,
+    value   = default,
+    step    = 0.5
   )
   return(control)
 }
@@ -191,12 +200,12 @@ labelsSizeControl <- function(name, description, default) {
 # control para el factor de escala del grafico SVG
 svgScaleFactorControl <- function() {
   control<-sliderInput(
-      inputId = "svgScaleFactor",
-      label   = controlLabel("Escala SVG"),
-      min     = 10,
-      max     = 100,
-      value   = 50,
-      step    = 10
+    inputId = "svgScaleFactor",
+    label   = controlLabel("Escala SVG"),
+    min     = 10,
+    max     = 100,
+    value   = 50,
+    step    = 10
   )
   return(control)
 }

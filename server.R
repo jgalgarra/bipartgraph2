@@ -1,6 +1,72 @@
 library(shiny)
 source("ziggurat_graph.R", encoding="UTF-8")
 
+# muestra una fila en el detalle con [etiqueta, valor]
+detailRow <- function(label, value) {
+  label   <- tags$b(label)
+  value   <- paste0(value, collapse="")
+  if (length(grep(pattern = "^http", x = value, ignore.case = TRUE))>0 || length(grep(pattern = "^javascript", x = value, ignore.case = TRUE))>0) {
+    value <- tags$a(value, href = value)  
+  } else {
+    value <- tags$div(value)
+  }
+  return(fluidRow(column(2, tags$small(label)), column(6, tags$small(value))))
+}
+
+# muestra la informacion de detalle sobre un conjunto de especies
+showSpecies <- function(speciesDf) {
+  # tamanyo de las columnas
+  sizes<-c(1, 5, 2, 2)
+  
+  # crea la cabecera
+  columns <- ""
+  values  <- c("#", "Nombre", "k-radius", "k-degree")
+  for (i in 1:length(values)) {
+    if (nchar(columns)>0) {
+      columns<-paste0(columns, ", ")
+    }
+    value   <- paste0("tags$b(\"", values[i], "\")") 
+    columns <- paste0(columns, "column(", sizes[i], ", tags$small(", value, "))")
+  }
+  rows<-eval(parse(text=paste0("fluidRow(", columns, ")")))
+  
+  # crea las filas
+  #details <- paste(details, detailRow("Especies", ""), collapse="")
+  for (i in 1:nrow(speciesDf)) {
+    label   <- speciesDf[i, c("label")]
+    name    <- speciesDf[i, c("name_species")]
+    label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki(", label, ", '", name , "')"), "\")") 
+    name    <- paste0("\"", name, "\"")
+    kradius <- paste0("\"", round(speciesDf[i, c("kradius")], 2), "\"")
+    kdegree <- paste0("\"", round(speciesDf[i, c("kdegree")], 2), "\"")
+    columns <- ""
+    values  <- c(label, name, kradius, kdegree) 
+    for (i in 1:length(values)) {
+      if (nchar(columns)>0) {
+        columns<-paste0(columns, ", ")
+      } 
+      columns <- paste0(columns, "column(", sizes[i], ", tags$small(", values[i], "))")
+    }
+    rows<-paste(rows, eval(parse(text=paste0("fluidRow(", columns, ")"))))
+  }
+  return(rows)
+}
+
+# muestra la informacion de detalle sobre una especie
+showWiki <- function(speciesData) {
+  content<-""
+  if (is.null(speciesData)) {
+    content<-paste(content,eval(parse(text="fluidRow()")))
+  } else {    
+    tab<-paste0("tabsetPanel(tabPanel(\"", speciesData$id, "\", fluidRow(column(4, h5(\"\")))))")
+    content<-paste(content, eval(parse(text=tab)))
+  }
+  return(content)
+}
+
+#
+# proceso de servidor
+#
 shinyServer(function(input, output) {  
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
@@ -69,7 +135,13 @@ shinyServer(function(input, output) {
   
   # actualiza la informacion sobre el nodo del grafico seleccionado
   nodeData<-reactive({
-    data<-input$nodeData;
+    data<-input$nodeData
+    return(data)
+  })
+
+  # actualiza la informacion de detalle de una especie
+  speciesData<-reactive({
+    data<-input$speciesData
     return(data)
   })
 
@@ -87,8 +159,8 @@ shinyServer(function(input, output) {
     data    <- nodeData()
     details <- ""
     if (!is.null(data)) {
-      details <- paste(details, detailRow("Tipo", ifelse(data$guild=="a", z$name_guild_a, z$name_guild_b)), collapse = "")
-      details <- paste(details, detailRow("k-core", data$kcore), collapse = "")
+      details <- paste(details, detailRow("Tipo", ifelse(data$guild=="a", z$name_guild_a, z$name_guild_b)), collapse="")
+      details <- paste(details, detailRow("k-core", data$kcore), collapse="")
       if (data$kcore>1) {
         if (data$guild=="a") {
           kcore_df<-z$list_dfs_a[[data$kcore]]
@@ -96,72 +168,35 @@ shinyServer(function(input, output) {
           kcore_df<-z$list_dfs_b[[data$kcore]]
         }
         # selecciona y muestra las especies del dataframe a partir de la lista que se ha recibido
-        species_df<-kcore_df[kcore_df$label==unlist(data$species),c("label", "name_species", "kdegree", "kradius")]
-        details <- paste(details, showSpecies(species_df), collapse = "")
+        speciesDf<-kcore_df[kcore_df$label==unlist(data$species),c("label", "name_species", "kdegree", "kradius")]
+        details <- paste(details, showSpecies(speciesDf), collapse="")
       }
     }
     #df<-z$list_dfs_a[[2]]
     #df<-z
     #for (name in names(df)) {
-    #  details <- paste(details, detailRow(name, df[[name]]), collapse = "")
+    #  details <- paste(details, detailRow(name, df[[name]]), collapse="")
     #}
     
     return(HTML(details))
   })
 
+  # informacion de Wiki
+  output$zigguratWikiDetails<-renderUI({
+    data    <- speciesData()
+    details <- ""
+    details <- paste(details, showWiki(data), collapse="")
+    return(HTML(details))
+  })
+
   # informacion de la pagina de resumen
   output$summary<-renderText({
-      return("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer scelerisque non felis sed egestas. Nullam nec lorem orci. In volutpat urna sit amet porta vulputate. Quisque pharetra nunc ut fringilla vestibulum. Quisque mauris augue, vehicula id porttitor feugiat, ornare sed nibh. Etiam sed lectus mauris. Aliquam placerat quam id nibh lobortis euismod. Nam vel feugiat odio. Donec aliquet nibh quis felis aliquam accumsan. Aliquam elementum in neque et condimentum. Nunc et ullamcorper elit, in pellentesque tellus.")
-    })
-
-  # muestra la informacion de detalle sobre un conjunto de especies
-  showSpecies <- function(species_df) {
-    # tamanyo de las columnas
-    sizes<-c(1, 5, 2, 2)
-    
-    # crea la cabecera
-    columns <- ""
-    values  <- c("#", "Nombre", "k-radius", "k-degree")
-    for (i in 1:length(values)) {
-      if (nchar(columns)>0) {
-        columns<-paste0(columns, ", ")
-      }
-      value   <- paste0("tags$b(\"", values[i], "\")") 
-      columns <- paste0(columns, "column(", sizes[i], ", tags$small(", value, "))")
-    }
-    rows<-eval(parse(text=paste0("fluidRow(", columns, ")")))
-
-    # crea las filas
-    #details <- paste(details, detailRow("Especies", ""), collapse = "")
-    for (i in 1:nrow(species_df)) {
-      label   <- species_df[i, c("label")]
-      name    <- species_df[i, c("name_species")]
-      label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki(", label, ", '", name , "')"), "\")") 
-      name    <- paste0("\"", name, "\"")
-      kradius <- paste0("\"", round(species_df[i, c("kradius")], 2), "\"")
-      kdegree <- paste0("\"", round(species_df[i, c("kdegree")], 2), "\"")
-      columns <- ""
-      values  <- c(label, name, kradius, kdegree) 
-      for (i in 1:length(values)) {
-        if (nchar(columns)>0) {
-          columns<-paste0(columns, ", ")
-        } 
-        columns <- paste0(columns, "column(", sizes[i], ", tags$small(", values[i], "))")
-      }
-      rows<-paste(rows, eval(parse(text=paste0("fluidRow(", columns, ")"))))
-    }
-    return(rows)
-  }
-  
-  # muestra una fila en el detalle con [etiqueta, valor]
-  detailRow <- function(label, value) {
-    label   <- tags$b(label)
-    value   <- paste0(value, collapse="")
-    if (length(grep(pattern = "^http", x = value, ignore.case = TRUE))>0 || length(grep(pattern = "^javascript", x = value, ignore.case = TRUE))>0) {
-      value <- tags$a(value, href = value)  
-    } else {
-      value <- tags$div(value)
-    }
-    return(fluidRow(column(2, tags$small(label)), column(6, tags$small(value))))
-  }
+    text<-""
+    text<-paste0(text, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer scelerisque non felis sed egestas. ")
+    text<-paste0(text, "Nullam nec lorem orci. In volutpat urna sit amet porta vulputate. Quisque pharetra nunc ut fringilla vestibulum. ")
+    text<-paste0(text, "Quisque mauris augue, vehicula id porttitor feugiat, ornare sed nibh. Etiam sed lectus mauris. Aliquam placerat quam id nibh lobortis euismod. ")
+    text<-paste0(text, "Nam vel feugiat odio. Donec aliquet nibh quis felis aliquam accumsan. Aliquam elementum in neque et condimentum.")
+    text<-paste0(text, "Nunc et ullamcorper elit, in pellentesque tellus.")
+    return(text)
+  })  
 })

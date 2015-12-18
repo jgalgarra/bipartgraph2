@@ -1,39 +1,54 @@
+###############################################################################
+# Universidad Politécnica de Madrid - EUITT
+#   PFC
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
+# 
+# Autor         : Juan Manuel García Santi
+# Módulo        : server.R
+# Descricpción  : Módulo de interfaz de usuario (UI) para la aplicación "shiny"
+#                 Contiene las funciones que permiten representar los distintos
+#                 elementos que se muestran en el interfaz
+###############################################################################
 library(shiny)
 library(shinythemes)
 source("controls.R", encoding="UTF-8")
 
+# panel de gestion de datos
+dataPanel <- function() {
+  panel<-fluidRow(
+    style="padding:10px",
+    fluidRow(
+      column(3, tags$h5("Selección de fichero para diagramas")),
+      column(9, tags$hr())
+    ),
+    fluidRow(
+      column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis y mostrar los distintos diagramas disponibles (ziggurat, porlar e histogramas)"))
+    ),
+    fluidRow(
+      column(12, filesSelectControl(path="data", pattern="M_.*.csv"))
+    ),
+    fluidRow(
+      column(3, tags$h5("Incoporación de ficheros al sistema")),
+      column(9, tags$hr())
+    ),
+    fluidRow(
+      column(12, tags$h6("Seleccione un fichero de datos de su equipo para incluir en el sistema y posteriormente poder realizar el análisis"))
+    ),
+    fluidRow(
+      column(12, filesUploadControl())
+    )
+  )
+}
+          
 # panel de configuracion
 configPanel <- function() {
   panel<-tabsetPanel(
-    tabPanel(
-      "Datos",
-      fluidRow(
-        column(3, tags$h5("Selección de fichero para análisis")),
-        column(9, tags$hr())
-      ),
-      fluidRow(
-        column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis"))
-      ),
-      fluidRow(
-        column(12, filesInputControl(path="data", pattern="M_.*.csv"))
-      ),
-      fluidRow(
-        column(3, tags$h5("Selección de fichero para subir al servidor")),
-        column(9, tags$hr())
-      ),
-      fluidRow(
-        column(12, tags$h6("Seleccione un fichero de datos de su equipo para subir al servidor y poder realizar el análisis posteriormente"))
-      ),
-      fluidRow(
-        column(12, filesUploadControl())
-      )
-    ),
-    tabPanel(
-      "SVG",
-      fluidRow(
-        column(4, svgScaleFactorControl())
-      )
-    ),
+    #tabPanel(
+    #  "SVG",
+    #  fluidRow(
+    #    column(4, svgScaleFactorControl())
+    #  )
+    #),
     tabPanel(
       "Visualización",
       fluidRow(
@@ -68,17 +83,17 @@ configPanel <- function() {
     tabPanel(
       "Colores",
       fluidRow(
-          column(1, tags$h5("Clanes")),
-          column(11, tags$hr())
+        column(1, tags$h5("Nodos")),
+        column(11, tags$hr())
       ),
       fluidRow(
         column(4, alphaLevelControl())
       ),
       fluidRow(
-        column(2, colorControl("GuildA1", "Clan A (1)", "#4169E1")),
-        column(2, colorControl("GuildA2", "Clan A (2)", "#00008B")),
-        column(2, colorControl("GuildB1", "Clan B (1)", "#F08080")),
-        column(2, colorControl("GuildB2", "Clan B (2)", "#FF0000"))
+        column(2, colorControl("GuildA1", "Color (1) del clan A", "#4169E1")),
+        column(2, colorControl("GuildA2", "Color (2) del clan A", "#00008B")),
+        column(2, colorControl("GuildB1", "Color (1) del clan B", "#F08080")),
+        column(2, colorControl("GuildB2", "Color (2) del clan B", "#FF0000"))
       ),
       fluidRow(
         column(1, tags$h5("Enlaces")),
@@ -87,7 +102,7 @@ configPanel <- function() {
       fluidRow(
         column(4, alphaLevelLinkControl())
       ),
-      colorControl("Link", "Enlaces", "#888888")
+      colorControl("Link", "Color", "#888888")
     ),
     tabPanel(
       "Etiquetas",
@@ -122,13 +137,13 @@ configPanel <- function() {
 zigguratPanel <- function() {
   control<-fluidRow(
     column(8, 
-      tags$h5("Diagrama"),tags$hr(), uiOutput("ziggurat")
+      tags$h5("Diagrama"), tags$hr(), uiOutput("ziggurat")
     ),
     column(4, 
       fluidRow(column(12, tags$h5("Informacion"), tags$hr(), uiOutput("zigguratDetails"))),
       fluidRow(column(12, tags$h5(""))),
       fluidRow(column(12, tags$h5(""))),
-      fluidRow(column(12, tags$h5("Wiki"), tags$hr(), uiOutput("zigguratWikiDetails")))
+      fluidRow(column(12, tags$h5("Wikipedia"), tags$hr(), uiOutput("zigguratWikiDetails")))
     )
   )
   return(control)
@@ -137,7 +152,7 @@ zigguratPanel <- function() {
 # panel con el gragico ziggurat
 polarPanel <- function() {
   control<-fluidRow(
-      column(8, tags$h5("Diagrama"))
+    column(12, tags$h5("Diagrama"), tags$hr(), uiOutput("polar"))
   )
   return(control)
 }
@@ -145,7 +160,7 @@ polarPanel <- function() {
 # panel con el gragico ziggurat
 histogramPanel <- function() {
   control<-fluidRow(
-      column(8, tags$h5("Diagrama"))
+    column(12, tags$h5("Diagrama"), tags$hr(), uiOutput("histogram"))
   )
   return(control)
 }
@@ -164,7 +179,32 @@ headerPanel <- function() {
 
 # pie de pagina comun
 footerPanel <- function() {
-  control<-tags$div(tags$hr(),tags$div(tags$h5(style="text-align:center", "(c) Juanma 2015")))
+  control<-tags$div(
+    style="padding:10px;margin:0px;font-size:x-small;",
+    tags$hr(),
+    tags$div(
+      style="clear:both;padding:0px",
+      tags$p(
+        style="float:left", 
+        "PFC Representación gráfica de redes bipartitas basada en descomposición k-core"
+      ),
+      tags$p(
+        style="float:right", 
+        "Juan Manuel García Santi"
+      )
+    ),
+    tags$div(
+      style="clear:both;padding:0px",
+      tags$p(
+        style="float:left", 
+        "EUITT - Universidad Politécnica de Madrid"
+      ),
+      tags$p(
+        style="float:right", 
+        "jmgarciasanti@gmail.com"
+      )
+    )
+  )
   return(control)
 }
 
@@ -178,7 +218,12 @@ shinyUI(
     header  = headerPanel(),
     footer  = footerPanel(),
     
-    # controles de entrada para ajustar numero de nodos y numero de enlaces
+    # controles de entrada para la gestion de los ficheros de datos
+    tabPanel(
+      "Datos",
+      dataPanel()
+    ),
+    # controles de entrada para ajustar la visualizacion de los diagramas
     tabPanel(
       "Configuración",
       configPanel()

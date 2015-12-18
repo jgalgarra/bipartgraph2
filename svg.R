@@ -1,6 +1,15 @@
-# TODO: Add comment
+###############################################################################
+# Universidad Politécnica de Madrid - EUITT
+#   PFC
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
-# Author: JMGARC4
+# Autor         : Juan Manuel García Santi
+# Módulo        : svg.R
+# Descricpción  : Funciones básicas para la generación de un gráfico en formato
+#                 SVG (Scalable Vectors Graphics). Contiene las funciones
+#                 necesarias para generar un SVG con rectángulos, rutas y 
+#                 segmentos, y proporcionar o almacenar el XML correspondiente
+#                 al SVG generado
 ###############################################################################
 library(ggplot2)
 

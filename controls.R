@@ -1,11 +1,17 @@
-# TODO: Add comment
+###############################################################################
+# Universidad Politécnica de Madrid - EUITT
+#   PFC
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
-# Author: JMGARC4
+# Autor         : Juan Manuel García Santi
+# Módulo        : controls.R
+# Descricpción  : Funciones para la representación de los disintos controles
+#                 de configuración en el interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
 
 # control para la seleccion del fichero
-filesInputControl <- function(path, pattern) {
+filesSelectControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
   control<-selectInput(
@@ -95,7 +101,7 @@ colorControl <- function(name, description, default) {
 alphaLevelLinkControl <- function() {
   control<-sliderInput(
     inputId = "alphaLevelLink",
-    label   = controlLabel("Transparencia en enlaces"),
+    label   = controlLabel("Transparencia"),
     min     = 0.0,
     max     = 1.0,
     value   = 0.5,
@@ -147,7 +153,7 @@ heightExpandControl <- function() {
 kcore2TailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "kcore2TailVerticalSeparation",
-    label   = controlLabel("Separación de la cola del kCore2"),
+    label   = controlLabel("Distancia cola-kcore2"),
     min     = 0.5,
     max     = 2.0,
     value   = 1.0,
@@ -181,8 +187,6 @@ innerTailVerticalSeparationControl <- function() {
   )
   return(control)
 }
-
-
 
 # tamanyo de las etiquetas
 labelsSizeControl <- function(name, description, default) {

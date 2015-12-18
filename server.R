@@ -1,3 +1,16 @@
+###############################################################################
+# Universidad Politécnica de Madrid - EUITT
+#   PFC
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
+# 
+# Autor         : Juan Manuel García Santi
+# Módulo        : server.R
+# Descricpción  : Módulo servidor para la aplicación "shiny". Contiene la
+#                 función principal "shinyServer" así como las funciones
+#                 restantes que permiten tanto reaccionar a los cambios en la
+#                 configuración como mostrar los diagramas y actuar ante los 
+#                 distintos eventos a los que responde la aplicación
+###############################################################################
 library(shiny)
 source("ziggurat_graph.R", encoding="UTF-8")
 
@@ -57,8 +70,17 @@ showWiki <- function(speciesData) {
   content<-""
   if (is.null(speciesData)) {
     content<-paste(content,eval(parse(text="fluidRow()")))
-  } else {    
-    tab<-paste0("tabsetPanel(tabPanel(\"", speciesData$id, "\", fluidRow(column(4, h5(\"\")))))")
+  } else {
+    tab<-""
+    tab<-paste0(tab, "tabsetPanel(")
+    tab<-paste0(tab, "tabPanel(\"")
+    tab<-paste0(tab, speciesData$id)
+    tab<-paste0(tab, "\", fluidRow(")
+    tab<-paste0(tab, "column(12, ")
+    tab<-paste0(tab, "h6(\"(información descargada de Wikipedia para la especie ")
+    tab<-paste0(tab, speciesData$name)
+    tab<-paste0(tab, "...)\"")
+    tab<-paste0(tab, ")))))")
     content<-paste(content, eval(parse(text=tab)))
   }
   return(content)
@@ -67,7 +89,7 @@ showWiki <- function(speciesData) {
 #
 # proceso de servidor
 #
-shinyServer(function(input, output) {  
+shinyServer(function(input, output) {
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
   ziggurat<-reactive({
@@ -128,7 +150,8 @@ shinyServer(function(input, output) {
       show_title                                    = TRUE,
       use_spline                                    = TRUE,
       spline_points                                 = 100,  
-      svg_scale_factor                              = input$svgScaleFactor
+      #svg_scale_factor                              = input$svgScaleFactor
+      svg_scale_factor                              = 50
     )
     return(z)
   })
@@ -189,6 +212,16 @@ shinyServer(function(input, output) {
     return(HTML(details))
   })
 
+  # muestra el diagrama polar
+  output$polar<-renderUI({
+    return(tags$h2("(pendiente)"))
+  })
+
+  # muestra los histogramas
+  output$histogram<-renderUI({
+    return(tags$h2("(pendiente)"))
+  })
+      
   # informacion de la pagina de resumen
   output$summary<-renderText({
     text<-""

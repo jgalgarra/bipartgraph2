@@ -26,8 +26,8 @@ detailRow <- function(label, value) {
   return(fluidRow(column(2, tags$small(label)), column(6, tags$small(value))))
 }
 
-# muestra la informacion de detalle sobre un conjunto de especies
-showSpecies <- function(speciesDf) {
+# muestra la informacion de detalle sobre un conjunto de elementos
+showElements <- function(elementsDf) {
   # tamanyo de las columnas
   sizes<-c(1, 5, 2, 2)
   
@@ -44,14 +44,13 @@ showSpecies <- function(speciesDf) {
   rows<-eval(parse(text=paste0("fluidRow(", columns, ")")))
   
   # crea las filas
-  #details <- paste(details, detailRow("Especies", ""), collapse="")
-  for (i in 1:nrow(speciesDf)) {
-    label   <- speciesDf[i, c("label")]
-    name    <- speciesDf[i, c("name_species")]
+  for (i in 1:nrow(elementsDf)) {
+    label   <- elementsDf[i, c("label")]
+    name    <- elementsDf[i, c("name_species")]
     label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki(", label, ", '", name , "')"), "\")") 
     name    <- paste0("\"", name, "\"")
-    kradius <- paste0("\"", round(speciesDf[i, c("kradius")], 2), "\"")
-    kdegree <- paste0("\"", round(speciesDf[i, c("kdegree")], 2), "\"")
+    kradius <- paste0("\"", round(elementsDf[i, c("kradius")], 2), "\"")
+    kdegree <- paste0("\"", round(elementsDf[i, c("kdegree")], 2), "\"")
     columns <- ""
     values  <- c(label, name, kradius, kdegree) 
     for (i in 1:length(values)) {
@@ -65,20 +64,20 @@ showSpecies <- function(speciesDf) {
   return(rows)
 }
 
-# muestra la informacion de detalle sobre una especie
-showWiki <- function(speciesData) {
+# muestra la informacion de detalle sobre un elemento
+showWiki <- function(elementData) {
   content<-""
-  if (is.null(speciesData)) {
+  if (is.null(elementData)) {
     content<-paste(content,eval(parse(text="fluidRow()")))
   } else {
     tab<-""
     tab<-paste0(tab, "tabsetPanel(")
     tab<-paste0(tab, "tabPanel(\"")
-    tab<-paste0(tab, speciesData$id)
+    tab<-paste0(tab, elementData$id)
     tab<-paste0(tab, "\", fluidRow(")
     tab<-paste0(tab, "column(12, ")
-    tab<-paste0(tab, "h6(\"(información descargada de Wikipedia para la especie ")
-    tab<-paste0(tab, speciesData$name)
+    tab<-paste0(tab, "h6(\"(información descargada de Wikipedia para el elemento ")
+    tab<-paste0(tab, elementData$name)
     tab<-paste0(tab, "...)\"")
     tab<-paste0(tab, ")))))")
     content<-paste(content, eval(parse(text=tab)))
@@ -90,12 +89,28 @@ showWiki <- function(speciesData) {
 # proceso de servidor
 #
 shinyServer(function(input, output) {
+  # seleccion de ficheros cargados
+  uploadedFiles<-reactive({
+    # obtiene los ficheros cargados
+    files<-input$uploadedFiles
+    if (is.null(files)) {
+      files<-list(c(), c(), c(), c())
+    }
+    
+    # renombra las columnas
+    names(files)<-c("Nombre", "Tamaño", "Tipo", "")
+    
+    # elimina las columnas sin nombre
+    files<-files[!(names(files) %in% c(""))]
+    return(files)
+  })
+
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
   ziggurat<-reactive({
     z<-ziggurat_graph(
       datadir                                       = "data/",
-      filename                                      = input$dataFile,
+      filename                                      = input$selectedDataFile,
       paintlinks                                    = input$paintLinks,
       displaylabelszig                              = input$displayLabels,
       print_to_file                                 = FALSE,
@@ -162,10 +177,15 @@ shinyServer(function(input, output) {
     return(data)
   })
 
-  # actualiza la informacion de detalle de una especie
-  speciesData<-reactive({
-    data<-input$speciesData
+  # actualiza la informacion de detalle de un elemento
+  elementData<-reactive({
+    data<-input$elementData
     return(data)
+  })
+
+  # muestra el contenido de un fichero subido al servidor
+  output$uploadedFilesContent<-renderDataTable({
+    return(uploadedFiles())
   })
 
   # muestra el diagrama ziggurat y lanza la funcion que actualiza los 
@@ -190,9 +210,9 @@ shinyServer(function(input, output) {
         } else {
           kcore_df<-z$list_dfs_b[[data$kcore]]
         }
-        # selecciona y muestra las especies del dataframe a partir de la lista que se ha recibido
-        speciesDf<-kcore_df[kcore_df$label==unlist(data$species),c("label", "name_species", "kdegree", "kradius")]
-        details <- paste(details, showSpecies(speciesDf), collapse="")
+        # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
+        elementsDf<-kcore_df[kcore_df$label==unlist(data$elements),c("label", "name_species", "kdegree", "kradius")]
+        details <- paste(details, showElements(elementsDf), collapse="")
       }
     }
     #df<-z$list_dfs_a[[2]]
@@ -206,7 +226,7 @@ shinyServer(function(input, output) {
 
   # informacion de Wiki
   output$zigguratWikiDetails<-renderUI({
-    data    <- speciesData()
+    data    <- elementData()
     details <- ""
     details <- paste(details, showWiki(data), collapse="")
     return(HTML(details))

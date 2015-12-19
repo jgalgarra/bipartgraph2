@@ -4,29 +4,31 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : controls.R
+# Módulo        : uiControls.R
 # Descricpción  : Funciones para la representación de los disintos controles
 #                 de configuración en el interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
 
 # control para la seleccion del fichero
-filesSelectControl <- function(path, pattern) {
+selectFileControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
   control<-selectInput(
-    inputId = "dataFile", 
+    inputId = "selectedDataFile", 
     label   = controlLabel("Fichero de datos"),
     choices = filesList
   )
   return(control)
 }
 
-# control para subida de fichero
-filesUploadControl <- function() {
+# control para subida de ficheros
+uploadFilesControl <- function() {
   control<-fileInput(
-    inputId = "uploadedFile",
-    label   = controlLabel("Subir fichero")
+    inputId   = "uploadedFiles",
+    accept    = c("txt/csv", "text/comma-separated-values", "text/plain", ".csv"),
+    label     = controlLabel("Subir ficheros"),
+    multiple  = TRUE
   )
   return(control)
 }

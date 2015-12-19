@@ -22,11 +22,11 @@ function updateTextEvents(pattern, guild, kcore) {
         Shiny.onInputChange("nodeData", {
             guild:      $(this).data("main").guild, 
             kcore:      $(this).data("main").kcore, 
-            species:    getSpecies($(this).html())
+            elements:   getElements($(this).html())
         });
         
         // inicializa el nodo seleccionado
-        Shiny.onInputChange("speciesData", null);
+        Shiny.onInputChange("elementsData", null);
     });
     $("text[id*=" + pattern + "]").mouseout(function() {
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
@@ -59,24 +59,25 @@ function updateEvents() {
     updatePathEvents("straightLink");
 }
 
-// obtiene los identificadores de las especies en un nodo de texto del SVG
+// obtiene los identificadores de los elementos en un nodo de texto del SVG
 // dividiendo la cadena por los espacios en blanco
-function getSpecies(strSpecies) {
-    var aSpecies=strSpecies.split(" ");
-    var i,j=0,result=[];
-    for (i=0;i<aSpecies.length;++i) {
-        var strSpecies=aSpecies[i].trim();
-        if (strSpecies.length>0) {
-            result.push({id:strSpecies});
+function getElements(strElements) {
+    var aElements=strElements.split(" ");
+    var i,result=[];
+    for (i=0;i<aElements.length;++i) {
+        var strElement=aElements[i].trim();
+        if (strElement.length>0) {
+            result.push({id:strElement});
         }
     }
+    //alert(JSON.stringify(result));
     return result;
 }
 
-// muestra la informacion obtenida de la wikipedia para una especie
+// muestra la informacion obtenida de la wikipedia para un elemento concreto
 function showWiki(id, name) {
     //alert("showWiki(id=" + id + ", name=" + name + ")");
-    Shiny.onInputChange("speciesData", {
+    Shiny.onInputChange("elementData", {
         id:     id, 
         name:   name
     });

@@ -1,4 +1,4 @@
 /* fuentes de la tabla de ficheros cargados */
-#uploadedFilesContent {
+#selectedDataFileContent, #uploadedFilesTable {
   font-size:x-small;
 }

@@ -11,13 +11,15 @@
 library(shinyjs)
 
 # control para la seleccion del fichero
-selectFileControl <- function(path, pattern) {
+selectDataFileControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
   control<-selectInput(
-    inputId = "selectedDataFile", 
-    label   = controlLabel("Fichero de datos"),
-    choices = filesList
+    inputId   = "selectedDataFile", 
+    label     = controlLabel("Fichero de datos"),
+    choices   = filesList,
+    selected  = NULL,
+    multiple  = FALSE
   )
   return(control)
 }
@@ -218,5 +220,6 @@ svgScaleFactorControl <- function() {
 
 # etiqueta para los controles
 controlLabel <- function(text) {
-  return(h6(text, style="display:inline-block;vertical-align:middle"))
+  label<-tags$h6(text, style="display:inline-block;vertical-align:middle")
+  return(label)
 }

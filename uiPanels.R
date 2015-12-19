@@ -18,28 +18,25 @@ dataPanel <- function() {
     tabPanel(
       "Ficheros de datos",
       fluidRow(
-        column(3, tags$h5("Selección de fichero de datos para diagramas")),
-        column(9, tags$hr())
+        column(12, groupHeader(text="Selección de fichero de datos para diagramas", image="scv.png"))
       ),
       fluidRow(
         column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis y mostrar los distintos diagramas disponibles (ziggurat, porlar e histogramas)"))
       ),
       fluidRow(
-        column(12, selectFileControl(path="data", pattern="M_.*.csv"))
+        column(12, selectDataFileControl(path="data", pattern="M_.*.csv"))
       ),
       fluidRow(
-        column(3, tags$h5("Contenido del fichero")),
-        column(9, tags$hr())
+        column(12, groupHeader(text="Contenido del fichero", image="grid.png"))
       ),
       fluidRow(
-        column(8, dataTableOutput("selectedFileContent"))
+        column(8, dataTableOutput("selectedDataFileContent"))
       )
     ),
     tabPanel(
       "Incorporar ficheros",  
       fluidRow(
-        column(3, tags$h5("Incorporación de ficheros al sistema")),
-        column(9, tags$hr())
+        column(12, groupHeader(text="Incorporación de ficheros al sistema", image="upload.png"))
       ),
       fluidRow(
         column(12, tags$h6("Seleccione un fichero de datos de su equipo para incluir en el sistema y posteriormente poder realizar el análisis"))
@@ -48,11 +45,10 @@ dataPanel <- function() {
         column(12, uploadFilesControl())
       ),
       fluidRow(
-        column(3, tags$h5("Ultimos ficheros incorporados")),
-        column(9, tags$hr())
+        column(12, groupHeader(text="Ultimos ficheros incorporados", image="file.png"))
       ),
       fluidRow(
-        column(8, dataTableOutput("uploadedFilesContent"))
+        column(8, dataTableOutput("uploadedFilesTable"))
       )
     )
   )
@@ -71,6 +67,9 @@ configPanel <- function() {
     tabPanel(
       "Visualización",
       fluidRow(
+        column(12, groupHeader(text="General", image="settings.png"))
+      ),
+      fluidRow(
         column(6, paintLinksControl())
       ),
       fluidRow(
@@ -78,6 +77,9 @@ configPanel <- function() {
       ),
       fluidRow(
         column(6, flipResultsControl())
+      ),
+      fluidRow(
+        column(12, groupHeader(text="Tamaños", image="ruler.png"))
       ),
       fluidRow(
         column(6, aspectRatioControl())
@@ -102,8 +104,7 @@ configPanel <- function() {
     tabPanel(
       "Colores",
       fluidRow(
-        column(1, tags$h5("Nodos")),
-        column(11, tags$hr())
+        column(12, groupHeader(text="Nodos", image="tree_structure.png"))
       ),
       fluidRow(
         column(4, alphaLevelControl())
@@ -115,8 +116,7 @@ configPanel <- function() {
         column(2, colorControl("GuildB2", "Color (2) del clan B", "#FF0000"))
       ),
       fluidRow(
-        column(1, tags$h5("Enlaces")),
-        column(11, tags$hr())
+        column(12, groupHeader(text="Enlaces", image="link.png"))
       ),
       fluidRow(
         column(4, alphaLevelLinkControl())
@@ -126,8 +126,7 @@ configPanel <- function() {
     tabPanel(
       "Etiquetas",
       fluidRow(
-        column(1, tags$h5("Tamaño")),
-        column(11, tags$hr())
+        column(12, groupHeader(text="Tamaño", image="generic_text.png"))
       ),
       fluidRow(
         column(2, labelsSizeControl("kCoreMax", "k-core máximo", 3.5)),
@@ -140,8 +139,7 @@ configPanel <- function() {
         column(2, labelsSizeControl("Legend", "Leyenda", 4))
       ),
       fluidRow(
-        column(1, tags$h5("Colores")),
-        column(11, tags$hr())
+        column(12, groupHeader(text="Colores", image="border_color.png"))
       ),
       fluidRow(
         column(2, colorControl("LabelGuildA", "Clan A", "#4169E1")),
@@ -155,38 +153,62 @@ configPanel <- function() {
 # panel con el gragico ziggurat
 zigguratPanel <- function() {
   control<-fluidRow(
-    column(8, 
-      tags$h5("Diagrama"), tags$hr(), uiOutput("ziggurat")
+    column(8,
+      fluidRow(groupHeader(text="Diagrama", image="network.png")),
+      fluidRow(uiOutput("ziggurat"))
     ),
     column(4, 
-      fluidRow(column(12, tags$h5("Informacion"), tags$hr(), uiOutput("zigguratDetails"))),
-      fluidRow(column(12, tags$h5(""))),
-      fluidRow(column(12, tags$h5(""))),
-      fluidRow(column(12, tags$h5("Wikipedia"), tags$hr(), uiOutput("zigguratWikiDetails")))
+      fluidRow(groupHeader(text="Información", image="document.png")),
+      fluidRow(tags$div(style="padding:8px", uiOutput("zigguratDetails"))),
+      fluidRow(groupHeader(text="Wikipedia", image="wikipedia.png")),
+      fluidRow(tags$div(style="padding:8px", uiOutput("zigguratWikiDetails")))
     )
   )
   return(control)
 }
 
-# panel con el gragico ziggurat
+# panel con el gragico polar
 polarPanel <- function() {
   control<-fluidRow(
-    column(12, tags$h5("Diagrama"), tags$hr(), uiOutput("polar"))
+    column(12, 
+      fluidRow(groupHeader(text="Diagrama", image="air_force.png")),
+      fluidRow(uiOutput("polar"))
+    )
   )
   return(control)
 }
 
-# panel con el gragico ziggurat
+# panel con el gragico de histogramas
 histogramPanel <- function() {
   control<-fluidRow(
-    column(12, tags$h5("Diagrama"), tags$hr(), uiOutput("histogram"))
+    column(12, 
+      fluidRow(groupHeader(text="Diagrama", image="bar.png")),
+      fluidRow(uiOutput("histogram"))
+    )
   )
   return(control)
 }
 
 # panel de resumen
 summaryPanel <- function() {
-  control<-htmlOutput("summary")
+  info    <- ""
+  info    <- paste0(info, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer scelerisque non felis sed egestas. ")
+  info    <- paste0(info, "Nullam nec lorem orci. In volutpat urna sit amet porta vulputate. Quisque pharetra nunc ut fringilla vestibulum. ")
+  info    <- paste0(info, "Quisque mauris augue, vehicula id porttitor feugiat, ornare sed nibh. Etiam sed lectus mauris. Aliquam placerat quam id nibh lobortis euismod. ")
+  info    <- paste0(info, "Nam vel feugiat odio. Donec aliquet nibh quis felis aliquam accumsan. Aliquam elementum in neque et condimentum.")
+  info    <- paste0(info, "Nunc et ullamcorper elit, in pellentesque tellus.")
+  author  <- "Juan Manuel García Santi"
+  version <- "v1.0 - Diciembre'15"
+  control<-fluidRow(
+    column(12, 
+      fluidRow(groupHeader(text="Información", image="info.png")),
+      fluidRow(tags$h5(style="padding:8px", info)),
+      fluidRow(groupHeader(text="Autor", image="worker.png")),
+      fluidRow(tags$h5(style="padding:8px", author)),
+      fluidRow(groupHeader(text="Versión", image="product.png")),
+      fluidRow(tags$h5(style="padding:8px", version))
+    )
+  )
   return(control)
 }
 
@@ -209,20 +231,24 @@ footerPanel <- function() {
       ),
       tags$p(
         style="float:right", 
-        "Juan Manuel García Santi"
-      )
-  ),
-    tags$div(
-      style="clear:both;padding:0px",
-      tags$p(
-        style="float:left", 
         "EUITT - Universidad Politécnica de Madrid"
-      ),
-      tags$p(
-        style="float:right", 
-        "jmgarciasanti@gmail.com"
       )
     )
   )
   return(control)
+}
+
+groupHeader<-function(text, image) {
+  header<-tags$div(
+    style="padding:4px; margin:4px; border-bottom:1px dotted lightgray;",
+    tags$span(
+      style="vertical-align:middle; display:table-cell;",
+      tags$img(style="vertical-align:middle; display:table-cell; padding:4px;", src=paste0("images/", image))
+    ),
+    tags$span(
+      style="vertical-align:middle; display:table-cell;",
+      tags$h5(text)
+    )
+  )
+  return(header)
 }

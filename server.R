@@ -89,8 +89,19 @@ showWiki <- function(elementData) {
 # proceso de servidor
 #
 shinyServer(function(input, output) {
+  # contenido del fichero seleccionado
+  selectedDataFileContent<-reactive({
+    file<-input$selectedDataFile
+    if (!is.null(file)) {
+      content<-read.csv(file=paste0("data/", file), header=TRUE)
+    } else {
+      content<-NULL
+    }
+    return(content)
+  })
+
   # seleccion de ficheros cargados
-  uploadedFiles<-reactive({
+  uploadedFilesList<-reactive({
     # obtiene los ficheros cargados
     files<-input$uploadedFiles
     if (is.null(files)) {
@@ -184,9 +195,16 @@ shinyServer(function(input, output) {
   })
 
   # muestra el contenido de un fichero subido al servidor
-  output$uploadedFilesContent<-renderDataTable({
-    return(uploadedFiles())
-  })
+  output$selectedDataFileContent<-renderDataTable(
+    selectedDataFileContent(),
+    options = list(pageLength=10, lengthMenu=list(c(10, 25, 50, -1), list('10', '25', '50', 'Todos')), searching=TRUE)
+  )
+
+  # muestra la lista de los ultimos ficheros subidos al servidor
+  output$uploadedFilesTable<-renderDataTable(
+    uploadedFilesList(),
+    options = list(pageLength=10, lengthMenu=list(c(10, 25, 50, -1), list('10', '25', '50', 'Todos')), searching=FALSE)
+  )
 
   # muestra el diagrama ziggurat y lanza la funcion que actualiza los 
   # eventos javascript para los elementos del grafico
@@ -241,15 +259,4 @@ shinyServer(function(input, output) {
   output$histogram<-renderUI({
     return(tags$h2("(pendiente)"))
   })
-      
-  # informacion de la pagina de resumen
-  output$summary<-renderText({
-    text<-""
-    text<-paste0(text, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer scelerisque non felis sed egestas. ")
-    text<-paste0(text, "Nullam nec lorem orci. In volutpat urna sit amet porta vulputate. Quisque pharetra nunc ut fringilla vestibulum. ")
-    text<-paste0(text, "Quisque mauris augue, vehicula id porttitor feugiat, ornare sed nibh. Etiam sed lectus mauris. Aliquam placerat quam id nibh lobortis euismod. ")
-    text<-paste0(text, "Nam vel feugiat odio. Donec aliquet nibh quis felis aliquam accumsan. Aliquam elementum in neque et condimentum.")
-    text<-paste0(text, "Nunc et ullamcorper elit, in pellentesque tellus.")
-    return(text)
-  })  
 })

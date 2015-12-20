@@ -13,6 +13,7 @@
 ###############################################################################
 library(shiny)
 source("ziggurat_graph.R", encoding="UTF-8")
+source("global.R", encoding="UTF-8")
 
 # muestra una fila en el detalle con [etiqueta, valor]
 detailRow <- function(label, value) {
@@ -85,17 +86,47 @@ showWiki <- function(elementData) {
   return(content)
 }
 
+# obtiene la lista de ficheros disponibles
+availableFilesList<-function() {
+  # obtiene la lista de ficheros
+  filesList<-list.files(path=dataDir, pattern=dataFilePattern)
+  names(filesList)<-filesList
+  return(filesList)
+}
+
+# obtiene la lista con los detalles de los ficheros disponibles
+availableFilesDetails<-function(filesList) {
+  filesDetailsColumns<-c("Nombre", "Tamaño", "", "", "Fecha modificación", "", "Fecha acceso")
+  if (length(filesList)>0) {
+    # obtiene los detalles de los ficheros disponibles
+    # y añade la columna con el nombre del fichero
+    filesDetails  <- file.info(paste0(dataDir, "/", filesList), extra_cols=FALSE)
+    filesDetails  <- cbind(gsub(paste0(dataDir, "/"), "", rownames(filesDetails)), filesDetails)  
+  } else {
+    # crea un dataframe vacio
+    filesDetails<-data.frame(name=character(), size=integer(), isdir=logical(), mode=integer(), mtime=character(), ctime=character(), atime=character())
+  }
+
+  # renombra las columnas
+  colnames(filesDetails)<-filesDetailsColumns
+  
+  # elimina las columnas sin nombre
+  filesDetails<-filesDetails[!(colnames(filesDetails) %in% c(""))]
+  
+  return(filesDetails)
+}
+
 #
 # proceso de servidor
 #
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   # contenido del fichero seleccionado
   selectedDataFileContent<-reactive({
     file<-input$selectedDataFile
-    if (!is.null(file)) {
-      content<-read.csv(file=paste0("data/", file), header=TRUE)
+    if (!is.null(file) && nchar(file)>0) {
+      content<-read.csv(file=paste0(dataDir, "/", file), header=TRUE)
     } else {
-      content<-NULL
+      content<-data.frame()
     }
     return(content)
   })
@@ -106,6 +137,13 @@ shinyServer(function(input, output) {
     files<-input$uploadedFiles
     if (is.null(files)) {
       files<-list(c(), c(), c(), c())
+    } else {
+      # realiza la copia de los ficheros
+      for (i in 1:length(files$datapath)) {
+        from  <- files$datapath[i]
+        to    <- paste0(dataDir, "/", files$name[i])
+        file.copy(from, to)
+      }
     }
     
     # renombra las columnas
@@ -113,72 +151,118 @@ shinyServer(function(input, output) {
     
     # elimina las columnas sin nombre
     files<-files[!(names(files) %in% c(""))]
+    
+    # refresca la lista de ficheros
+    availableFiles$list<-availableFilesList()
+    
+    # devuelve los ficheros cargados
     return(files)
+  })
+
+  # lista de ficheros disponibles
+  availableFiles<-reactiveValues(list=list(), details=list())
+  
+  # actua ante los cambios en la lista de ficheros disponibles
+  observeEvent(availableFiles$list, {
+      availableFiles$details<-availableFilesDetails(availableFiles$list)
+      updateSelectInput(session, "selectedDataFile", choices=availableFiles$list)
+  })
+  
+  # actua ante los cambios de seleccion en el panel de datos
+  observeEvent(input$dataPanel, {
+    # refresca la lista de ficheros
+    availableFiles$list<-availableFilesList()
+  })
+
+  # boton de refresco de la lista de ficheros
+  observeEvent(input$refreshFiles, {
+    # refresca la lista de ficheros
+    availableFiles$list<-availableFilesList()
+  })
+
+  # borra los ficheros que se muestran en la lista de ficheros disponibles
+  observeEvent(input$deleteFiles, {
+    # invoca a la funciona javascript que devuelve la lista de ficheros que se muestran
+    session$sendCustomMessage(type="deleteFilesHandler", "availableFilesTable")
+  })
+
+  # realila la accion de borrado de los ficheros
+  observeEvent(input$deleteFilesData, {
+    # borra los ficheros
+    data      <- input$deleteFilesData
+    fileList  <- unlist(data$fileList)
+    file.remove(paste0(dataDir, "/", fileList))
+    
+    # refresca la lista de ficheros
+    availableFiles$list<-availableFilesList()
   })
 
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
   ziggurat<-reactive({
-    z<-ziggurat_graph(
-      datadir                                       = "data/",
-      filename                                      = input$selectedDataFile,
-      paintlinks                                    = input$paintLinks,
-      displaylabelszig                              = input$displayLabels,
-      print_to_file                                 = FALSE,
-      plotsdir                                      = "plot_results/ziggurat/",
-      flip_results                                  = input$flipResults,
-      aspect_ratio                                  = input$aspectRatio,
-      alpha_level                                   = input$alphaLevel,
-      color_guild_a                                 = c(input$colorGuildA1, input$colorGuildA2),
-      color_guild_b                                 = c(input$colorGuildB1, input$colorGuildB2),
-      color_link                                    = input$colorLink,
-      alpha_link                                    = input$alphaLevelLink,
-      size_link                                     = input$sizeLink,
-      displace_y_b                                  = rep(0, input$yDisplaceGuildB),
-      displace_y_a                                  = rep(0, input$yDisplaceGuildA),
-      labels_size                                   = input$labelsSize,
-      lsize_kcoremax                                = input$labelsSizekCoreMax,
-      lsize_zig                                     = input$labelsSizeZiggurat,
-      lsize_kcore1                                  = input$labelsSizekCore1,
-      lsize_legend                                  = input$labelsSizeLegend,
-      lsize_core_box                                = input$labelsSizeCoreBox,
-      labels_color                                  = c(input$colorLabelGuildA, input$colorLabelGuildB),
-      height_box_y_expand                           = input$heightExpand,
-      kcore2tail_vertical_separation                = input$kcore2TailVerticalSeparation,
-      kcore1tail_disttocore                         = c(input$kcore1TailDistToCore1, input$kcore1TailDistToCore2),
-      innertail_vertical_separation                 = input$innerTailVerticalSeparation,
-      horiz_kcoremax_tails_expand                   = 1,
-      factor_hop_x                                  = 1,
-      displace_legend                               = c(0,0),
-      fattailjumphoriz                              = c(1,1),
-      fattailjumpvert                               = c(1,1),
-      coremax_triangle_height_factor                = 1,
-      coremax_triangle_width_factor                 = 1,
-      paint_outsiders                               = TRUE,
-      displace_outside_component                    = c(1,1),
-      outsiders_separation_expand                   = 1,
-      outsiders_legend_expand                       = 1,
-      weirdskcore2_horizontal_dist_rootleaf_expand  = 1,
-      weirdskcore2_vertical_dist_rootleaf_expand    = 0,
-      weirds_boxes_separation_count                 = 1,
-      root_weird_expand                             = c(1,1),
-      hide_plot_border                              = TRUE,
-      rescale_plot_area                             = c(1,1),
-      kcore1weirds_leafs_vertical_separation        = 1,
-      corebox_border_size                           = 0.2,
-      kcore_species_name_display                    = c(),
-      kcore_species_name_break                      = c(),
-      shorten_species_name                          = 0,
-      label_strguilda                               = "",
-      label_strguildb                               = "",
-      landscape_plot                                = TRUE,
-      backg_color                                   = "white",
-      show_title                                    = TRUE,
-      use_spline                                    = TRUE,
-      spline_points                                 = 100,  
-      #svg_scale_factor                              = input$svgScaleFactor
-      svg_scale_factor                              = 50
-    )
+    z<-NULL
+    if (nchar(input$selectedDataFile)>0) {
+      z<-ziggurat_graph(
+        datadir                                       = paste0(dataDir, "/"),
+        filename                                      = input$selectedDataFile,
+        paintlinks                                    = input$paintLinks,
+        displaylabelszig                              = input$displayLabels,
+        print_to_file                                 = FALSE,
+        plotsdir                                      = "plot_results/ziggurat/",
+        flip_results                                  = input$flipResults,
+        aspect_ratio                                  = input$aspectRatio,
+        alpha_level                                   = input$alphaLevel,
+        color_guild_a                                 = c(input$colorGuildA1, input$colorGuildA2),
+        color_guild_b                                 = c(input$colorGuildB1, input$colorGuildB2),
+        color_link                                    = input$colorLink,
+        alpha_link                                    = input$alphaLevelLink,
+        size_link                                     = input$sizeLink,
+        displace_y_b                                  = rep(0, input$yDisplaceGuildB),
+        displace_y_a                                  = rep(0, input$yDisplaceGuildA),
+        labels_size                                   = input$labelsSize,
+        lsize_kcoremax                                = input$labelsSizekCoreMax,
+        lsize_zig                                     = input$labelsSizeZiggurat,
+        lsize_kcore1                                  = input$labelsSizekCore1,
+        lsize_legend                                  = input$labelsSizeLegend,
+        lsize_core_box                                = input$labelsSizeCoreBox,
+        labels_color                                  = c(input$colorLabelGuildA, input$colorLabelGuildB),
+        height_box_y_expand                           = input$heightExpand,
+        kcore2tail_vertical_separation                = input$kcore2TailVerticalSeparation,
+        kcore1tail_disttocore                         = c(input$kcore1TailDistToCore1, input$kcore1TailDistToCore2),
+        innertail_vertical_separation                 = input$innerTailVerticalSeparation,
+        horiz_kcoremax_tails_expand                   = 1,
+        factor_hop_x                                  = 1,
+        displace_legend                               = c(0,0),
+        fattailjumphoriz                              = c(1,1),
+        fattailjumpvert                               = c(1,1),
+        coremax_triangle_height_factor                = 1,
+        coremax_triangle_width_factor                 = 1,
+        paint_outsiders                               = TRUE,
+        displace_outside_component                    = c(1,1),
+        outsiders_separation_expand                   = 1,
+        outsiders_legend_expand                       = 1,
+        weirdskcore2_horizontal_dist_rootleaf_expand  = 1,
+        weirdskcore2_vertical_dist_rootleaf_expand    = 0,
+        weirds_boxes_separation_count                 = 1,
+        root_weird_expand                             = c(1,1),
+        hide_plot_border                              = TRUE,
+        rescale_plot_area                             = c(1,1),
+        kcore1weirds_leafs_vertical_separation        = 1,
+        corebox_border_size                           = input$sizeCoreBox,
+        kcore_species_name_display                    = c(),
+        kcore_species_name_break                      = c(),
+        shorten_species_name                          = 0,
+        label_strguilda                               = "",
+        label_strguildb                               = "",
+        landscape_plot                                = TRUE,
+        backg_color                                   = "white",
+        show_title                                    = TRUE,
+        use_spline                                    = TRUE,
+        spline_points                                 = 100,  
+        #svg_scale_factor                              = input$svgScaleFactor
+        svg_scale_factor                              = 50
+      )
+    }
     return(z)
   })
   
@@ -203,15 +287,26 @@ shinyServer(function(input, output) {
   # muestra la lista de los ultimos ficheros subidos al servidor
   output$uploadedFilesTable<-renderDataTable(
     uploadedFilesList(),
-    options = list(pageLength=10, lengthMenu=list(c(10, 25, 50, -1), list('10', '25', '50', 'Todos')), searching=FALSE)
+    options=list(pageLength=5, lengthMenu=list(c(5, 10, 25, 50, -1), list('5', '10', '25', '50', 'Todos')), searching=FALSE)
+  )
+  
+  # muestra la lista de los ficheros disponibles en el servidor
+  output$availableFilesTable<-renderDataTable(
+    availableFiles$details,
+    options=list(pageLength=5, lengthMenu=list(c(5, 10, 25, 50, -1), list('5', '10', '25', '50', 'Todos')), searching=TRUE)
   )
 
   # muestra el diagrama ziggurat y lanza la funcion que actualiza los 
   # eventos javascript para los elementos del grafico
   output$ziggurat<-renderUI({
-    z   <- ziggurat()
-    svg <- z$svg
-    return(HTML(paste0(svg$html(), "<script>updateEvents()</script>")))
+    z<-ziggurat()
+    if (!is.null(z)) {
+      svg<-z$svg
+      html<-paste0(svg$html(), "<script>updateEvents()</script>")
+    } else {
+      html<-"(Seleccione un fichero de datos...)"
+    }
+    return(HTML(html))
   })
   
   # muestra los destalles de un nodo seleccionado del grafico ziggurat

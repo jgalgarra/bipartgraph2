@@ -11,12 +11,14 @@
 library(shiny)
 library(shinythemes)
 source("uiControls.R", encoding="UTF-8")
+source("global.R", encoding="UTF-8")
 
 # panel de gestion de datos
 dataPanel <- function() {
   panel<-tabsetPanel(
+    id="dataPanel",
     tabPanel(
-      "Ficheros de datos",
+      "Seleccionar datos",
       fluidRow(
         column(12, groupHeader(text="Selección de fichero de datos para diagramas", image="scv.png"))
       ),
@@ -24,7 +26,7 @@ dataPanel <- function() {
         column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis y mostrar los distintos diagramas disponibles (ziggurat, porlar e histogramas)"))
       ),
       fluidRow(
-        column(12, selectDataFileControl(path="data", pattern="M_.*.csv"))
+        column(12, selectDataFileControl(path=dataDir, pattern=dataFilePattern))
       ),
       fluidRow(
         column(12, groupHeader(text="Contenido del fichero", image="grid.png"))
@@ -34,21 +36,26 @@ dataPanel <- function() {
       )
     ),
     tabPanel(
-      "Incorporar ficheros",  
+      "Gestionar ficheros",  
       fluidRow(
-        column(12, groupHeader(text="Incorporación de ficheros al sistema", image="upload.png"))
+        column(6, groupHeader(text="Incorporación de ficheros al sistema", image="upload.png")),
+        column(6, groupHeader(text="Ultimos ficheros incorporados", image="file.png"))
       ),
       fluidRow(
-        column(12, tags$h6("Seleccione un fichero de datos de su equipo para incluir en el sistema y posteriormente poder realizar el análisis"))
+        column(6,
+          tags$h6("Seleccione un fichero de datos de su equipo para incluir en el sistema y posteriormente poder realizar el análisis"),
+          uploadFilesControl()
+        ),
+        column(6, dataTableOutput("uploadedFilesTable"))
       ),
       fluidRow(
-        column(12, uploadFilesControl())
+        column(12, groupHeader(text="Ficheros disponibles", image="documents.png"))
       ),
       fluidRow(
-        column(12, groupHeader(text="Ultimos ficheros incorporados", image="file.png"))
+        column(12, dataTableOutput("availableFilesTable"))
       ),
       fluidRow(
-        column(8, dataTableOutput("uploadedFilesTable"))
+        column(12, refreshFilesControl(), deleteFilesControl())
       )
     )
   )
@@ -70,10 +77,8 @@ configPanel <- function() {
         column(12, groupHeader(text="General", image="settings.png"))
       ),
       fluidRow(
-        column(6, paintLinksControl())
-      ),
-      fluidRow(
-        column(6, displayLabelsControl())
+        column(3, displayLabelsControl()),
+        column(3, paintLinksControl())
       ),
       fluidRow(
         column(6, flipResultsControl())
@@ -82,17 +87,18 @@ configPanel <- function() {
         column(12, groupHeader(text="Tamaños", image="ruler.png"))
       ),
       fluidRow(
-        column(6, aspectRatioControl())
+        column(3, aspectRatioControl())
       ),
       fluidRow(
-        column(6, sizeLinkControl())
+        column(3, sizeLinkControl()),
+        column(3, sizeCoreBoxControl())
       ),
       fluidRow(
         column(3, yDisplaceControl("GuildA", "Desplazamiento vertical clan A")),
         column(3, yDisplaceControl("GuildB", "Desplazamiento vertical clan B"))
       ),
       fluidRow(
-        column(6, heightExpandControl())
+        column(3, heightExpandControl())
       ),
       fluidRow(
         column(3, kcore2TailVerticalSeparationControl()),

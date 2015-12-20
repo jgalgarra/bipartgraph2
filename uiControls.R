@@ -17,7 +17,7 @@ selectDataFileControl <- function(path, pattern) {
   control<-selectInput(
     inputId   = "selectedDataFile", 
     label     = controlLabel("Fichero de datos"),
-    choices   = filesList,
+    choices   = list("Seleccione un fichero..."=c("")),
     selected  = NULL,
     multiple  = FALSE
   )
@@ -31,6 +31,24 @@ uploadFilesControl <- function() {
     accept    = c("txt/csv", "text/comma-separated-values", "text/plain", ".csv"),
     label     = controlLabel("Subir ficheros"),
     multiple  = TRUE
+  )
+  return(control)
+}
+
+# control para refrescar la lista de ficheros disponibles
+refreshFilesControl <- function() {
+  control<-actionButton(
+    inputId   = "refreshFiles",
+    label     = controlLabel("Refrescar")
+  )
+  return(control)
+}
+
+# control para eliminar la lista de ficheros que se hayan seleccionado
+deleteFilesControl <- function() {
+  control<-actionButton(
+    inputId   = "deleteFiles",
+    label     = controlLabel("Borrar")
   )
   return(control)
 }
@@ -118,11 +136,24 @@ alphaLevelLinkControl <- function() {
 sizeLinkControl <- function() {
   control<-sliderInput(
     inputId = "sizeLink",
-    label   = controlLabel("Tamaño de los enlaces"),
+    label   = controlLabel("Grosor de los enlaces"),
     min     = 0.0,
     max     = 5.0,
     value   = 0.5,
     step    = 0.5
+  )
+  return(control)
+}
+
+# tamanyo de los core box
+sizeCoreBoxControl <- function() {
+  control<-sliderInput(
+    inputId = "sizeCoreBox",
+    label   = controlLabel("Grosor del borde de los core box"),
+    min     = 0.0,
+    max     = 2.0,
+    value   = 0.2,
+    step    = 0.1
   )
   return(control)
 }

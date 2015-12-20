@@ -82,3 +82,33 @@ function showWiki(id, name) {
         name:   name
     });
 }
+
+//registra la funcion que recorre la tabla en pantalla
+// y envia el evento al servidor para el borrado de los ficheros
+var deleteFilesList=[];
+Shiny.addCustomMessageHandler(
+    "deleteFilesHandler",
+    function(tableId) {
+        deleteFilesList=[];
+        $("div[id=" + tableId + "] tbody tr td:nth-child(1)").each(
+            function() {
+                //alert("this=" + $(this).html());
+                deleteFilesList.push($(this).html())
+            }
+        );
+        
+        if (deleteFilesList.length>0) {
+            var message="¿Desea borrar los ficheros siguientes?:\n";
+            var i;
+            for (i=0;i<deleteFilesList.length;++i) {
+                message=message + "  - " + deleteFilesList[i] + "\n"; 
+            }
+            var bDelete=confirm(message);
+            if (bDelete) {
+                // envia el evento de borrado al servidor incluyendo la lista de ficheros
+                // y un timestamp
+                Shiny.onInputChange("deleteFilesData", {timestamp: new Date, fileList: deleteFilesList});
+            }
+        }
+    }
+);

@@ -153,10 +153,13 @@ Shiny.addCustomMessageHandler(
                         var content=revision["*"];
                         $("div[id=wikiDetails-" + elementData.id + "]").html(content);
                         
-                        // modifica todos los enlaces para que apunten a wikipedia y se abran en una nueva ventana
+                        // modifica todos los enlaces relativos para que apunten 
+                        // a wikipedia y se abran en una nueva ventana
                         $("div[id=wikiDetails-" + elementData.id + "] a").each(function() {
                             var _href=$(this).attr('href');
-                            $(this).attr("href", wikiBase + _href);
+                            if (_href.substring(0,1)=="/") {
+                                $(this).attr("href", wikiBase + _href);
+                            }
                             $(this).attr("target", "_blank");
                         });
                     }

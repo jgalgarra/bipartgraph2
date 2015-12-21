@@ -10,6 +10,7 @@
 #                 interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
+source("global.R", encoding="UTF-8")
 
 # control para mostrar o no los enlaces
 zigguratPaintLinksControl <- function() {
@@ -205,10 +206,4 @@ zigguratSvgScaleFactorControl <- function() {
     step    = 10
   )
   return(control)
-}
-
-# etiqueta para los controles
-controlLabel <- function(text) {
-  label<-tags$h6(text, style="display:inline-block;vertical-align:middle")
-  return(label)
 }

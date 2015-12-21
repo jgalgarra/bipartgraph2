@@ -14,7 +14,6 @@ source("ui/uiPanelsCommon.R", encoding="UTF-8")
 source("ui/uiPanelsData.R", encoding="UTF-8")
 source("ui/uiPanelsZiggurat.R", encoding="UTF-8")
 source("ui/uiPanelsPolar.R", encoding="UTF-8")
-source("ui/uiPanelsHistogram.R", encoding="UTF-8")
 
 #
 # interfaz de usuario
@@ -43,13 +42,8 @@ shinyUI(
       ),
       # panel con el diagrama polar
       tabPanel(
-        "Polar",
+        "Polar/Histogramas",
         polarPanel()
-      ),
-      # panel con los histogramas
-      tabPanel(
-        "Histogramas",
-        histogramPanel()
       ),
       # acerca de
       tabPanel(

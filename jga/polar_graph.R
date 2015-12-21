@@ -184,7 +184,7 @@ paint_kdegree_kradius <- function(graph, num_guild_a, num_guild_b,
                                    size = 0.5, linetype = "solid"),
           panel.border = element_blank(),
           legend.text = element_text(size=lsize_legend),
-          plot.title = element_text(size=22,lineheight=.8, face="bold"),
+          plot.title = element_text(size=lsize_title,lineheight=.8, face="bold"),
           axis.text = element_text(face="bold", size=lsize_axis),
           axis.title.x = element_blank(),
           axis.title.y  = element_text(face="bold", size=lsize_axis_title)

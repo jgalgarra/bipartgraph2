@@ -376,15 +376,15 @@ shinyServer(function(input, output, session) {
         directorystr        = paste0(dataDir, "/"), 
         plotsdir            = "plot_results/polar/",
         print_to_file       = FALSE, 
-        pshowtext           = FALSE,
+        pshowtext           = input$polarDisplayText,
         show_histograms     = TRUE, 
-        glabels             = c("Plant", "Pollinator"), 
-        gshortened          = c("pl","pol"),
-        lsize_title         = 22, 
-        lsize_axis          = 12, 
-        lsize_legend        = 13, 
-        lsize_axis_title    = 14, 
-        lsize_legend_title  = 15
+        glabels             = c(input$polarGuildLabelA, input$polarGuildLabelB), 
+        gshortened          = c(input$polarGuildLabelAShort, input$polarGuildLabelBShort),
+        lsize_title         = input$polarLabelsSizeTitle, 
+        lsize_axis          = input$polarLabelsSizeAxis, 
+        lsize_legend        = input$polarLabelsSizeLegend, 
+        lsize_axis_title    = input$polarLabelsSizeAxisTitle, 
+        lsize_legend_title  = input$polarLabelsSizeLegendTitle
       )
     }
     return(p)

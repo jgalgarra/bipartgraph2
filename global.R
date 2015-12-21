@@ -27,3 +27,9 @@ groupHeader<-function(text, image) {
   )
   return(header)
 }
+
+# etiqueta para los controles
+controlLabel <- function(text) {
+  label<-tags$h6(text, style="display:inline-block;vertical-align:middle")
+  return(label)
+}

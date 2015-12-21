@@ -66,7 +66,7 @@ showElements <- function(elementsDf) {
 }
 
 # muestra la informacion de detalle sobre un elemento
-showWiki <- function(elementData) {
+showWiki <- function(session, elementData) {
   content<-""
   if (is.null(elementData)) {
     content<-paste(content,eval(parse(text="fluidRow()")))
@@ -77,11 +77,19 @@ showWiki <- function(elementData) {
     tab<-paste0(tab, elementData$id)
     tab<-paste0(tab, "\", fluidRow(")
     tab<-paste0(tab, "column(12, ")
-    tab<-paste0(tab, "h6(\"(información descargada de Wikipedia para el elemento ")
-    tab<-paste0(tab, elementData$name)
-    tab<-paste0(tab, "...)\"")
+    tab<-paste0(tab, "tags$div(id=\"wikiDetails-")
+    tab<-paste0(tab, elementData$id)
+    tab<-paste0(tab, "\"")
+    tab<-paste0(tab, ", style=\"padding:10px; height: 200px; overflow-y:scroll;\"")
+    tab<-paste0(tab, ", \"(cargando...)\"")
+    #tab<-paste0(tab, "tags$h6(\"(información descargada de Wikipedia para el elemento ")
+    #tab<-paste0(tab, elementData$name)
+    #tab<-paste0(tab, "...)\"")
     tab<-paste0(tab, ")))))")
     content<-paste(content, eval(parse(text=tab)))
+    
+    # llama al javascript que realiza la descarga de la informacion de la wikipedia
+    session$sendCustomMessage(type="wikiDetailsHandler", elementData)
   }
   return(content)
 }
@@ -91,12 +99,22 @@ availableFilesList<-function() {
   # obtiene la lista de ficheros
   filesList<-list.files(path=dataDir, pattern=dataFilePattern)
   names(filesList)<-filesList
-  return(filesList)
+  
+  # anyade la primera entrada
+  empty<-c("")
+  names(empty)<-c("Seleccione un fichero...")
+  return(c(empty, filesList))
 }
 
 # obtiene la lista con los detalles de los ficheros disponibles
 availableFilesDetails<-function(filesList) {
+  # columnas de los detalles
   filesDetailsColumns<-c("Nombre", "Tamaño", "", "", "Fecha modificación", "", "Fecha acceso")
+
+  # elimina las entradas vacias
+  filesList<-filesList[filesList!=""]
+  
+  # obtiene los detalles
   if (length(filesList)>0) {
     # obtiene los detalles de los ficheros disponibles
     # y añade la columna con el nombre del fichero
@@ -135,6 +153,7 @@ shinyServer(function(input, output, session) {
   uploadedFilesList<-reactive({
     # obtiene los ficheros cargados
     files<-input$uploadedFiles
+    
     if (is.null(files)) {
       files<-list(c(), c(), c(), c())
     } else {
@@ -144,6 +163,9 @@ shinyServer(function(input, output, session) {
         to    <- paste0(dataDir, "/", files$name[i])
         file.copy(from, to)
       }
+      
+      # refresca la lista de ficheros
+      availableFiles$list<-availableFilesList()
     }
     
     # renombra las columnas
@@ -151,10 +173,7 @@ shinyServer(function(input, output, session) {
     
     # elimina las columnas sin nombre
     files<-files[!(names(files) %in% c(""))]
-    
-    # refresca la lista de ficheros
-    availableFiles$list<-availableFilesList()
-    
+        
     # devuelve los ficheros cargados
     return(files)
   })
@@ -182,7 +201,7 @@ shinyServer(function(input, output, session) {
 
   # borra los ficheros que se muestran en la lista de ficheros disponibles
   observeEvent(input$deleteFiles, {
-    # invoca a la funciona javascript que devuelve la lista de ficheros que se muestran
+    # invoca a la funcion javascript que devuelve la lista de ficheros que se muestran
     session$sendCustomMessage(type="deleteFilesHandler", "availableFilesTable")
   })
 
@@ -304,7 +323,8 @@ shinyServer(function(input, output, session) {
       svg<-z$svg
       html<-paste0(svg$html(), "<script>updateEvents()</script>")
     } else {
-      html<-"(Seleccione un fichero de datos...)"
+      html<-""
+      html<-paste0(html, tags$h6(style="text-align:center", "(Seleccione un fichero de datos...)"), collapse="")
     }
     return(HTML(html))
   })
@@ -341,7 +361,7 @@ shinyServer(function(input, output, session) {
   output$zigguratWikiDetails<-renderUI({
     data    <- elementData()
     details <- ""
-    details <- paste(details, showWiki(data), collapse="")
+    details <- paste(details, showWiki(session, data), collapse="")
     return(HTML(details))
   })
 

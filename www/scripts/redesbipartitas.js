@@ -49,9 +49,8 @@ function updatePathEvents(pattern) {
 // actualiza los eventos asociados a todos los elementos
 function updateEvents() {
     var aGuilds=["a", "b"];
-    var i,j;
-    for (i=0;i<aGuilds.length;++i) {
-        for (j=0;j<10;++j) {
+    for (var i=0;i<aGuilds.length;++i) {
+        for (var j=0;j<10;++j) {
             updateTextEvents("kcore" + j + "-" + aGuilds[i] + "-label", aGuilds[i], j);
         }
     }
@@ -63,8 +62,8 @@ function updateEvents() {
 // dividiendo la cadena por los espacios en blanco
 function getElements(strElements) {
     var aElements=strElements.split(" ");
-    var i,result=[];
-    for (i=0;i<aElements.length;++i) {
+    var result=[];
+    for (var i=0;i<aElements.length;++i) {
         var strElement=aElements[i].trim();
         if (strElement.length>0) {
             result.push({id:strElement});
@@ -83,7 +82,7 @@ function showWiki(id, name) {
     });
 }
 
-//registra la funcion que recorre la tabla en pantalla
+// registra la funcion que recorre la tabla en pantalla
 // y envia el evento al servidor para el borrado de los ficheros
 var deleteFilesList=[];
 Shiny.addCustomMessageHandler(
@@ -99,16 +98,75 @@ Shiny.addCustomMessageHandler(
         
         if (deleteFilesList.length>0) {
             var message="¿Desea borrar los ficheros siguientes?:\n";
-            var i;
-            for (i=0;i<deleteFilesList.length;++i) {
+            for (var i=0;i<deleteFilesList.length;++i) {
                 message=message + "  - " + deleteFilesList[i] + "\n"; 
             }
             var bDelete=confirm(message);
             if (bDelete) {
                 // envia el evento de borrado al servidor incluyendo la lista de ficheros
                 // y un timestamp
-                Shiny.onInputChange("deleteFilesData", {timestamp: new Date, fileList: deleteFilesList});
+                Shiny.onInputChange("deleteFilesData", {timestamp: new Date(), fileList: deleteFilesList});
             }
         }
     }
 );
+
+// registra la funcion que se encarga de la visualizacion de la informacion
+// de la wikipedia
+Shiny.addCustomMessageHandler(
+    "wikiDetailsHandler",
+    function(elementData) {
+        //alert("wikiDetailsHandler: " + JSON.stringify(elementData));
+        // modifica el contenido del DIV
+        // se apoya en un plugin jQuery que permite esperar a que el elemento exista
+        // es necesario porque el message handler y el pintado de la pestaña van en hilos
+        // de ejecución distintos
+        $("div[id=wikiDetails-" + elementData.id + "]").waitUntilExists(function() {
+            // http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=content&rvparse=&titles=Bombus%20dahlbomii
+            // solo funciona si se usa jquery.getJSON y "callback=?" como parametro
+            // si no da error de CORS 'Access-Control-Allow-Origin
+            var wikiBase        = "https://en.wikipedia.org";
+            var wikiApi         = "/w/api.php";
+            var wikiParameters  = {
+                 action:        "query",
+                 cache:         false,
+                 prop:          "revisions",
+                 format:        "json",
+                 rvprop:        "content",
+                 rvparse:       "",
+                 titles:        elementData.name
+            }
+            var wikiUrl         = wikiBase + wikiApi + "?" + $.param(wikiParameters) + "&callback=?";
+            //alert("Consultando wikipedia: " + wikiUrl);
+            var jqXHR=$.getJSON(wikiUrl);
+            jqXHR.done(function(data) {
+                //alert("data=" + JSON.stringify(data));
+                var pages=data.query.pages;
+                for (var property in pages) {
+                    // establece el contenido a partir de la primera revision
+                    //alert("name=" + property  + ", value=" + pages[property]);
+                    var page=pages[property];
+                    if (typeof page.revisions=="undefined") {
+                        $("div[id=wikiDetails-" + elementData.id + "]").html("No se ha podido encontrar información para " + elementData.name);
+                    } else {
+                        var revision=page.revisions[0];
+                        var content=revision["*"];
+                        $("div[id=wikiDetails-" + elementData.id + "]").html(content);
+                        
+                        // modifica todos los enlaces para que apunten a wikipedia y se abran en una nueva ventana
+                        $("div[id=wikiDetails-" + elementData.id + "] a").each(function() {
+                            var _href=$(this).attr('href');
+                            $(this).attr("href", wikiBase + _href);
+                            $(this).attr("target", "_blank");
+                        });
+                    }
+                }
+            });
+            jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+                alert("Error descargando contenido de wikipedia [status=" + textStatus+ ", error=" + errorThrown + "]");
+            });
+        });
+    }
+);
+
+

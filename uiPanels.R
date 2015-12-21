@@ -159,11 +159,11 @@ configPanel <- function() {
 # panel con el gragico ziggurat
 zigguratPanel <- function() {
   control<-fluidRow(
-    column(8,
+    column(7,
       fluidRow(groupHeader(text="Diagrama", image="network.png")),
       fluidRow(uiOutput("ziggurat"))
     ),
-    column(4, 
+    column(5, 
       fluidRow(groupHeader(text="Información", image="document.png")),
       fluidRow(tags$div(style="padding:8px", uiOutput("zigguratDetails"))),
       fluidRow(groupHeader(text="Wikipedia", image="wikipedia.png")),

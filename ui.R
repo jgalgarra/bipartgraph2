@@ -18,8 +18,9 @@ source("uiPanels.R", encoding="UTF-8")
 shinyUI(
   tagList(
     tags$head(
-        tags$script(src="scripts/redesbipartitas.js"),
-        tags$link(rel = "stylesheet", type = "text/css", href = "css/redesbipartitas.css")
+      tags$script(src="scripts/jquery.waituntilexists.js"),
+      tags$script(src="scripts/redesbipartitas.js"),
+      tags$link(rel = "stylesheet", type = "text/css", href = "css/redesbipartitas.css")
     ),
     navbarPage(
       title   = "Redes Bipartitas",

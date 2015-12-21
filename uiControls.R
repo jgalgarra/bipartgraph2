@@ -17,7 +17,7 @@ selectDataFileControl <- function(path, pattern) {
   control<-selectInput(
     inputId   = "selectedDataFile", 
     label     = controlLabel("Fichero de datos"),
-    choices   = list("Seleccione un fichero..."=c("")),
+    choices   = list("Cargando..."=c("")),
     selected  = NULL,
     multiple  = FALSE
   )

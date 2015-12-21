@@ -10,7 +10,11 @@
 ###############################################################################
 library(shiny)
 library(shinythemes)
-source("uiPanels.R", encoding="UTF-8")
+source("uiPanelsCommon.R", encoding="UTF-8")
+source("uiPanelsData.R", encoding="UTF-8")
+source("uiPanelsZiggurat.R", encoding="UTF-8")
+source("uiPanelsPolar.R", encoding="UTF-8")
+source("uiPanelsHistogram.R", encoding="UTF-8")
 
 #
 # interfaz de usuario

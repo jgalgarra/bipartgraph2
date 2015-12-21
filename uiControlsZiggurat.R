@@ -4,59 +4,17 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiControls.R
+# Módulo        : uiControlsZiggurat.R
 # Descricpción  : Funciones para la representación de los disintos controles
-#                 de configuración en el interfaz de usuario (UI)
+#                 de configuración, relativos al diagrama ziggurat, en el 
+#                 interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
 
-# control para la seleccion del fichero
-selectDataFileControl <- function(path, pattern) {
-  filesList<-as.list(list.files(path=path, pattern=pattern))
-  names(filesList)<-filesList
-  control<-selectInput(
-    inputId   = "selectedDataFile", 
-    label     = controlLabel("Fichero de datos"),
-    choices   = list("Cargando..."=c("")),
-    selected  = NULL,
-    multiple  = FALSE
-  )
-  return(control)
-}
-
-# control para subida de ficheros
-uploadFilesControl <- function() {
-  control<-fileInput(
-    inputId   = "uploadedFiles",
-    accept    = c("txt/csv", "text/comma-separated-values", "text/plain", ".csv"),
-    label     = controlLabel("Subir ficheros"),
-    multiple  = TRUE
-  )
-  return(control)
-}
-
-# control para refrescar la lista de ficheros disponibles
-refreshFilesControl <- function() {
-  control<-actionButton(
-    inputId   = "refreshFiles",
-    label     = controlLabel("Refrescar")
-  )
-  return(control)
-}
-
-# control para eliminar la lista de ficheros que se hayan seleccionado
-deleteFilesControl <- function() {
-  control<-actionButton(
-    inputId   = "deleteFiles",
-    label     = controlLabel("Borrar")
-  )
-  return(control)
-}
-
 # control para mostrar o no los enlaces
-paintLinksControl <- function() {
+zigguratPaintLinksControl <- function() {
   control<-checkboxInput(
-    inputId = "paintLinks",
+    inputId = "zigguratPaintLinks",
     label   = controlLabel("Mostrar enlaces"),
     value   = TRUE
   )
@@ -64,9 +22,9 @@ paintLinksControl <- function() {
 }
 
 # control para mostrar o no las etiquetas
-displayLabelsControl <- function() {
+zigguratDisplayLabelsControl <- function() {
   control<-checkboxInput(
-    inputId = "displayLabels",
+    inputId = "zigguratDisplayLabels",
     label   = controlLabel("Mostrar etiquetas"),
     value   = TRUE
   )
@@ -74,9 +32,9 @@ displayLabelsControl <- function() {
 }
 
 # control para invertir los resultados
-flipResultsControl <- function() {
+zigguratFlipResultsControl <- function() {
   control<-checkboxInput(
-    inputId = "flipResults",
+    inputId = "zigguratFlipResults",
     label   = controlLabel("Invertir resultado"),
     value   = FALSE
   )
@@ -84,9 +42,9 @@ flipResultsControl <- function() {
 }
 
 # control para el factor de escala del grafico SVG
-aspectRatioControl <- function() {
+zigguratAspectRatioControl <- function() {
   control<-sliderInput(
-    inputId = "aspectRatio",
+    inputId = "zigguratAspectRatio",
     label   = controlLabel("Relación de aspecto"),
     min     = 0.1,
     max     = 5.0,
@@ -97,9 +55,9 @@ aspectRatioControl <- function() {
 }
 
 # control para el factor de transparencia
-alphaLevelControl <- function() {
+zigguratAlphaLevelControl <- function() {
   control<-sliderInput(
-    inputId = "alphaLevel",
+    inputId = "zigguratAlphaLevel",
     label   = controlLabel("Transparencia"),
     min     = 0.0,
     max     = 1.0,
@@ -110,9 +68,9 @@ alphaLevelControl <- function() {
 }
 
 # control generico para seleccion de color
-colorControl <- function(name, description, default) {
+zigguratColorControl <- function(name, description, default) {
   control <- colourInput(
-    paste0("color" , name),
+    paste0("zigguratColor" , name),
     controlLabel(description), 
     value = default
   )
@@ -120,9 +78,9 @@ colorControl <- function(name, description, default) {
 }
 
 # control para el factor de transparencia de los enlaces
-alphaLevelLinkControl <- function() {
+zigguratAlphaLevelLinkControl <- function() {
   control<-sliderInput(
-    inputId = "alphaLevelLink",
+    inputId = "zigguratAlphaLevelLink",
     label   = controlLabel("Transparencia"),
     min     = 0.0,
     max     = 1.0,
@@ -133,9 +91,9 @@ alphaLevelLinkControl <- function() {
 }
 
 # tamanyo de los enlaces
-sizeLinkControl <- function() {
+zigguratSizeLinkControl <- function() {
   control<-sliderInput(
-    inputId = "sizeLink",
+    inputId = "zigguratSizeLink",
     label   = controlLabel("Grosor de los enlaces"),
     min     = 0.0,
     max     = 5.0,
@@ -146,9 +104,9 @@ sizeLinkControl <- function() {
 }
 
 # tamanyo de los core box
-sizeCoreBoxControl <- function() {
+zigguratSizeCoreBoxControl <- function() {
   control<-sliderInput(
-    inputId = "sizeCoreBox",
+    inputId = "zigguratSizeCoreBox",
     label   = controlLabel("Grosor del borde de los core box"),
     min     = 0.0,
     max     = 2.0,
@@ -159,9 +117,9 @@ sizeCoreBoxControl <- function() {
 }
 
 # desplazamiento vertical
-yDisplaceControl <- function(name, description) {
+zigguratYDisplaceControl <- function(name, description) {
   control<-sliderInput(
-    inputId = paste0("yDisplace", name),
+    inputId = paste0("zigguratYDisplace", name),
     label   = controlLabel(description),
     min     = 0.0,
     max     = 15.0,
@@ -172,9 +130,9 @@ yDisplaceControl <- function(name, description) {
 }
 
 # ampliacion de la altura de la caja
-heightExpandControl <- function() {
+zigguratHeightExpandControl <- function() {
   control<-sliderInput(
-    inputId = "heightExpand",
+    inputId = "zigguratHeightExpand",
     label   = controlLabel("Expansión de altura"),
     min     = 0.5,
     max     = 2.0,
@@ -185,9 +143,9 @@ heightExpandControl <- function() {
 }
 
 # separacion de la cola al kcore-2
-kcore2TailVerticalSeparationControl <- function() {
+zigguratKcore2TailVerticalSeparationControl <- function() {
   control<-sliderInput(
-    inputId = "kcore2TailVerticalSeparation",
+    inputId = "zigguratKcore2TailVerticalSeparation",
     label   = controlLabel("Distancia cola-kcore2"),
     min     = 0.5,
     max     = 2.0,
@@ -198,9 +156,9 @@ kcore2TailVerticalSeparationControl <- function() {
 }
 
 # distancia de la cola kcore-1 al core central
-kcore1TailDistToCoreControl <- function(name, description) {
+zigguratKcore1TailDistToCoreControl <- function(name, description) {
   control<-sliderInput(
-    inputId = paste0("kcore1TailDistToCore", name),
+    inputId = paste0("zigguratKcore1TailDistToCore", name),
     label   = controlLabel(description),
     min     = 0.5,
     max     = 2.0,
@@ -211,9 +169,9 @@ kcore1TailDistToCoreControl <- function(name, description) {
 }
 
 # separacion vertical interna en la cola
-innerTailVerticalSeparationControl <- function() {
+zigguratInnerTailVerticalSeparationControl <- function() {
   control<-sliderInput(
-    inputId = "innerTailVerticalSeparation",
+    inputId = "zigguratInnerTailVerticalSeparation",
     label   = controlLabel("Separacion vertical interna en la cola"),
     min     = 0.5,
     max     = 2.0,
@@ -224,9 +182,9 @@ innerTailVerticalSeparationControl <- function() {
 }
 
 # tamanyo de las etiquetas
-labelsSizeControl <- function(name, description, default) {
+zigguratLabelsSizeControl <- function(name, description, default) {
   control<-sliderInput(
-    inputId = paste0("labelsSize", name),
+    inputId = paste0("zigguratLabelsSize", name),
     label   = controlLabel(description),
     min     = 1.0,
     max     = 5.0,
@@ -237,9 +195,9 @@ labelsSizeControl <- function(name, description, default) {
 }
 
 # control para el factor de escala del grafico SVG
-svgScaleFactorControl <- function() {
+zigguratSvgScaleFactorControl <- function() {
   control<-sliderInput(
-    inputId = "svgScaleFactor",
+    inputId = "zigguratSvgScaleFactor",
     label   = controlLabel("Escala SVG"),
     min     = 10,
     max     = 100,

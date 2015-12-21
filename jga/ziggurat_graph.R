@@ -3,7 +3,7 @@ library(grid)
 library(gridExtra)
 library(Hmisc)
 library(RColorBrewer)
-source("network-kanalysis.R", encoding="UTF-8")
+source("jga/network-kanalysis.R", encoding="UTF-8")
 source("svg.R", encoding="UTF-8")
 
 gen_sq_label <- function(nodes, joinchars = "\n")

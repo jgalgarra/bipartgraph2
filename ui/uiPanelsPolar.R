@@ -12,7 +12,7 @@
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("uiControlsPolar.R", encoding="UTF-8")
+source("ui/uiControlsPolar.R", encoding="UTF-8")
 
 # panel de configuracion del diagrama polar
 polarConfigPanel <- function() {

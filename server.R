@@ -12,8 +12,8 @@
 #                 distintos eventos a los que responde la aplicación
 ###############################################################################
 library(shiny)
-source("ziggurat_graph.R", encoding="UTF-8")
-source("polar_graph.R", encoding="UTF-8")
+source("jga/ziggurat_graph.R", encoding="UTF-8")
+source("jga/polar_graph.R", encoding="UTF-8")
 source("global.R", encoding="UTF-8")
 
 # muestra una fila en el detalle con [etiqueta, valor]

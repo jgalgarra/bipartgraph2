@@ -12,7 +12,7 @@
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("uiControlsZiggurat.R", encoding="UTF-8")
+source("ui/uiControlsZiggurat.R", encoding="UTF-8")
 
 # panel de configuracion del diagrama ziggurat
 zigguratConfigPanel <- function() {

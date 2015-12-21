@@ -2,7 +2,7 @@ library(ggplot2)
 library(scales)
 library(grid)
 library(gridExtra)
-source("network-kanalysis.R")
+source("jga/network-kanalysis.R")
 
 paint_kdegree_kradius <- function(graph, num_guild_a, num_guild_b, 
                                   lsize_title , lsize_axis, lsize_legend, lsize_axis_title , 

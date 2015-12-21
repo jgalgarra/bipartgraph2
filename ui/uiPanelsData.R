@@ -11,7 +11,7 @@
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("uiControlsData.R", encoding="UTF-8")
+source("ui/uiControlsData.R", encoding="UTF-8")
 
 # panel de seleccion de ficheros
 selectDataPanel<-function() {

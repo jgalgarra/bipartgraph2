@@ -211,7 +211,7 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
     slabels <<- c("Plant", "Disperser")
   }
 
-  result_analysis <- analyze_network(red, directory = directorystr, guild_a = sguild_a, guild_b = sguild_b, plot_graphs = TRUE)
+  result_analysis <- analyze_network(red, directory = directorystr, guild_a = sguild_a, guild_b = sguild_b, plot_graphs = FALSE)
   numlinks <- result_analysis$links
   
   if (print_to_file){
@@ -230,16 +230,17 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
                                showtext = pshowtext, printable_range = 3
                               )
   
-  if (show_histograms)
-    grid.arrange(r["polar_plot"][[1]], nrow=2, heights=c(3/4,1/4),arrangeGrob(r["histo_dist"][[1]], r["histo_degree"][[1]], r["histo_core"][[1]],ncol=3, nrow=1, widths=c(1/3,1/3,1/3)))
-  else
-    print(r["polar_plot"][[1]])
-  if (print_to_file)
-    dev.off()
+  #if (show_histograms)
+  #  grid.arrange(r["polar_plot"][[1]], nrow=2, heights=c(3/4,1/4),arrangeGrob(r["histo_dist"][[1]], r["histo_degree"][[1]], r["histo_core"][[1]],ncol=3, nrow=1, widths=c(1/3,1/3,1/3)))
+  #else
+  #  print(r["polar_plot"][[1]])
+  #if (print_to_file)
+  #  dev.off()
+  return(r)
 }
 
 #polar_graph("pl017-minus6plants.csv","datanetworks2015/",print_to_file=TRUE, lsize_title = 24, lsize_axis = 18, lsize_legend = 18, lsize_axis_title = 18, lsize_legend_title = 20)
 #polar_graph("M_PL_017.csv","data/",print_to_file=TRUE, lsize_title = 24, lsize_axis = 18, lsize_legend = 18, lsize_axis_title = 18, lsize_legend_title = 20)
 #polar_graph("M_PL_021.csv","data/",print_to_file=TRUE, lsize_title = 24, lsize_axis = 18, lsize_legend = 18, lsize_axis_title = 18, lsize_legend_title = 20)
 #polar_graph("M_SD_007.csv","data/",print_to_file=TRUE, lsize_title = 24, lsize_axis = 18, lsize_legend = 18, lsize_axis_title = 18, lsize_legend_title = 20)
-polar_graph("M_PL_019.csv","data/",print_to_file=FALSE, lsize_title = 24, lsize_axis = 18, lsize_legend = 18, lsize_axis_title = 18, lsize_legend_title = 20)
+#polar_graph("M_PL_019.csv","data/",print_to_file=FALSE, lsize_title = 24, lsize_axis = 18, lsize_legend = 18, lsize_axis_title = 18, lsize_legend_title = 20)

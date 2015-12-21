@@ -153,18 +153,24 @@ Shiny.addCustomMessageHandler(
                         var content=revision["*"];
                         $("div[id=wikiDetails-" + elementData.id + "]").html(content);
                         
-                        // modifica todos los enlaces relativos para que apunten 
-                        // a wikipedia y se abran en una nueva ventana
+                        // modifica todos los enlaces para que se abran en una nueva ventana
+                        // y los relativos para que apunten a wikipedia 
                         $("div[id=wikiDetails-" + elementData.id + "] a").each(function() {
                             var _href=$(this).attr('href');
-                            if (_href.substring(0,1)=="/") {
-                                $(this).attr("href", wikiBase + _href);
+                            // nueva ventana
+                            if (_href.substring(0,1)!="#") {
+                                $(this).attr("target", "_blank");
+
+                                // completa los enlaces relativos
+                                if (_href.substring(0,1)=="/") {
+                                    $(this).attr("href", wikiBase + _href);
+                                }
                             }
-                            $(this).attr("target", "_blank");
                         });
                     }
                 }
             });
+            // no funciona el "fail" con callback, pero lo dejo por si acaso algún día....
             jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
                 alert("Error descargando contenido de wikipedia [status=" + textStatus+ ", error=" + errorThrown + "]");
             });

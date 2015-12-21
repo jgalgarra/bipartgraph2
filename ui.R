@@ -32,11 +32,6 @@ shinyUI(
         "Datos",
         dataPanel()
       ),
-      # controles de entrada para ajustar la visualizacion de los diagramas
-      tabPanel(
-        "Configuración",
-        configPanel()
-      ),
       # panel con el diagrama ziggurat
       tabPanel(
         "Ziggurat",

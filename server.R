@@ -13,6 +13,7 @@
 ###############################################################################
 library(shiny)
 source("ziggurat_graph.R", encoding="UTF-8")
+source("polar_graph.R", encoding="UTF-8")
 source("global.R", encoding="UTF-8")
 
 # muestra una fila en el detalle con [etiqueta, valor]
@@ -365,13 +366,59 @@ shinyServer(function(input, output, session) {
     return(HTML(details))
   })
 
+  # actualiza el grafico polar en base a los controles de
+  # configuracion
+  polar<-reactive({
+    p<-NULL
+    if (nchar(input$selectedDataFile)>0) {
+      p<-polar_graph(
+        red                 = input$selectedDataFile, 
+        directorystr        = paste0(dataDir, "/"), 
+        plotsdir            = "plot_results/polar/",
+        print_to_file       = FALSE, 
+        pshowtext           = FALSE,
+        show_histograms     = TRUE, 
+        glabels             = c("Plant", "Pollinator"), 
+        gshortened          = c("pl","pol"),
+        lsize_title         = 22, 
+        lsize_axis          = 12, 
+        lsize_legend        = 13, 
+        lsize_axis_title    = 14, 
+        lsize_legend_title  = 15
+      )
+    }
+    return(p)
+  })
+
   # muestra el diagrama polar
-  output$polar<-renderUI({
-    return(tags$h2("(pendiente)"))
+  output$polar<-renderPlot({
+    p<-polar()
+    if (!is.null(p)) {
+      print(p["polar_plot"][[1]])
+    }
   })
 
   # muestra los histogramas
-  output$histogram<-renderUI({
-    return(tags$h2("(pendiente)"))
+  output$histogramDist<-renderPlot({
+      p<-polar()
+      if (!is.null(p)) {
+        print(p["histo_dist"][[1]])
+      }
+  })
+
+  # muestra los histogramas
+  output$histogramCore<-renderPlot({
+    p<-polar()
+    if (!is.null(p)) {
+      print(p["histo_core"][[1]])
+    }
+  })
+
+  # muestra los histogramas
+  output$histogramDegree<-renderPlot({
+    p<-polar()
+    if (!is.null(p)) {
+      print(p["histo_degree"][[1]])
+    }
   })
 })

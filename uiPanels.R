@@ -13,57 +13,67 @@ library(shinythemes)
 source("uiControls.R", encoding="UTF-8")
 source("global.R", encoding="UTF-8")
 
-# panel de gestion de datos
-dataPanel <- function() {
-  panel<-tabsetPanel(
-    id="dataPanel",
-    tabPanel(
-      "Seleccionar datos",
-      fluidRow(
-        column(12, groupHeader(text="Selección de fichero de datos para diagramas", image="scv.png"))
-      ),
-      fluidRow(
-        column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis y mostrar los distintos diagramas disponibles (ziggurat, porlar e histogramas)"))
-      ),
-      fluidRow(
-        column(12, selectDataFileControl(path=dataDir, pattern=dataFilePattern))
-      ),
-      fluidRow(
-        column(12, groupHeader(text="Contenido del fichero", image="grid.png"))
-      ),
-      fluidRow(
-        column(8, dataTableOutput("selectedDataFileContent"))
-      )
+# panel de seleccion de ficheros
+selectDataPanel<-function() {
+  panel<-fluidRow(
+    fluidRow(
+      column(12, groupHeader(text="Selección de fichero de datos para diagramas", image="scv.png"))
     ),
-    tabPanel(
-      "Gestionar ficheros",  
-      fluidRow(
-        column(6, groupHeader(text="Incorporación de ficheros al sistema", image="upload.png")),
-        column(6, groupHeader(text="Ultimos ficheros incorporados", image="file.png"))
-      ),
-      fluidRow(
-        column(6,
-          tags$h6("Seleccione un fichero de datos de su equipo para incluir en el sistema y posteriormente poder realizar el análisis"),
-          uploadFilesControl()
-        ),
-        column(6, dataTableOutput("uploadedFilesTable"))
-      ),
-      fluidRow(
-        column(12, groupHeader(text="Ficheros disponibles", image="documents.png"))
-      ),
-      fluidRow(
-        column(12, dataTableOutput("availableFilesTable"))
-      ),
-      fluidRow(
-        column(12, refreshFilesControl(), deleteFilesControl())
-      )
+    fluidRow(
+      column(12, tags$h6("Seleccione un fichero de datos de los existentes en el servidor para realizar el análisis y mostrar los distintos diagramas disponibles (ziggurat, porlar e histogramas)"))
+    ),
+    fluidRow(
+      column(12, selectDataFileControl(path=dataDir, pattern=dataFilePattern))
+    ),
+    fluidRow(
+      column(12, groupHeader(text="Contenido del fichero", image="grid.png"))
+    ),
+    fluidRow(
+      column(8, dataTableOutput("selectedDataFileContent"))
     )
   )
   return(panel)
 }
 
-# panel de configuracion
-configPanel <- function() {
+# panel de gestion de ficheros
+manageFilesPanel<-function() {
+  panel<-fluidRow(
+    fluidRow(
+      column(6, groupHeader(text="Incorporación de ficheros al sistema", image="upload.png")),
+      column(6, groupHeader(text="Ultimos ficheros incorporados", image="file.png"))
+    ),
+    fluidRow(
+      column(6,
+        tags$h6("Seleccione un fichero de datos de su equipo para incluir en el sistema y posteriormente poder realizar el análisis"),
+        uploadFilesControl()
+      ),
+      column(6, dataTableOutput("uploadedFilesTable"))
+    ),
+    fluidRow(
+      column(12, groupHeader(text="Ficheros disponibles", image="documents.png"))
+    ),
+    fluidRow(
+      column(12, dataTableOutput("availableFilesTable"))
+    ),
+    fluidRow(
+      column(12, refreshFilesControl(), deleteFilesControl())
+    )
+  )
+  return(panel)
+}
+
+# panel de gestion de datos
+dataPanel <- function() {
+  panel<-tabsetPanel(
+    id="dataPanel",
+    tabPanel("Seleccionar datos",   tags$div(style="font-size:small; padding:10px", selectDataPanel())),
+    tabPanel("Gestionar ficheros",  tags$div(style="font-size:small; padding:10px", manageFilesPanel()))
+  )
+  return(panel)
+}
+
+# panel de configuracion del diagrama ziggurat
+zigguratConfigPanel <- function() {
   panel<-tabsetPanel(
     #tabPanel(
     #  "SVG",
@@ -157,7 +167,7 @@ configPanel <- function() {
 }       
 
 # panel con el gragico ziggurat
-zigguratPanel <- function() {
+zigguratDiagramPanel <- function() {
   control<-fluidRow(
     column(7,
       fluidRow(groupHeader(text="Diagrama", image="network.png")),
@@ -173,23 +183,58 @@ zigguratPanel <- function() {
   return(control)
 }
 
-# panel con el gragico polar
-polarPanel <- function() {
+# panel del ziggurat (configuracion + diagrama)
+zigguratPanel<-function() {
+  panel<-tabsetPanel(
+    tabPanel("Diagrama",      tags$div(style="font-size:small; padding:10px", zigguratDiagramPanel())),
+    tabPanel("Configuración", tags$div(style="font-size:small; padding:10px", zigguratConfigPanel()))
+  )
+  return(panel)
+}
+
+# panel de configuracion del diagrama polar
+polarConfigPanel <- function() {
+  panel<-tags$div(style="font-size:small", tabsetPanel(
+    tabPanel(
+      "Visualización",
+      fluidRow(
+        column(12, groupHeader(text="General", image="settings.png"))
+      )
+    )
+  ))
+  return(panel)
+}
+
+# panel con el diagrama polar
+polarDiagramPanel <- function() {
   control<-fluidRow(
     column(12, 
       fluidRow(groupHeader(text="Diagrama", image="air_force.png")),
-      fluidRow(uiOutput("polar"))
+      fluidRow(plotOutput("polar"))
     )
   )
   return(control)
 }
 
+# panel del polar (configuracion + diagrama)
+polarPanel<-function() {
+  panel<-tabsetPanel(
+    tabPanel("Diagrama",      tags$div(style="font-size:small; padding:10px", polarDiagramPanel())),
+    tabPanel("Configuración", tags$div(style="font-size:small; padding:10px", polarConfigPanel()))
+  )
+  return(panel)
+}
+
 # panel con el gragico de histogramas
 histogramPanel <- function() {
-  control<-fluidRow(
-    column(12, 
-      fluidRow(groupHeader(text="Diagrama", image="bar.png")),
-      fluidRow(uiOutput("histogram"))
+  control<-tags$div(style="font-size:small; padding:10px",
+    fluidRow(
+      column(12, fluidRow(groupHeader(text="Diagrama", image="bar.png")))
+    ),
+    fluidRow(
+      column(4, plotOutput("histogramDist")),
+      column(4, plotOutput("histogramCore")),
+      column(4, plotOutput("histogramDegree"))
     )
   )
   return(control)
@@ -205,7 +250,7 @@ summaryPanel <- function() {
   info    <- paste0(info, "Nunc et ullamcorper elit, in pellentesque tellus.")
   author  <- "Juan Manuel García Santi"
   version <- "v1.0 - Diciembre'15"
-  control<-fluidRow(
+  panel<-tags$div(style="font-size:small; padding:10px", fluidRow(
     column(12, 
       fluidRow(groupHeader(text="Información", image="info.png")),
       fluidRow(tags$h5(style="padding:8px", info)),
@@ -214,8 +259,8 @@ summaryPanel <- function() {
       fluidRow(groupHeader(text="Versión", image="product.png")),
       fluidRow(tags$h5(style="padding:8px", version))
     )
-  )
-  return(control)
+  ))
+  return(panel)
 }
 
 # cabecera de pagina comun

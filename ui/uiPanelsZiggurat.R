@@ -119,11 +119,11 @@ zigguratDiagramPanel <- function() {
       ),
       fluidRow(
         tags$span(
-          style="float:right", 
-          tags$img(id="zoomin",     onclick="svgZoomIn()",    style="cursor:pointer;width:16px;height:16px", src="images/zoom_in.png"), 
-          tags$img(id="zoomout",    onclick="svgZoomOut()",   style="cursor:pointer;width:16px;height:16px", src="images/zoom_out.png"),
-          tags$img(id="zoomfit",    onclick="svgZoomFit()",   style="cursor:pointer;width:16px;height:16px", src="images/fit_to_width.png"),
-          tags$img(id="zoomreset",  onclick="svgZoomReset()", style="cursor:pointer;width:16px;height:16px", src="images/sinchronize.png")
+          id="zoomPanel", 
+          tags$img(id="zoomin",     onclick="svgZoomIn()",    src="images/zoom_in.png"), 
+          tags$img(id="zoomout",    onclick="svgZoomOut()",   src="images/zoom_out.png"),
+          tags$img(id="zoomfit",    onclick="svgZoomFit()",   src="images/fit_to_width.png"),
+          tags$img(id="zoomreset",  onclick="svgZoomReset()", src="images/sinchronize.png")
         )
       ),
       fluidRow(
@@ -135,13 +135,13 @@ zigguratDiagramPanel <- function() {
         groupHeader(text="Información", image="document.png")
       ),
       fluidRow(
-        tags$div(style="padding:8px", uiOutput("zigguratDetails"))
+        tags$div(uiOutput("zigguratDetails"))
       ),
       fluidRow(
         groupHeader(text="Wikipedia", image="wikipedia.png")
       ),
       fluidRow(
-        tags$div(style="padding:8px", uiOutput("zigguratWikiDetails"))
+        tags$div(uiOutput("zigguratWikiDetails"))
       )
     )
   )
@@ -151,8 +151,8 @@ zigguratDiagramPanel <- function() {
 # panel del ziggurat (configuracion + diagrama)
 zigguratPanel<-function() {
   panel<-tabsetPanel(
-    tabPanel("Diagrama",      tags$div(style="font-size:small; padding:10px", zigguratDiagramPanel())),
-    tabPanel("Configuración", tags$div(style="font-size:small; padding:10px", zigguratConfigPanel()))
+    tabPanel("Diagrama",      tags$div(class="tabPanel", zigguratDiagramPanel())),
+    tabPanel("Configuración", tags$div(class="tabPanel", zigguratConfigPanel()))
   )
   return(panel)
 }

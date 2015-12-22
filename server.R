@@ -81,7 +81,7 @@ showWiki <- function(session, elementData) {
     tab<-paste0(tab, "tags$div(id=\"wikiDetails-")
     tab<-paste0(tab, elementData$id)
     tab<-paste0(tab, "\"")
-    tab<-paste0(tab, ", style=\"padding:10px; height: 200px; overflow-y:scroll;\"")
+    tab<-paste0(tab, ", class=\"wikiDetails\"")
     tab<-paste0(tab, ", \"(cargando...)\"")
     #tab<-paste0(tab, "tags$h6(\"(información descargada de Wikipedia para el elemento ")
     #tab<-paste0(tab, elementData$name)
@@ -322,7 +322,7 @@ shinyServer(function(input, output, session) {
     z<-ziggurat()
     if (!is.null(z)) {
       svg<-z$svg
-      html<-paste0(svg$html(), "<script>updateEvents()</script>")
+      html<-paste0(svg$html(), "<script>updateSVGEvents()</script>")
     } else {
       html<-""
       html<-paste0(html, tags$h6(style="text-align:center", "(Seleccione un fichero de datos...)"), collapse="")

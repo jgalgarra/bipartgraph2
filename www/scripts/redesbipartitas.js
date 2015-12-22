@@ -10,22 +10,32 @@
 //                 relativa a nodos y elementos
 //-----------------------------------------------------------------------------
 
-//actualiza los eventos asociados a todos los elementos
-function updateEvents() {
+//actualiza los eventos asociados a todos los elementos del SVG
+function updateSVGEvents() {
+    // actualiza los eventos asociados a las etiquetas
     var aGuilds=["a", "b"];
     for (var i=0;i<aGuilds.length;++i) {
         for (var j=0;j<10;++j) {
             updateTextEvents("kcore" + j + "-" + aGuilds[i] + "-label", aGuilds[i], j);
         }
     }
+    // actualiza los eventos asociados a los enlaces
     updatePathEvents("bentLink");
     updatePathEvents("straightLink");
+    
+    // inicializa el scroll mediante "drag"
+    $("#ziggurat").dragscrollable();
+    
+    // establece el SVG a su tamaño real
+    svgZoomReset();
 }
 
 // actualiza los eventos asociados a los textos del SVG
 function updateTextEvents(pattern, guild, kcore) {
-    $("text[id*=" + pattern + "]").css("cursor", "default");
-    $("text[id*=" + pattern + "]").data("main", {"guild":guild, "kcore":kcore});
+    // estilo del cursor
+    $("text[id*=" + pattern + "]").css("cursor", "pointer");
+    
+    // eventos
     $("text[id*=" + pattern + "]").mouseover(function() {
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize+4) + "px");
@@ -44,10 +54,17 @@ function updateTextEvents(pattern, guild, kcore) {
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize-4) + "px");
     });
+    
+    // datos asociados al nodo
+    $("text[id*=" + pattern + "]").data("main", {"guild":guild, "kcore":kcore});    
 }
 
-//actualiza los eventos asociados a los enlaces del SVG
+// actualiza los eventos asociados a los enlaces del SVG
 function updatePathEvents(pattern) {
+    // estilo del cursor
+    $("g[id*=" + pattern + "]").css("cursor", "pointer");
+    
+    // eventos
     $("g[id*=" + pattern + "]").mouseover(function() {
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth+2)
@@ -180,28 +197,45 @@ Shiny.addCustomMessageHandler(
 
 // amplia el SVG del ziggurat
 function svgZoomIn() {
-    var _width=parseFloat($("#ziggurat svg").css("width").replace("px", ""));
-    $("#ziggurat svg").css("width", (_width*1.1) + "px");
+    var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
+    var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
+    $("#ziggurat svg").css({
+        "width":    (_width*1.1) + "px",
+        "height":   (_height*1.1) + "px"
+    });
 }
 
 // reduce el SVG del ziggurat
 function svgZoomOut() {
-    var _width=parseFloat($("#ziggurat svg").css("width").replace("px", ""));
-    $("#ziggurat svg").css("width", (_width/1.1) + "px");
+    var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
+    var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
+    $("#ziggurat svg").css({
+        "width":    (_width/1.1) + "px",
+        "height":   (_height/1.1) + "px"
+    });
 }
 
 // ajusta el SVG del ziggurat al marco que lo contiene
 function svgZoomFit() {
-    $("#ziggurat svg").css("width", $("#ziggurat").width() + "px");
+    var _width  = $("#ziggurat").width();
+    var _height = $("#ziggurat").height();
+    $("#ziggurat svg").css({
+        "width":    (_width/1.1) + "px",
+        "height":   (_height/1.1) + "px"
+    });
 }
 
-//amplia el SVG del ziggurat a su tamaño real
+// establece el tamaño SVG del ziggurat a su tamaño real
 function svgZoomReset() {
     $("#ziggurat svg").each(
         function() {
             var _viewBox    = $(this)[0].getAttribute("viewBox");
             var _width      = _viewBox.split(" ")[2];
-            $("#ziggurat svg").css("width",  _width + "px");
+            var _height     = _viewBox.split(" ")[3];
+            $("#ziggurat svg").css({
+                "width":    _width + "px",
+                "height":   _height + "px"
+            });
         }
     );
 }

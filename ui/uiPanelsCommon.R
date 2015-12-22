@@ -51,11 +51,11 @@ summaryPanel <- function() {
   panel<-tags$div(style="font-size:small; padding:10px", fluidRow(
       column(12, 
         fluidRow(groupHeader(text="Información", image="info.png")),
-        fluidRow(tags$h5(style="padding:8px", info)),
+        fluidRow(tags$h5(class="aboutInfo", info)),
         fluidRow(groupHeader(text="Autor", image="worker.png")),
-        fluidRow(tags$h5(style="padding:8px", author)),
+        fluidRow(tags$h5(class="aboutAuthor", author)),
         fluidRow(groupHeader(text="Versión", image="product.png")),
-        fluidRow(tags$h5(style="padding:8px", version))
+        fluidRow(tags$h5(class="aboutVersion", version))
       )
     ))
   return(panel)

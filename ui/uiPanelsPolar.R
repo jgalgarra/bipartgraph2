@@ -16,7 +16,7 @@ source("ui/uiControlsPolar.R", encoding="UTF-8")
 
 # panel de configuracion del diagrama polar
 polarConfigPanel <- function() {
-  panel<-tags$div(style="font-size:small",
+  panel<-fluidRow(
     fluidRow(
       column(12, groupHeader(text="General", image="settings.png"))
     ),
@@ -62,7 +62,7 @@ polarDiagramPanel <- function() {
 
 # panel con el gragico de histogramas
 histogramPanel <- function() {
-  control<-tags$div(style="font-size:small; padding:10px",
+  control<-fluidRow(
     fluidRow(
       column(12, fluidRow(groupHeader(text="Diagrama", image="bar.png")))
     ),
@@ -78,9 +78,9 @@ histogramPanel <- function() {
 # panel del polar (configuracion + diagrama)
 polarPanel<-function() {
   panel<-tabsetPanel(
-    tabPanel("Diagrama Polar",  tags$div(style="font-size:small; padding:10px", polarDiagramPanel())),
-    tabPanel("Histogramas",     tags$div(style="font-size:small; padding:10px", histogramPanel())),
-    tabPanel("Configuración",   tags$div(style="font-size:small; padding:10px", polarConfigPanel()))
+    tabPanel("Diagrama Polar",  tags$div(class="tabPanel", polarDiagramPanel())),
+    tabPanel("Histogramas",     tags$div(class="tabPanel", histogramPanel())),
+    tabPanel("Configuración",   tags$div(class="tabPanel", polarConfigPanel()))
   )
   return(panel)
 }

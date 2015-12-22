@@ -15,13 +15,13 @@ dataFilePattern <- "M_.*.csv"
 # cabecera de un grupo en un panel
 groupHeader<-function(text, image) {
   header<-tags$div(
-    style="padding:4px; margin:4px; border-bottom:1px dotted lightgray;",
+    class="groupHeader",
     tags$span(
-      style="vertical-align:middle; display:table-cell;",
-      tags$img(style="vertical-align:middle; display:table-cell; padding:4px;", src=paste0("images/", image))
+      class="groupHeaderIcon",
+      tags$img(src=paste0("images/", image))
     ),
     tags$span(
-      style="vertical-align:middle; display:table-cell;",
+      class="groupHeaderText",
       tags$h5(text)
     )
   )
@@ -30,6 +30,9 @@ groupHeader<-function(text, image) {
 
 # etiqueta para los controles
 controlLabel <- function(text) {
-  label<-tags$h6(text, style="display:inline-block;vertical-align:middle")
+  label<-tags$h6(
+    class="controlLabel",
+    text
+  )
   return(label)
 }

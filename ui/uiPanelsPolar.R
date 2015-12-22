@@ -78,9 +78,9 @@ histogramPanel <- function() {
 # panel del polar (configuracion + diagrama)
 polarPanel<-function() {
   panel<-tabsetPanel(
-    tabPanel("Diagrama Polar",  tags$div(class="tabPanel", polarDiagramPanel())),
-    tabPanel("Histogramas",     tags$div(class="tabPanel", histogramPanel())),
-    tabPanel("Configuración",   tags$div(class="tabPanel", polarConfigPanel()))
+    tabPanel("Diagrama Polar",  tags$div(class="panel", polarDiagramPanel())),
+    tabPanel("Histogramas",     tags$div(class="panel", histogramPanel())),
+    tabPanel("Configuración",   tags$div(class="panel", polarConfigPanel()))
   )
   return(panel)
 }

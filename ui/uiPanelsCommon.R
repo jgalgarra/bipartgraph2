@@ -21,16 +21,16 @@ headerPanel <- function() {
 # pie de pagina comun
 footerPanel <- function() {
   control<-tags$div(
-    style="padding:10px;margin:0px;font-size:x-small;",
+    class="footerPanelContent",
     tags$hr(),
     tags$div(
-      style="clear:both;padding:0px",
+      class="footerPanelContent",
       tags$p(
-        style="float:left", 
+        class="footerPanelContentLeft", 
         "PFC Representación gráfica de redes bipartitas basada en descomposición k-core"
       ),
       tags$p(
-        style="float:right", 
+        class="footerPanelContentRight", 
         "EUITT - Universidad Politécnica de Madrid"
       )
     )
@@ -48,7 +48,7 @@ summaryPanel <- function() {
   info    <- paste0(info, "Nunc et ullamcorper elit, in pellentesque tellus.")
   author  <- "Juan Manuel García Santi"
   version <- "v1.0 - Diciembre'15"
-  panel<-tags$div(style="font-size:small; padding:10px", fluidRow(
+  panel<-tags$div(class="panel", fluidRow(
       column(12, 
         fluidRow(groupHeader(text="Información", image="info.png")),
         fluidRow(tags$h5(class="aboutInfo", info)),

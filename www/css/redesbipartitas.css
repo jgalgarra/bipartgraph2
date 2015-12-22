@@ -5,12 +5,9 @@
 
 /* panel del ziggurat */
 #ziggurat {
-    /*border:     1px dotted lightgray;*/
-    margin:     4px;
-    cursor:     move;
+    position:   relative;
     height:     400px;
-    overflow-x: auto;
-    overflow-y: auto;
+    cursor:     move;
 }
 
 /* paneles de informacion del ziggurat */
@@ -20,8 +17,8 @@
 
 .wikiDetails {
   padding:      10px;
+  position:     relative;
   height:       200px; 
-  overflow-y:   scroll;
 }
 
 /* panel de botones del zoom */

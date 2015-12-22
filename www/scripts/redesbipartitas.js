@@ -26,6 +26,9 @@ function updateSVGEvents() {
     // inicializa el scroll mediante "drag"
     $("#ziggurat").dragscrollable();
     
+    // inicializa el scroll
+    $("#ziggurat").perfectScrollbar();
+    
     // establece el SVG a su tamaño real
     svgZoomReset();
 }
@@ -184,6 +187,9 @@ Shiny.addCustomMessageHandler(
                                 }
                             }
                         });
+                        
+                        // inicializa el scroll
+                        $("div[id=wikiDetails-" + elementData.id + "]").perfectScrollbar();
                     }
                 }
             });
@@ -220,13 +226,18 @@ function svgZoomFit() {
     var _width  = $("#ziggurat").width();
     var _height = $("#ziggurat").height();
     $("#ziggurat svg").css({
-        "width":    (_width/1.1) + "px",
-        "height":   (_height/1.1) + "px"
+        "width":    (_width) + "px",
+        "height":   (_height) + "px"
     });
+    
+    // restablece el scroll
+    $("#ziggurat").scrollTop(0);
+    $("#ziggurat").scrollLeft(0);
+    $("#ziggurat").perfectScrollbar("update");
 }
 
 // establece el tamaño SVG del ziggurat a su tamaño real
-function svgZoomReset() {
+function svgZoomReset() { 
     $("#ziggurat svg").each(
         function() {
             var _viewBox    = $(this)[0].getAttribute("viewBox");
@@ -238,4 +249,9 @@ function svgZoomReset() {
             });
         }
     );
+    
+    // restablece el scroll
+    $("#ziggurat").scrollTop(0);
+    $("#ziggurat").scrollLeft(0);
+    $("#ziggurat").perfectScrollbar("update");
 }

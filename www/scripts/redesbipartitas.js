@@ -10,6 +10,18 @@
 //                 relativa a nodos y elementos
 //-----------------------------------------------------------------------------
 
+//actualiza los eventos asociados a todos los elementos
+function updateEvents() {
+    var aGuilds=["a", "b"];
+    for (var i=0;i<aGuilds.length;++i) {
+        for (var j=0;j<10;++j) {
+            updateTextEvents("kcore" + j + "-" + aGuilds[i] + "-label", aGuilds[i], j);
+        }
+    }
+    updatePathEvents("bentLink");
+    updatePathEvents("straightLink");
+}
+
 // actualiza los eventos asociados a los textos del SVG
 function updateTextEvents(pattern, guild, kcore) {
     $("text[id*=" + pattern + "]").css("cursor", "default");
@@ -44,18 +56,6 @@ function updatePathEvents(pattern) {
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2)
     });
-}
-
-// actualiza los eventos asociados a todos los elementos
-function updateEvents() {
-    var aGuilds=["a", "b"];
-    for (var i=0;i<aGuilds.length;++i) {
-        for (var j=0;j<10;++j) {
-            updateTextEvents("kcore" + j + "-" + aGuilds[i] + "-label", aGuilds[i], j);
-        }
-    }
-    updatePathEvents("bentLink");
-    updatePathEvents("straightLink");
 }
 
 // obtiene los identificadores de los elementos en un nodo de texto del SVG
@@ -178,4 +178,30 @@ Shiny.addCustomMessageHandler(
     }
 );
 
+// amplia el SVG del ziggurat
+function svgZoomIn() {
+    var _width=parseFloat($("#ziggurat svg").css("width").replace("px", ""));
+    $("#ziggurat svg").css("width", (_width*1.1) + "px");
+}
 
+// reduce el SVG del ziggurat
+function svgZoomOut() {
+    var _width=parseFloat($("#ziggurat svg").css("width").replace("px", ""));
+    $("#ziggurat svg").css("width", (_width/1.1) + "px");
+}
+
+// ajusta el SVG del ziggurat al marco que lo contiene
+function svgZoomFit() {
+    $("#ziggurat svg").css("width", $("#ziggurat").width() + "px");
+}
+
+//amplia el SVG del ziggurat a su tamaño real
+function svgZoomReset() {
+    $("#ziggurat svg").each(
+        function() {
+            var _viewBox    = $(this)[0].getAttribute("viewBox");
+            var _width      = _viewBox.split(" ")[2];
+            $("#ziggurat svg").css("width",  _width + "px");
+        }
+    );
+}

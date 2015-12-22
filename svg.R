@@ -33,9 +33,8 @@ SVG<-function(scale_factor) {
     miny  <- floor(this$miny/10)*10
     maxy  <- ceiling(this$maxy/10)*10
     viewBox<-paste0(minx, " ", miny, " ", maxx-minx, " ", maxy-miny)
-    #svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\" width=\"", this$width, "\" height=\"", this$height, "\">")
-    svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\" width=\"", maxx-minx, "\" height=\"", maxy-miny, "\">")
-    #svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\">")
+    #svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\" width=\"", maxx-minx, "\" height=\"", maxy-miny, "\">")
+    svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\">")
     svg1<-paste0("</svg>")
     return(paste0(svg0, paste0(this$content, collapse="\n"), svg1, "", collapse="\n"))
   }

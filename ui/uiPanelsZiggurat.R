@@ -114,14 +114,35 @@ zigguratConfigPanel <- function() {
 zigguratDiagramPanel <- function() {
   control<-fluidRow(
     column(7,
-      fluidRow(groupHeader(text="Diagrama", image="network.png")),
-      fluidRow(uiOutput("ziggurat"))
+      fluidRow(
+        groupHeader(text="Diagrama", image="network.png")
+      ),
+      fluidRow(
+        tags$span(
+          style="float:right", 
+          tags$img(id="zoomin",     onclick="svgZoomIn()",    style="cursor:pointer;width:16px;height:16px", src="images/zoom_in.png"), 
+          tags$img(id="zoomout",    onclick="svgZoomOut()",   style="cursor:pointer;width:16px;height:16px", src="images/zoom_out.png"),
+          tags$img(id="zoomfit",    onclick="svgZoomFit()",   style="cursor:pointer;width:16px;height:16px", src="images/fit_to_width.png"),
+          tags$img(id="zoomreset",  onclick="svgZoomReset()", style="cursor:pointer;width:16px;height:16px", src="images/sinchronize.png")
+        )
+      ),
+      fluidRow(
+        uiOutput("ziggurat")
+      )
     ),
     column(5, 
-      fluidRow(groupHeader(text="Información", image="document.png")),
-      fluidRow(tags$div(style="padding:8px", uiOutput("zigguratDetails"))),
-      fluidRow(groupHeader(text="Wikipedia", image="wikipedia.png")),
-      fluidRow(tags$div(style="padding:8px", uiOutput("zigguratWikiDetails")))
+      fluidRow(
+        groupHeader(text="Información", image="document.png")
+      ),
+      fluidRow(
+        tags$div(style="padding:8px", uiOutput("zigguratDetails"))
+      ),
+      fluidRow(
+        groupHeader(text="Wikipedia", image="wikipedia.png")
+      ),
+      fluidRow(
+        tags$div(style="padding:8px", uiOutput("zigguratWikiDetails"))
+      )
     )
   )
   return(control)

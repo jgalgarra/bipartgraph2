@@ -21,7 +21,7 @@ headerPanel <- function() {
 # pie de pagina comun
 footerPanel <- function() {
   control<-tags$div(
-    class="footerPanelContent",
+    class="footerPanel",
     tags$hr(),
     tags$div(
       class="footerPanelContent",
@@ -48,7 +48,7 @@ summaryPanel <- function() {
   info    <- paste0(info, "Nunc et ullamcorper elit, in pellentesque tellus.")
   author  <- "Juan Manuel García Santi"
   version <- "v1.0 - Diciembre'15"
-  panel<-tags$div(class="panel", fluidRow(
+  panel<-tags$div(class="panelContent", fluidRow(
       column(12, 
         fluidRow(groupHeader(text="Información", image="info.png")),
         fluidRow(tags$h5(class="aboutInfo", info)),

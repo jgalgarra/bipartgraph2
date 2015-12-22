@@ -151,8 +151,8 @@ zigguratDiagramPanel <- function() {
 # panel del ziggurat (configuracion + diagrama)
 zigguratPanel<-function() {
   panel<-tabsetPanel(
-    tabPanel("Diagrama",      tags$div(class="panel", zigguratDiagramPanel())),
-    tabPanel("Configuración", tags$div(class="panel", zigguratConfigPanel()))
+    tabPanel("Diagrama",      tags$div(class="panelContent", zigguratDiagramPanel())),
+    tabPanel("Configuración", tags$div(class="panelContent", zigguratConfigPanel()))
   )
   return(panel)
 }

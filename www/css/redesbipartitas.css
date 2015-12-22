@@ -61,9 +61,10 @@
 }
 
 /* contenido de los paneles */
-.panel {
+.panelContent {
     font-size:  small; 
     padding:    10px;
+    border:     0px;
 }
 
 /* panel de informacion */

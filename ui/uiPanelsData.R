@@ -66,8 +66,8 @@ manageFilesPanel<-function() {
 dataPanel <- function() {
   panel<-tabsetPanel(
     id="dataPanel",
-    tabPanel("Seleccionar datos",   tags$div(class="panel", selectDataPanel())),
-    tabPanel("Gestionar ficheros",  tags$div(class="panel", manageFilesPanel()))
+    tabPanel("Seleccionar datos",   tags$div(class="panelContent", selectDataPanel())),
+    tabPanel("Gestionar ficheros",  tags$div(class="panelContent", manageFilesPanel()))
   )
   return(panel)
 }

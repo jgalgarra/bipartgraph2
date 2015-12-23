@@ -29,7 +29,7 @@ shinyUI(
       tags$link(rel="stylesheet", type="text/css", href="css/perfect-scrollbar.css"),
       tags$link(rel="stylesheet", type="text/css", href="css/jquery.qtip.css"),
       tags$link(rel="stylesheet", type="text/css", href="css/redesbipartitas.css"),
-      tags$script("documentReady()")
+      tags$script("$(document).ready(function() {documentReady()})")
     ),
     navbarPage(
       title   = "Redes Bipartitas",

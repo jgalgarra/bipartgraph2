@@ -10,9 +10,30 @@
 //                 relativa a nodos y elementos
 //-----------------------------------------------------------------------------
 
+// timeout para establecer los tooltips
+var timeout;
+
 // funcion que se llama cuando la pagina esta cargada
 function documentReady() {
-    // activa los tooltips
+    updateTooltips();
+}
+
+// establece los tooltips de todos los elementos
+var tooltips=[
+    {id: "zoomin",      value: "Incrementar el nivel de zoom del ziggurat"},
+    {id: "zoomout",     value: "Disminuir el nivel de zoom del ziggurat"},
+    {id: "zoomfit",     value: "Ajustar el ziggurat a la ventana de visualización"},
+    {id: "zoomreset",   value: "Visualizar el ziggurat en su tamaño real"}
+];
+function updateTooltips() {
+    for (var i=0;i<tooltips.length;++i) {
+        $("#" + tooltips[i].id).each(function() {
+            $(this).qtip({
+                content:    {text: tooltips[i].value},
+                style:      {classes: "qtip-bootstrap rbtooltip"}
+            });
+        });
+    }
 }
 
 //actualiza los eventos asociados a todos los elementos del SVG
@@ -153,10 +174,10 @@ Shiny.addCustomMessageHandler(
             var wikiBase        = "https://en.wikipedia.org";
             var wikiApi         = "/w/api.php";
             var wikiParameters  = {
-                 action:        "query",
                  cache:         false,
-                 prop:          "revisions",
                  format:        "json",
+                 action:        "query",
+                 prop:          "revisions",
                  rvprop:        "content",
                  rvparse:       "",
                  titles:        elementData.name
@@ -181,7 +202,7 @@ Shiny.addCustomMessageHandler(
                         // modifica todos los enlaces para que se abran en una nueva ventana
                         // y los relativos para que apunten a wikipedia 
                         $("div[id=wikiDetails-" + elementData.id + "] a").each(function() {
-                            var _href=$(this).attr('href');
+                            var _href=$(this).attr("href");
                             // nueva ventana
                             if (_href.substring(0,1)!="#") {
                                 $(this).attr("target", "_blank");
@@ -208,11 +229,6 @@ Shiny.addCustomMessageHandler(
 
 // amplia el SVG del ziggurat
 function svgZoomIn() {
-    $("#zoomin").qtip({
-        content: {
-            text: 'My common piece of text here'
-        }
-    })
     var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
     var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
     $("#ziggurat svg").css({

@@ -103,3 +103,8 @@
 .footerPanelContentRight {
     float:      right; 
 }
+
+/* tooltips */
+.rbtooltip {
+    font-size:  x-small;
+}

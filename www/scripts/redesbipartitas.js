@@ -27,7 +27,7 @@ function updateSVGEvents() {
     $("#ziggurat").dragscrollable();
     
     // inicializa el scroll
-    $("#ziggurat").perfectScrollbar();
+    $("#ziggurat").perfectScrollbar({scrollXMarginOffset:4, scrollYMarginOffset:4});
     
     // establece el SVG a su tamaño real
     svgZoomReset();

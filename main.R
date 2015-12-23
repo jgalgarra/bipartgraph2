@@ -8,4 +8,9 @@
 # Descricpción  : Ejecución de la aplicación
 ###############################################################################
 library(shiny)
-runApp(".")
+runApp(
+  appDir        = ".",
+  port          = 8080,
+  host          = "0.0.0.0",
+  display.mode  = "normal"
+)

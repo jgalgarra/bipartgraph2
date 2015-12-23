@@ -10,7 +10,8 @@ paint_kdegree_kradius <- function(graph, num_guild_a, num_guild_b,
                                   showtext = "no",
                                   network_name = "", 
                                   NODF = 0, Modularity = 0, MeanKradius = 0, MeanKdegree = 0, 
-                                  printable_range = 0
+                                  printable_range = 0,
+                                  progress
                                   )
 {
   g <- V(graph)
@@ -55,6 +56,7 @@ paint_kdegree_kradius <- function(graph, num_guild_a, num_guild_b,
     printable_points <- c(head(sort_radiuss,printable_range), tail(sort_radiuss,tailp))
   }
   for (i in 1:tot_species){
+    progress$inc((3/4)*(1/tot_species), detail=paste0("Procesando especie ", i , "..."))
     if (length(which(printable_points == dfaux[i,]$name)) > 0)
       dfaux[i,]$kcol_label <- vcols[dfaux[i,]$kcorenum]
     if (i>nga)
@@ -200,7 +202,7 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
                          show_histograms = TRUE, glabels = c("Plant", "Pollinator"), 
                          gshortened = c("pl","pol"),
                          lsize_title = 22, lsize_axis = 12, lsize_legend = 13, 
-                         lsize_axis_title = 14, lsize_legend_title = 15)
+                         lsize_axis_title = 14, lsize_legend_title = 15, progress)
 {
   red_name <- strsplit(red,".csv")[[1]][1]
   sguild_a <<- gshortened[1]
@@ -211,6 +213,7 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
     slabels <<- c("Plant", "Disperser")
   }
 
+  progress$inc(1/4, detail="Analizando red...")
   result_analysis <- analyze_network(red, directory = directorystr, guild_a = sguild_a, guild_b = sguild_b, plot_graphs = FALSE)
   numlinks <- result_analysis$links
   
@@ -227,7 +230,7 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
                                network_name = red_name, NODF = result_analysis$nested_values["NODF"],
                                Modularity =  result_analysis$modularity_measure,
                                MeanKradius = result_analysis$meandist, MeanKdegree = result_analysis$meankdegree, 
-                               showtext = pshowtext, printable_range = 3
+                               showtext = pshowtext, printable_range = 3, progress
                               )
   
   #if (show_histograms)

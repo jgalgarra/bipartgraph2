@@ -222,6 +222,14 @@ shinyServer(function(input, output, session) {
   ziggurat<-reactive({
     z<-NULL
     if (nchar(input$selectedDataFile)>0) {
+      # indicador de progreso
+      progress<-shiny::Progress$new()
+      progress$set(message="", value = 0)
+      
+      # cierra el indicador al salir
+      on.exit(progress$close())
+      
+      # genera el diagrama ziggurat
       z<-ziggurat_graph(
         datadir                                       = paste0(dataDir, "/"),
         filename                                      = input$selectedDataFile,
@@ -280,7 +288,8 @@ shinyServer(function(input, output, session) {
         use_spline                                    = TRUE,
         spline_points                                 = 100,  
         #svg_scale_factor                              = input$zigguratSvgScaleFactor
-        svg_scale_factor                              = 50
+        svg_scale_factor                              = 50,
+        progress                                      = progress
       )
     }
     return(z)
@@ -371,6 +380,14 @@ shinyServer(function(input, output, session) {
   polar<-reactive({
     p<-NULL
     if (nchar(input$selectedDataFile)>0) {
+      # indicador de progreso
+      progress<-shiny::Progress$new()
+      progress$set(message="", value = 0)
+      
+      # cierra el indicador al salir
+      on.exit(progress$close())
+      
+      # genera el diagrama polar y los histogramas
       p<-polar_graph(
         red                 = input$selectedDataFile, 
         directorystr        = paste0(dataDir, "/"), 
@@ -384,7 +401,8 @@ shinyServer(function(input, output, session) {
         lsize_axis          = input$polarLabelsSizeAxis, 
         lsize_legend        = input$polarLabelsSizeLegend, 
         lsize_axis_title    = input$polarLabelsSizeAxisTitle, 
-        lsize_legend_title  = input$polarLabelsSizeLegendTitle
+        lsize_legend_title  = input$polarLabelsSizeLegendTitle,
+        progress            = progress      
       )
     }
     return(p)

@@ -187,10 +187,10 @@ zigguratLabelsSizeControl <- function(name, description, default) {
   control<-sliderInput(
     inputId = paste0("zigguratLabelsSize", name),
     label   = controlLabel(description),
-    min     = 1.0,
-    max     = 5.0,
+    min     = 4.0,
+    max     = 18.0,
     value   = default,
-    step    = 0.5
+    step    = 1
   )
   return(control)
 }

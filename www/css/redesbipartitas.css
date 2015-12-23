@@ -8,6 +8,7 @@
     position:   relative;
     height:     400px;
     cursor:     move;
+    margin-top: 8px;
 }
 
 /* paneles de informacion del ziggurat */
@@ -16,7 +17,7 @@
 }
 
 .wikiDetails {
-  padding:      10px;
+  margin-top:   10px;
   position:     relative;
   height:       200px; 
 }

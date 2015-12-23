@@ -10,6 +10,11 @@
 //                 relativa a nodos y elementos
 //-----------------------------------------------------------------------------
 
+// funcion que se llama cuando la pagina esta cargada
+function documentReady() {
+    // activa los tooltips
+}
+
 //actualiza los eventos asociados a todos los elementos del SVG
 function updateSVGEvents() {
     // actualiza los eventos asociados a las etiquetas
@@ -203,6 +208,11 @@ Shiny.addCustomMessageHandler(
 
 // amplia el SVG del ziggurat
 function svgZoomIn() {
+    $("#zoomin").qtip({
+        content: {
+            text: 'My common piece of text here'
+        }
+    })
     var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
     var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
     $("#ziggurat svg").css({

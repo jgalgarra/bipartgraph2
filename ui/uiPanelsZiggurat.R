@@ -89,14 +89,14 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text="Tamaño", image="generic_text.png"))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("kCoreMax", "k-core máximo", 3.5)),
-        column(2, zigguratLabelsSizeControl("Ziggurat", "Ziggurat", 3)),
-        column(2, zigguratLabelsSizeControl("kCore1", "k-core 1", 2.5))
+        column(2, zigguratLabelsSizeControl("kCoreMax", "k-core máximo", 10)),
+        column(2, zigguratLabelsSizeControl("Ziggurat", "Ziggurat", 9)),
+        column(2, zigguratLabelsSizeControl("kCore1", "k-core 1", 8))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("", "General", 3.5)),
-        column(2, zigguratLabelsSizeControl("CoreBox", "Core box", 2.5)),
-        column(2, zigguratLabelsSizeControl("Legend", "Leyenda", 4))
+        column(2, zigguratLabelsSizeControl("", "General", 20)),
+        column(2, zigguratLabelsSizeControl("CoreBox", "Core box", 8)),
+        column(2, zigguratLabelsSizeControl("Legend", "Leyenda", 8))
       ),
       fluidRow(
         column(12, groupHeader(text="Colores", image="border_color.png"))

@@ -30,8 +30,18 @@ groupHeader<-function(text, image) {
 
 # etiqueta para los controles
 controlLabel <- function(text) {
-  label<-tags$h6(
+  label<-tags$span(
     class="controlLabel",
+    text
+  )
+  return(label)
+}
+
+# etiqueta con imagen para enlaces
+linkLabel <- function(text, img) {
+  label<-tags$span(
+    class="linkLabel",
+    tags$img(src=paste0("images/", img)),
     text
   )
   return(label)

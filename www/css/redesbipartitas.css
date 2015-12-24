@@ -56,6 +56,22 @@
 .controlLabel {
     display:        inline-block;
     vertical-align: middle;
+    font-weight:    normal;
+    font-size:      90%;
+}
+
+/* etiqueta de los enlaces */
+.linkLabel {
+    display:        inline-block;
+    vertical-align: middle;
+    font-weight:    normal;
+    font-size:      90%;
+}
+
+.linkLabel img {
+    width:          24px;
+    height:         24px;
+    margin-right:   8px;
 }
 
 /* contenido de los paneles */

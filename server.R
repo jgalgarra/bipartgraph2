@@ -236,7 +236,7 @@ shinyServer(function(input, output, session) {
         paintlinks                                    = input$zigguratPaintLinks,
         displaylabelszig                              = input$zigguratDisplayLabels,
         print_to_file                                 = FALSE,
-        plotsdir                                      = "plot_results/ziggurat/",
+        plotsdir                                      = tempdir(),
         flip_results                                  = input$zigguratFlipResults,
         aspect_ratio                                  = input$zigguratAspectRatio,
         alpha_level                                   = input$zigguratAlphaLevel,
@@ -391,7 +391,7 @@ shinyServer(function(input, output, session) {
       p<-polar_graph(
         red                 = input$selectedDataFile, 
         directorystr        = paste0(dataDir, "/"), 
-        plotsdir            = "plot_results/polar/",
+        plotsdir            = tempdir(),
         print_to_file       = FALSE, 
         pshowtext           = input$polarDisplayText,
         show_histograms     = TRUE, 
@@ -438,5 +438,20 @@ shinyServer(function(input, output, session) {
     if (!is.null(p)) {
       print(p["histo_degree"][[1]])
     }
+  })
+
+  # boton de descarga del diagrama ziggurat
+  observeEvent(input$zigguratDownload, {
+    browser()
+  })
+
+  # boton de descarga del diagrama polar
+  observeEvent(input$polarDownload, {
+    browser()
+  })
+
+  # boton de descarga de los histogramas
+  observeEvent(input$histogramDownload, {
+    browser()
   })
 })

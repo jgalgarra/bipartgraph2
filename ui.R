@@ -14,6 +14,7 @@ source("ui/uiPanelsCommon.R", encoding="UTF-8")
 source("ui/uiPanelsData.R", encoding="UTF-8")
 source("ui/uiPanelsZiggurat.R", encoding="UTF-8")
 source("ui/uiPanelsPolar.R", encoding="UTF-8")
+source("ui/uiPanelsDownload.R", encoding="UTF-8")
 
 #
 # interfaz de usuario
@@ -50,6 +51,11 @@ shinyUI(
       tabPanel(
         "Polar/Histogramas",
         polarPanel()
+      ),
+      # panel para descargar los diagramas
+      tabPanel(
+        "Descargas",
+        downloadPanel()
       ),
       # acerca de
       tabPanel(

@@ -63,13 +63,13 @@ polarDiagramPanel <- function() {
 # panel con el gragico de histogramas
 histogramPanel <- function() {
   control<-fluidRow(
-    fluidRow(
-      column(12, fluidRow(groupHeader(text="Diagrama", image="bar.png")))
-    ),
-    fluidRow(
-      column(4, plotOutput("histogramDist")),
-      column(4, plotOutput("histogramCore")),
-      column(4, plotOutput("histogramDegree"))
+    column(12, 
+      fluidRow(groupHeader(text="Diagrama", image="bar.png")),
+      fluidRow(
+        column(4, plotOutput("histogramDist")),
+        column(4, plotOutput("histogramCore")),
+        column(4, plotOutput("histogramDegree"))
+      )
     )
   )
   return(control)

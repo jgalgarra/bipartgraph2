@@ -1858,12 +1858,16 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   }
   
   #display_plot(p,zgg$print_to_file,zgg$flip_results, landscape = zgg$landscape_plot)
+
+  # guarda los resultados
+  zgg$plot  <- p
+  zgg$svg   <- svg
   
   zend_time <- proc.time()
   print("despues de display plot")
   print(zend_time - zinit_time)
   
-  return(svg)
+  return(zgg)
 }
 
 ziggurat_graph <- function(datadir,filename,
@@ -1921,9 +1925,7 @@ ziggurat_graph <- function(datadir,filename,
                     use_spline, spline_points
                     )
   init_working_values()
-  svg<-draw_ziggurat_plot(svg_scale_factor, progress)
-  zgg$svg<-svg
-  svg$save("C:\\Temp\\kk.svg")
+  draw_ziggurat_plot(svg_scale_factor, progress)
   return(zgg)
 }
 # 

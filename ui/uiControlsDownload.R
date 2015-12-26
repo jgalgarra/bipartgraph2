@@ -13,27 +13,63 @@ source("global.R", encoding="UTF-8")
 
 # descarga del diagrama ziggurat
 zigguratDownloadControl <- function() {
-  control<-actionLink(
-    inputId = "zigguratDownload",
-    label   = linkLabel(text="Descargar diagrama ziggurat", img="network.png")
+  control<-downloadLink(
+    outputId  = "zigguratDownload",
+    label     = linkLabel(text="Descargar diagrama ziggurat", img="network.png")
   )
   return(control)
 }
 
 # descarga del diagrama polar
 polarDownloadControl <- function() {
-  control<-actionLink(
-    inputId = "polarDownload",
-    label   = linkLabel(text="Descargar diagrama polar", img="air_force.png")
+  control<-downloadLink(
+    outputId  = "polarDownload",
+    label     = linkLabel(text="Descargar diagrama polar", img="air_force.png")
   )
   return(control)
 }
 
 # descarga de los histogramas
 histogramDownloadControl <- function() {
-  control<-actionLink(
-    inputId = "histogramDownload",
-    label   = linkLabel(text="Descargar histogramas", img="bar.png")
+  control<-downloadLink(
+    outputId  = "histogramDownload",
+    label     = linkLabel(text="Descargar histogramas", img="bar.png")
+  )
+  return(control)
+}
+
+# descarga de todos los diagramas en PDF
+pdfDownloadControl <- function() {
+  control<-downloadLink(
+    outputId  = "pdfDownload",
+    label     = linkLabel(text="Descargar todos los diagramas en PDF", img="pdf.png")
+  )
+  return(control)
+}
+
+# tamanyo del grafico a descargar
+pngSizeControl <- function(name, description, default) {
+  control<-sliderInput(
+    inputId = paste0("pngSize", name), 
+    label   = controlLabel(description),
+    min     = 400,
+    max     = 2400,
+    value   = default,
+    step    = 10
+  )
+  return(control)
+}
+
+# tamanyo del pdf a descargar
+pdfSizeControl <- function() {
+  values<-0:6
+  names(values)<-paste0("A", values)
+  control<-selectInput(
+    inputId   = "pdfSize", 
+    label     = controlLabel("Tamaño del papel (solo PDF)"),
+    choices   = values,
+    selected  = 4,
+    multiple  = FALSE
   )
   return(control)
 }

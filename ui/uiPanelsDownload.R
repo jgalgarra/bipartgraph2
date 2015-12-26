@@ -15,16 +15,13 @@ source("ui/uiControlsDownload.R", encoding="UTF-8")
 
 # panel de descargas
 downloadPanel <- function() {
-  info    <- ""
-  info    <- paste0(info, "Descarga en formato imagen de los distintos diagramas")
   panel<-tags$div(
     class="panelContent", 
     fluidRow(
-      column(
-        12, 
-        fluidRow(groupHeader(text="Descarga de diagramas", image="download.png")),
-        fluidRow(tags$h5(info))
-      )
+      column(12, groupHeader(text="Descarga de diagramas", image="download.png"))
+    ),
+    fluidRow(
+      column(12, tags$h5("Descarga individual en formato imagen"))
     ),
     fluidRow(
       column(1, tags$span("")),
@@ -43,6 +40,29 @@ downloadPanel <- function() {
     fluidRow(
       column(1, tags$span("")),
       column(11, histogramDownloadControl())
+    ),
+    fluidRow(
+      column(12, tags$h5(""))
+    ),
+    fluidRow(
+      column(12, tags$h5("Descarga en PDF"))
+    ),
+    fluidRow(
+      column(1, tags$span("")),
+      column(11, pdfDownloadControl())
+    ),
+    fluidRow(
+      column(
+        12, 
+        fluidRow(groupHeader(text="Tamaño de los diagramas", image="ruler.png"))
+      )
+    ),
+    fluidRow(
+      column(3, pngSizeControl("Width", "Ancho", 800)),
+      column(3, pngSizeControl("Height", "Alto", 600))
+    ),
+    fluidRow(
+      column(3, pdfSizeControl())
     )
   )
   return(panel)

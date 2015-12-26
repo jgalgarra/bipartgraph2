@@ -12,6 +12,8 @@
 #                 distintos eventos a los que responde la aplicación
 ###############################################################################
 library(shiny)
+library(gridExtra)
+library(grDevices)
 source("jga/ziggurat_graph.R", encoding="UTF-8")
 source("jga/polar_graph.R", encoding="UTF-8")
 source("global.R", encoding="UTF-8")
@@ -441,17 +443,72 @@ shinyServer(function(input, output, session) {
   })
 
   # boton de descarga del diagrama ziggurat
-  observeEvent(input$zigguratDownload, {
-    browser()
-  })
+  output$zigguratDownload<-downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-ziggurat.png")
+      return(file)  
+    },
+    content=function(file) {
+      z<-ziggurat()
+      png(filename=file, width=input$pngSizeWidth, height=input$pngSizeHeight)
+      plot(z$plot)
+      dev.off()
+    },
+    contentType="image/png"
+  )
 
   # boton de descarga del diagrama polar
-  observeEvent(input$polarDownload, {
-    browser()
-  })
+  output$polarDownload<-downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar.png")
+      return(file)  
+    },
+    content=function(file) {
+      p<-polar()
+      png(filename=file, width=input$pngSizeWidth, height=input$pngSizeHeight)
+      plot(p["polar_plot"][[1]])
+      dev.off()
+    },
+    contentType="image/png"
+  )
 
   # boton de descarga de los histogramas
-  observeEvent(input$histogramDownload, {
-    browser()
-  })
+  output$histogramDownload<-downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-histogram.png")
+      return(file)  
+    },
+    content=function(file) {
+      p<-polar()
+      png(filename=file, width=input$pngSizeWidth, height=input$pngSizeHeight)
+      plot(arrangeGrob(p["histo_dist"][[1]], p["histo_core"][[1]], p["histo_degree"][[1]], nrow=1, ncol=3))
+      dev.off()
+    },
+    contentType="image/png"
+  )
+  
+  # boton de descarga en PDF
+  output$pdfDownload<-downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-all.pdf")
+      return(file)  
+    },
+    content=function(file) {
+      z<-ziggurat()
+      p<-polar()
+      # dimensiones DIN-A, primero en mm y luego convertido a pulgadas
+      widths    <- c(t(sapply(c(841, 841), function(x) {x*(1/2)^(0:3)})))
+      heights   <- c(t(sapply(c(1189, 1189), function(x) {x*(1/2)^(0:3)})))
+      inchesmm  <- 0.0393701
+      pdfSizes<-data.frame(width=widths[1:7], height=heights[2:8])
+      sizes<-inchesmm*pdfSizes[as.numeric(input$pdfSize)+1,]
+      # imprime el PDF
+      pdf(file=file, width=sizes$width, height=sizes$height, onefile=TRUE)
+      plot(z$plot)
+      plot(p["polar_plot"][[1]])
+      plot(arrangeGrob(p["histo_dist"][[1]], p["histo_core"][[1]], p["histo_degree"][[1]], nrow=1, ncol=3))
+      dev.off()
+    },
+    contentType="application/pdf"
+  )
 })

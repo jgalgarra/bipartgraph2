@@ -137,6 +137,72 @@ availableFilesDetails<-function(filesList) {
   return(filesDetails)
 }
 
+# obtiene las opciones para generar un diagrama
+#   paperSize: 0-DINA0, 1-DINA1, ...
+#   ppi: pixels per inch
+calculateDiagramOptions<-function(paperSize, ppi) {
+  options<-list(paperSize=1, width=480, height=480, ppi=300, cairo=FALSE, ext="")
+  
+  # dimensiones DIN-A, primero en mm y luego convertido a pulgadas
+  widths    <- c(t(sapply(c(841, 841), function(x) {x*(1/2)^(0:3)})))
+  heights   <- c(t(sapply(c(1189, 1189), function(x) {x*(1/2)^(0:3)})))
+  pdfSizes  <- data.frame(width=widths[2:7], height=heights[3:8])
+  inchesmm  <- (1/25.4)
+  inches    <- inchesmm*pdfSizes[paperSize,]
+  
+  # tipo
+  type      <- capabilities(c("cairo"))
+  ext       <- capabilities(c("jpeg", "png", "tiff"))
+
+  # actualiza los valores
+  options$paperSize <- paperSize
+  options$ppi       <- ppi
+  options$width     <- inches$width*ppi
+  options$height    <- inches$height*ppi
+  options$cairo     <- type[c("cairo")]
+  options$ext       <- ifelse(ext[c("png")], "png", ifelse(ext[c("jpeg")], "jpeg", ifelse(ext[c("tiff")], "tiff", "")))
+
+  return(options)
+}
+
+# valida si la resolucion y tamaño de papel son correctos
+validateDiagramOptions<-function(options) {
+  return(validate(
+    need(
+      options$ppi==600 && options$paperSize>3 || options$ppi==300 && options$paperSize>1 || options$ppi<300,  
+      paste0("ERROR: Debe usar una resolución menor de ", options$ppi, " para el tamaño de papel 'A", options$paperSize , "'")
+    )
+  ))
+}
+
+# imprime un diagrama en fichero
+plotDiagram<-function(file, plot, options) {
+  type<-ifelse(options$cairo, "cairo", "windows")
+  pointsize<-12
+  if (options$ext=="png") {
+    png(filename=file, type=type, width=options$width, height=options$height, units="px", res=options$ppi, pointsize=pointsize)
+  } else if (options$ext=="jpeg") {
+    jpeg(filename=file, type=type, width=options$width, height=options$height, units="px", res=options$ppi, pointsize=pointsize)
+  } else if (options$ext=="tiff") {
+    tiff(filename=file, type=type, width=options$width, height=options$height, units="px", res=options$ppi, pointsize=pointsize)
+  } 
+  plot(plot)
+  dev.off()
+}
+
+# imprime el PDF con todos los diagramas un diagrama en fichero
+plotPDF<-function(file, ziggurat, polar, options) {
+  type<-ifelse(options$cairo, "cairo", "windows")
+  pointsize<-12
+
+  # imprime el PDF
+  pdf(file=file, width=options$width/options$ppi, height=options$height/options$ppi, pointsize=pointsize, onefile=TRUE)
+  plot(ziggurat$plot)
+  plot(polar["polar_plot"][[1]])
+  plot(arrangeGrob(polar["histo_dist"][[1]], polar["histo_core"][[1]], polar["histo_degree"][[1]], nrow=1, ncol=3))
+  dev.off()
+}
+
 #
 # proceso de servidor
 #
@@ -208,7 +274,7 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage(type="deleteFilesHandler", "availableFilesTable")
   })
 
-  # realila la accion de borrado de los ficheros
+  # realiza la accion de borrado de los ficheros
   observeEvent(input$deleteFilesData, {
     # borra los ficheros
     data      <- input$deleteFilesData
@@ -222,78 +288,80 @@ shinyServer(function(input, output, session) {
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
   ziggurat<-reactive({
-    z<-NULL
-    if (nchar(input$selectedDataFile)>0) {
-      # indicador de progreso
-      progress<-shiny::Progress$new()
-      progress$set(message="", value = 0)
-      
-      # cierra el indicador al salir
-      on.exit(progress$close())
-      
-      # genera el diagrama ziggurat
-      z<-ziggurat_graph(
-        datadir                                       = paste0(dataDir, "/"),
-        filename                                      = input$selectedDataFile,
-        paintlinks                                    = input$zigguratPaintLinks,
-        displaylabelszig                              = input$zigguratDisplayLabels,
-        print_to_file                                 = FALSE,
-        plotsdir                                      = tempdir(),
-        flip_results                                  = input$zigguratFlipResults,
-        aspect_ratio                                  = input$zigguratAspectRatio,
-        alpha_level                                   = input$zigguratAlphaLevel,
-        color_guild_a                                 = c(input$zigguratColorGuildA1, input$zigguratColorGuildA2),
-        color_guild_b                                 = c(input$zigguratColorGuildB1, input$zigguratColorGuildB2),
-        color_link                                    = input$zigguratColorLink,
-        alpha_link                                    = input$zigguratAlphaLevelLink,
-        size_link                                     = input$zigguratSizeLink,
-        displace_y_b                                  = rep(0, input$zigguratYDisplaceGuildB),
-        displace_y_a                                  = rep(0, input$zigguratYDisplaceGuildA),
-        labels_size                                   = input$zigguratLabelsSize,
-        lsize_kcoremax                                = input$zigguratLabelsSizekCoreMax,
-        lsize_zig                                     = input$zigguratLabelsSizeZiggurat,
-        lsize_kcore1                                  = input$zigguratLabelsSizekCore1,
-        lsize_legend                                  = input$zigguratLabelsSizeLegend,
-        lsize_core_box                                = input$zigguratLabelsSizeCoreBox,
-        labels_color                                  = c(input$zigguratColorLabelGuildA, input$zigguratColorLabelGuildB),
-        height_box_y_expand                           = input$zigguratHeightExpand,
-        kcore2tail_vertical_separation                = input$zigguratKcore2TailVerticalSeparation,
-        kcore1tail_disttocore                         = c(input$zigguratKcore1TailDistToCore1, input$zigguratKcore1TailDistToCore2),
-        innertail_vertical_separation                 = input$zigguratInnerTailVerticalSeparation,
-        horiz_kcoremax_tails_expand                   = 1,
-        factor_hop_x                                  = 1,
-        displace_legend                               = c(0,0),
-        fattailjumphoriz                              = c(1,1),
-        fattailjumpvert                               = c(1,1),
-        coremax_triangle_height_factor                = 1,
-        coremax_triangle_width_factor                 = 1,
-        paint_outsiders                               = TRUE,
-        displace_outside_component                    = c(1,1),
-        outsiders_separation_expand                   = 1,
-        outsiders_legend_expand                       = 1,
-        weirdskcore2_horizontal_dist_rootleaf_expand  = 1,
-        weirdskcore2_vertical_dist_rootleaf_expand    = 0,
-        weirds_boxes_separation_count                 = 1,
-        root_weird_expand                             = c(1,1),
-        hide_plot_border                              = TRUE,
-        rescale_plot_area                             = c(1,1),
-        kcore1weirds_leafs_vertical_separation        = 1,
-        corebox_border_size                           = input$zigguratSizeCoreBox,
-        kcore_species_name_display                    = c(),
-        kcore_species_name_break                      = c(),
-        shorten_species_name                          = 0,
-        label_strguilda                               = "",
-        label_strguildb                               = "",
-        landscape_plot                                = TRUE,
-        backg_color                                   = "white",
-        show_title                                    = TRUE,
-        use_spline                                    = TRUE,
-        spline_points                                 = 100,  
-        #svg_scale_factor                              = input$zigguratSvgScaleFactor
-        svg_scale_factor                              = 10,
-        progress                                      = progress
-      )
-    }
+    validate(
+      need(nchar(input$selectedDataFile)>0, "Seleccione un fichero de datos (Datos > Seleccionar datos > Fichero de datos)")
+    )
+
+    # indicador de progreso
+    progress<-shiny::Progress$new()
+    progress$set(message="", value = 0)
+    
+    # cierra el indicador al salir
+    on.exit(progress$close())
+    
+    # genera el diagrama ziggurat
+    z<-ziggurat_graph(
+      datadir                                       = paste0(dataDir, "/"),
+      filename                                      = input$selectedDataFile,
+      paintlinks                                    = input$zigguratPaintLinks,
+      displaylabelszig                              = input$zigguratDisplayLabels,
+      print_to_file                                 = FALSE,
+      plotsdir                                      = tempdir(),
+      flip_results                                  = input$zigguratFlipResults,
+      aspect_ratio                                  = input$zigguratAspectRatio,
+      alpha_level                                   = input$zigguratAlphaLevel,
+      color_guild_a                                 = c(input$zigguratColorGuildA1, input$zigguratColorGuildA2),
+      color_guild_b                                 = c(input$zigguratColorGuildB1, input$zigguratColorGuildB2),
+      color_link                                    = input$zigguratColorLink,
+      alpha_link                                    = input$zigguratAlphaLevelLink,
+      size_link                                     = input$zigguratSizeLink,
+      displace_y_b                                  = rep(0, input$zigguratYDisplaceGuildB),
+      displace_y_a                                  = rep(0, input$zigguratYDisplaceGuildA),
+      labels_size                                   = input$zigguratLabelsSize,
+      lsize_kcoremax                                = input$zigguratLabelsSizekCoreMax,
+      lsize_zig                                     = input$zigguratLabelsSizeZiggurat,
+      lsize_kcore1                                  = input$zigguratLabelsSizekCore1,
+      lsize_legend                                  = input$zigguratLabelsSizeLegend,
+      lsize_core_box                                = input$zigguratLabelsSizeCoreBox,
+      labels_color                                  = c(input$zigguratColorLabelGuildA, input$zigguratColorLabelGuildB),
+      height_box_y_expand                           = input$zigguratHeightExpand,
+      kcore2tail_vertical_separation                = input$zigguratKcore2TailVerticalSeparation,
+      kcore1tail_disttocore                         = c(input$zigguratKcore1TailDistToCore1, input$zigguratKcore1TailDistToCore2),
+      innertail_vertical_separation                 = input$zigguratInnerTailVerticalSeparation,
+      horiz_kcoremax_tails_expand                   = 1,
+      factor_hop_x                                  = 1,
+      displace_legend                               = c(0,0),
+      fattailjumphoriz                              = c(1,1),
+      fattailjumpvert                               = c(1,1),
+      coremax_triangle_height_factor                = 1,
+      coremax_triangle_width_factor                 = 1,
+      paint_outsiders                               = TRUE,
+      displace_outside_component                    = c(1,1),
+      outsiders_separation_expand                   = 1,
+      outsiders_legend_expand                       = 1,
+      weirdskcore2_horizontal_dist_rootleaf_expand  = 1,
+      weirdskcore2_vertical_dist_rootleaf_expand    = 0,
+      weirds_boxes_separation_count                 = 1,
+      root_weird_expand                             = c(1,1),
+      hide_plot_border                              = TRUE,
+      rescale_plot_area                             = c(1,1),
+      kcore1weirds_leafs_vertical_separation        = 1,
+      corebox_border_size                           = input$zigguratSizeCoreBox,
+      kcore_species_name_display                    = c(),
+      kcore_species_name_break                      = c(),
+      shorten_species_name                          = 0,
+      label_strguilda                               = "",
+      label_strguildb                               = "",
+      landscape_plot                                = TRUE,
+      backg_color                                   = "white",
+      show_title                                    = TRUE,
+      use_spline                                    = TRUE,
+      spline_points                                 = 100,  
+      #svg_scale_factor                              = input$zigguratSvgScaleFactor
+      svg_scale_factor                              = 10,
+      progress                                      = progress
+    )
+
     return(z)
   })
   
@@ -331,13 +399,8 @@ shinyServer(function(input, output, session) {
   # eventos javascript para los elementos del grafico
   output$ziggurat<-renderUI({
     z<-ziggurat()
-    if (!is.null(z)) {
-      svg<-z$svg
-      html<-paste0(svg$html(), "<script>updateSVGEvents()</script>")
-    } else {
-      html<-""
-      html<-paste0(html, tags$h6(style="text-align:center", "(Seleccione un fichero de datos...)"), collapse="")
-    }
+    svg<-z$svg
+    html<-paste0(svg$html(), "<script>updateSVGEvents()</script>")
     return(HTML(html))
   })
   
@@ -380,58 +443,53 @@ shinyServer(function(input, output, session) {
   # actualiza el grafico polar en base a los controles de
   # configuracion
   polar<-reactive({
-    p<-NULL
-    if (nchar(input$selectedDataFile)>0) {
-      # indicador de progreso
-      progress<-shiny::Progress$new()
-      progress$set(message="", value = 0)
-      
-      # cierra el indicador al salir
-      on.exit(progress$close())
-      
-      # genera el diagrama polar y los histogramas
-      p<-polar_graph(
-        red                 = input$selectedDataFile, 
-        directorystr        = paste0(dataDir, "/"), 
-        plotsdir            = tempdir(),
-        print_to_file       = FALSE, 
-        pshowtext           = input$polarDisplayText,
-        show_histograms     = TRUE, 
-        glabels             = c(input$polarGuildLabelA, input$polarGuildLabelB), 
-        gshortened          = c(input$polarGuildLabelAShort, input$polarGuildLabelBShort),
-        lsize_title         = input$polarLabelsSizeTitle, 
-        lsize_axis          = input$polarLabelsSizeAxis, 
-        lsize_legend        = input$polarLabelsSizeLegend, 
-        lsize_axis_title    = input$polarLabelsSizeAxisTitle, 
-        lsize_legend_title  = input$polarLabelsSizeLegendTitle,
-        progress            = progress      
-      )
-    }
+    validate(
+      need(nchar(input$selectedDataFile)>0, "Seleccione un fichero de datos (Datos > Seleccionar datos > Fichero de datos)")
+    )
+    
+    # indicador de progreso
+    progress<-shiny::Progress$new()
+    progress$set(message="", value = 0)
+    
+    # cierra el indicador al salir
+    on.exit(progress$close())
+    
+    # genera el diagrama polar y los histogramas
+    p<-polar_graph(
+      red                 = input$selectedDataFile, 
+      directorystr        = paste0(dataDir, "/"), 
+      plotsdir            = tempdir(),
+      print_to_file       = FALSE, 
+      pshowtext           = input$polarDisplayText,
+      show_histograms     = TRUE, 
+      glabels             = c(input$polarGuildLabelA, input$polarGuildLabelB), 
+      gshortened          = c(input$polarGuildLabelAShort, input$polarGuildLabelBShort),
+      lsize_title         = input$polarLabelsSizeTitle, 
+      lsize_axis          = input$polarLabelsSizeAxis, 
+      lsize_legend        = input$polarLabelsSizeLegend, 
+      lsize_axis_title    = input$polarLabelsSizeAxisTitle, 
+      lsize_legend_title  = input$polarLabelsSizeLegendTitle,
+      progress            = progress      
+    )
     return(p)
   })
 
   # muestra el diagrama polar
   output$polar<-renderPlot({
     p<-polar()
-    if (!is.null(p)) {
-      print(p["polar_plot"][[1]])
-    }
+    print(p["polar_plot"][[1]])
   })
 
   # muestra los histogramas
   output$histogramDist<-renderPlot({
-      p<-polar()
-      if (!is.null(p)) {
-        print(p["histo_dist"][[1]])
-      }
+    p<-polar()
+    print(p["histo_dist"][[1]])
   })
 
   # muestra los histogramas
   output$histogramCore<-renderPlot({
     p<-polar()
-    if (!is.null(p)) {
-      print(p["histo_core"][[1]])
-    }
+    print(p["histo_core"][[1]])
   })
 
   # muestra los histogramas
@@ -442,49 +500,67 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # Opciones para generar el diagrama, indicando ancho,alto en pixels, calidad en ppi (points-per-inch) 
+  # y otras opciones para generar el diagrama (png/jpg/..., tipo "cairo" u otros)
+  diagramOptions<-reactive({
+    return(calculateDiagramOptions(as.numeric(input$paperSize), as.numeric(input$ppi)))
+  })
+
   # boton de descarga del diagrama ziggurat
   output$zigguratDownload<-downloadHandler(
     filename=function() {
-      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-ziggurat.png")
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-ziggurat." , diagramOptions()$ext)
       return(file)  
     },
     content=function(file) {
+      # valida las dimensiones/resolucion
+      options<-diagramOptions()
+      validateDiagramOptions(options)
+      
+      # obtiene el diagrama
       z<-ziggurat()
-      png(filename=file, width=input$pngSizeWidth, height=input$pngSizeHeight)
-      plot(z$plot)
-      dev.off()
+      plot<-z$plot
+      plotDiagram(file, plot, options)
     },
-    contentType="image/png"
+    contentType=paste0("image/", diagramOptions()$ext)
   )
-
+    
   # boton de descarga del diagrama polar
   output$polarDownload<-downloadHandler(
     filename=function() {
-      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar.png")
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar." , diagramOptions()$ext)
       return(file)  
     },
     content=function(file) {
+      # valida las dimensiones/resolucion
+      options<-diagramOptions()
+      validateDiagramOptions(options)
+      
+      # obtiene el diagrama
       p<-polar()
-      png(filename=file, width=input$pngSizeWidth, height=input$pngSizeHeight)
-      plot(p["polar_plot"][[1]])
-      dev.off()
+      plot<-p["polar_plot"][[1]]
+      plotDiagram(file, plot, options)
     },
-    contentType="image/png"
+    contentType=paste0("image/", diagramOptions()$ext)
   )
 
   # boton de descarga de los histogramas
   output$histogramDownload<-downloadHandler(
     filename=function() {
-      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-histogram.png")
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-histogram." , diagramOptions()$ext)
       return(file)  
     },
     content=function(file) {
+      # valida las dimensiones/resolucion
+      options<-diagramOptions()
+      validateDiagramOptions(options)
+      
+      # obtiene el diagrama
       p<-polar()
-      png(filename=file, width=input$pngSizeWidth, height=input$pngSizeHeight)
-      plot(arrangeGrob(p["histo_dist"][[1]], p["histo_core"][[1]], p["histo_degree"][[1]], nrow=1, ncol=3))
-      dev.off()
+      plot<-arrangeGrob(p["histo_dist"][[1]], p["histo_core"][[1]], p["histo_degree"][[1]], nrow=1, ncol=3)
+      plotDiagram(file, plot, diagramOptions())
     },
-    contentType="image/png"
+    contentType=paste0("image/", diagramOptions()$ext)
   )
   
   # boton de descarga en PDF
@@ -494,20 +570,14 @@ shinyServer(function(input, output, session) {
       return(file)  
     },
     content=function(file) {
+      # valida las dimensiones/resolucion
+      options<-diagramOptions()
+      validateDiagramOptions(options)
+      
+      # obtiene el diagrama
       z<-ziggurat()
       p<-polar()
-      # dimensiones DIN-A, primero en mm y luego convertido a pulgadas
-      widths    <- c(t(sapply(c(841, 841), function(x) {x*(1/2)^(0:3)})))
-      heights   <- c(t(sapply(c(1189, 1189), function(x) {x*(1/2)^(0:3)})))
-      inchesmm  <- 0.0393701
-      pdfSizes<-data.frame(width=widths[1:7], height=heights[2:8])
-      sizes<-inchesmm*pdfSizes[as.numeric(input$pdfSize)+1,]
-      # imprime el PDF
-      pdf(file=file, width=sizes$width, height=sizes$height, onefile=TRUE)
-      plot(z$plot)
-      plot(p["polar_plot"][[1]])
-      plot(arrangeGrob(p["histo_dist"][[1]], p["histo_core"][[1]], p["histo_degree"][[1]], nrow=1, ncol=3))
-      dev.off()
+      plotPDF(file, z, p, options)
     },
     contentType="application/pdf"
   )

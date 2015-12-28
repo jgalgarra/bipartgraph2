@@ -47,28 +47,29 @@ pdfDownloadControl <- function() {
   return(control)
 }
 
-# tamanyo del grafico a descargar
-pngSizeControl <- function(name, description, default) {
-  control<-sliderInput(
-    inputId = paste0("pngSize", name), 
-    label   = controlLabel(description),
-    min     = 400,
-    max     = 2400,
-    value   = default,
-    step    = 10
+# tamanyo del diagrama a descargar
+paperSizeControl <- function() {
+  values<-1:6
+  names(values)<-paste0("A", values)
+  control<-selectInput(
+    inputId   = "paperSize", 
+    label     = controlLabel("Tamaño del papel"),
+    choices   = values,
+    selected  = 4,
+    multiple  = FALSE
   )
   return(control)
 }
 
-# tamanyo del pdf a descargar
-pdfSizeControl <- function() {
-  values<-0:6
-  names(values)<-paste0("A", values)
+# resolucion del diagrama a descargar
+ppiControl <- function() {
+  values<-c(72, 96, 150, 300, 600)
+  names(values)<-values
   control<-selectInput(
-    inputId   = "pdfSize", 
-    label     = controlLabel("Tamaño del papel (solo PDF)"),
+    inputId   = "ppi", 
+    label     = controlLabel("Resolución"),
     choices   = values,
-    selected  = 4,
+    selected  = 300,
     multiple  = FALSE
   )
   return(control)

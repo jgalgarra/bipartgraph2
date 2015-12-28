@@ -58,11 +58,8 @@ downloadPanel <- function() {
       )
     ),
     fluidRow(
-      column(3, pngSizeControl("Width", "Ancho", 800)),
-      column(3, pngSizeControl("Height", "Alto", 600))
-    ),
-    fluidRow(
-      column(3, pdfSizeControl())
+      column(3, paperSizeControl()),
+      column(3, ppiControl())
     )
   )
   return(panel)

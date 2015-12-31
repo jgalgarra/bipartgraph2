@@ -73,7 +73,7 @@ function updateTextEvents(pattern, guild, kcore) {
         Shiny.onInputChange("nodeData", {
             guild:      $(this).data("main").guild, 
             kcore:      $(this).data("main").kcore, 
-            elements:   getElements($(this).html())
+            elements:   getElements($(this).find("tspan").html())
         });
         
         // inicializa el nodo seleccionado
@@ -106,7 +106,7 @@ function updatePathEvents(pattern) {
 
 // obtiene los identificadores de los elementos en un nodo de texto del SVG
 // dividiendo la cadena por los espacios en blanco
-function getElements(strElements) {
+function getElements(strElements) {    
     var aElements=strElements.split(" ");
     var result=[];
     for (var i=0;i<aElements.length;++i) {

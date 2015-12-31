@@ -1856,7 +1856,6 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
       svg$path(idPrefix="bentLink", data=zgg$bent_links, mapping=aes(x, y, group=number), alpha=zgg$alpha_link, color=zgg$color_link, size=zgg$size_link)
     }
   }
-  
   #display_plot(p,zgg$print_to_file,zgg$flip_results, landscape = zgg$landscape_plot)
 
   # guarda los resultados

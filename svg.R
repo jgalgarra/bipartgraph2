@@ -142,7 +142,7 @@ SVG<-function(scale_factor) {
     if (length(color)==1) {
       color<-rep(color, nrow(data))
     }
-    
+
     # evalua las posiciones
     # cambia de signo las coordenadas y, ya que en SVG el eje y es al contrario de lo que trata R con ggplot
     x <- this$round_coords(eval(mapping$x, data)/this$scale_factor)
@@ -158,6 +158,7 @@ SVG<-function(scale_factor) {
   }
   
   # funcion auxiliar para la creacion de texto
+  # divide el texto generado en tantos tspan como saltos de linea tenga la eqtiqueta recibida
   this$text2 <- function(id, x, y, label, color, size, angle) {
     result<-""
         
@@ -173,16 +174,34 @@ SVG<-function(scale_factor) {
     if (miny<this$miny) this$miny<<-miny
     if (maxy>this$maxy) this$maxy<<-maxy
     
+    # agrupacion de texto
     result <- paste0(result, "<text id=\"", id, "\"", " ")
-    result <- paste0(result, "x=\"", x, "\"", " ")
     result <- paste0(result, "y=\"", y, "\"", " ")
     if (angle!=0) {
       # cambia de signo el angulo, ya que se interpreta distinto que en ggplot
       result <- paste0(result, "transform=\"rotate(", -angle , " ", x, " ", y , ")\" ")
     }
     result <- paste0(result, "style=\"text-anchor:middle;dominant-baseline:middle;font-family:Tahoma;font-size:", size*this$font_scale_factor, "px;fill:", color, "\"")
-    result <- paste0(result, ">")
-    result <- paste0(result, label)
+    result <- paste0(result, ">\n")
+    
+    # tspan
+    first   <- TRUE
+    dy      <- size*this$font_scale_factor
+    labels  <- strsplit(label, "\n")[[1]]
+    if (length(labels)>0) {
+      for (i in 1:length(labels)) {
+        if (nchar(labels[i])>0) {
+          result  <- paste0(result, "<tspan ")
+          result  <- paste0(result, "x=\"", x, "\"", " ")
+          result  <- paste0(result, "dy=\"", ifelse(first, 0, dy), "\">")
+          result  <- paste0(result, labels[i])
+          result  <- paste0(result, "</tspan>\n")
+          first   <- FALSE
+        }
+      }
+    }
+    
+    # fin de la agrupacion de texto
     result <- paste0(result, "</text>\n")
     
     return(result)

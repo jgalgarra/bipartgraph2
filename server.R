@@ -358,7 +358,7 @@ shinyServer(function(input, output, session) {
       use_spline                                    = TRUE,
       spline_points                                 = 100,  
       #svg_scale_factor                              = input$zigguratSvgScaleFactor
-      svg_scale_factor                              = 10,
+      svg_scale_factor                              = 36,
       progress                                      = progress
     )
 

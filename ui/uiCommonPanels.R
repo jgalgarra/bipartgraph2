@@ -4,7 +4,7 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiPanelsCommon.R
+# Módulo        : uiCommonPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
 #                 paneles comunes que se muestran en el interfaz
 ###############################################################################

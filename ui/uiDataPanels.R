@@ -4,14 +4,14 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiPanelsData.R
+# Módulo        : uiDataPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
 #                 paneles de gestion de datos que se muestran en el interfaz
 ###############################################################################
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("ui/uiControlsData.R", encoding="UTF-8")
+source("ui/uiDataControls.R", encoding="UTF-8")
 
 # panel de seleccion de ficheros
 selectDataPanel<-function() {

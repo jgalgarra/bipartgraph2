@@ -10,11 +10,11 @@
 ###############################################################################
 library(shiny)
 library(shinythemes)
-source("ui/uiPanelsCommon.R", encoding="UTF-8")
-source("ui/uiPanelsData.R", encoding="UTF-8")
-source("ui/uiPanelsZiggurat.R", encoding="UTF-8")
-source("ui/uiPanelsPolar.R", encoding="UTF-8")
-source("ui/uiPanelsDownload.R", encoding="UTF-8")
+source("ui/uiCommonPanels.R", encoding="UTF-8")
+source("ui/uiDataPanels.R", encoding="UTF-8")
+source("ui/uiZigguratPanels.R", encoding="UTF-8")
+source("ui/uiPolarPanels.R", encoding="UTF-8")
+source("ui/uiDownloadPanels.R", encoding="UTF-8")
 
 #
 # interfaz de usuario

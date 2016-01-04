@@ -4,7 +4,7 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiControlsData.R
+# Módulo        : uiDataControls.R
 # Descricpción  : Funciones para la representación de los disintos controles
 #                 de configuración, relativos a los datos, en el interfaz 
 #                 de usuario (UI)

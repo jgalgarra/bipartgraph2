@@ -4,7 +4,7 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiPanelsPolar.R
+# Módulo        : uiPolarPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
 #                 paneles que se muestran en el interfaz para el diagrama 
 #                 polar
@@ -12,7 +12,7 @@
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("ui/uiControlsPolar.R", encoding="UTF-8")
+source("ui/uiPolarControls.R", encoding="UTF-8")
 
 # panel de configuracion del diagrama polar
 polarConfigPanel <- function() {

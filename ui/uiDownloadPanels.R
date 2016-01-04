@@ -4,14 +4,14 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiPanelsDownload.R
+# Módulo        : uiDownloadPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
 #                 paneles para la descarga de los diagramas
 ###############################################################################
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("ui/uiControlsDownload.R", encoding="UTF-8")
+source("ui/uiDownloadControls.R", encoding="UTF-8")
 
 # panel de descargas
 downloadPanel <- function() {

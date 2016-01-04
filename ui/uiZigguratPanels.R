@@ -4,7 +4,7 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiPanelsZiggurat.R
+# Módulo        : uiZigguratPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
 #                 paneles que se muestran en el interfaz para el diagrama
 #                 ziggurat
@@ -12,7 +12,7 @@
 library(shiny)
 library(shinythemes)
 source("global.R", encoding="UTF-8")
-source("ui/uiControlsZiggurat.R", encoding="UTF-8")
+source("ui/uiZigguratControls.R", encoding="UTF-8")
 
 # panel de configuracion del diagrama ziggurat
 zigguratConfigPanel <- function() {

@@ -4,7 +4,7 @@
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core 
 # 
 # Autor         : Juan Manuel García Santi
-# Módulo        : uiControlsZiggurat.R
+# Módulo        : uiZigguratControls.R
 # Descricpción  : Funciones para la representación de los disintos controles
 #                 de configuración, relativos al diagrama ziggurat, en el 
 #                 interfaz de usuario (UI)

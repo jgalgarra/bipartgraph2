@@ -227,6 +227,20 @@ Shiny.addCustomMessageHandler(
     }
 );
 
+// registra la funcion que se encarga de deshabilitar un div
+// de un diagrama mientras se esta generando
+Shiny.addCustomMessageHandler(
+ "disableDivHandler",
+ function(divData) {
+     //alert("disableDivHandler(divData=" + JSON.stringify(divData) + ")");
+     if (divData.disable) {
+         $("#" + divData.id).fadeOut(500);
+     } else {
+         $("#" + divData.id).fadeIn(500);
+     }
+ }
+);
+
 // amplia el SVG del ziggurat
 function svgZoomIn() {
     var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));

@@ -299,6 +299,9 @@ shinyServer(function(input, output, session) {
     # cierra el indicador al salir
     on.exit(progress$close())
     
+    # deshabilita el contenedor del ziggurat
+    session$sendCustomMessage(type="disableDivHandler", list(id="ziggurat", disable=TRUE))
+    
     # genera el diagrama ziggurat
     z<-ziggurat_graph(
       datadir                                       = paste0(dataDir, "/"),
@@ -358,10 +361,13 @@ shinyServer(function(input, output, session) {
       use_spline                                    = TRUE,
       spline_points                                 = 100,  
       #svg_scale_factor                              = input$zigguratSvgScaleFactor
-      svg_scale_factor                              = 36,
+      svg_scale_factor                              = 10,
       progress                                      = progress
     )
 
+    # habilita el contenedor del ziggurat
+    session$sendCustomMessage(type="disableDivHandler", list(id="ziggurat", disable=FALSE))
+    
     return(z)
   })
   
@@ -454,6 +460,12 @@ shinyServer(function(input, output, session) {
     # cierra el indicador al salir
     on.exit(progress$close())
     
+    # deshabilita el contenedor del polar e histogramas
+    session$sendCustomMessage(type="disableDivHandler", list(id="polar", disable=TRUE))
+    session$sendCustomMessage(type="disableDivHandler", list(id="histogramDist", disable=TRUE))
+    session$sendCustomMessage(type="disableDivHandler", list(id="histogramCore", disable=TRUE))
+    session$sendCustomMessage(type="disableDivHandler", list(id="histogramDegree", disable=TRUE))
+    
     # genera el diagrama polar y los histogramas
     p<-polar_graph(
       red                 = input$selectedDataFile, 
@@ -471,6 +483,13 @@ shinyServer(function(input, output, session) {
       lsize_legend_title  = input$polarLabelsSizeLegendTitle,
       progress            = progress      
     )
+    
+    # habilita el contenedor del polar e histogramas
+    session$sendCustomMessage(type="disableDivHandler", list(id="polar", disable=FALSE))
+    session$sendCustomMessage(type="disableDivHandler", list(id="histogramDist", disable=FALSE))
+    session$sendCustomMessage(type="disableDivHandler", list(id="histogramCore", disable=FALSE))
+    session$sendCustomMessage(type="disableDivHandler", list(id="histogramDegree", disable=FALSE))
+    
     return(p)
   })
 

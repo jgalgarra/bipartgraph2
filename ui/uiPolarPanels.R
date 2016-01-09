@@ -14,6 +14,42 @@ library(shinythemes)
 source("global.R", encoding="UTF-8")
 source("ui/uiPolarControls.R", encoding="UTF-8")
 
+# panel del polar (configuracion + diagrama)
+polarPanel<-function() {
+  panel<-tabsetPanel(
+    tabPanel("Diagrama Polar",  tags$div(class="panelContent", polarDiagramPanel())),
+    tabPanel("Histogramas",     tags$div(class="panelContent", histogramPanel())),
+    tabPanel("Configuración",   tags$div(class="panelContent", polarConfigPanel()))
+  )
+  return(panel)
+}
+
+# panel con el diagrama polar
+polarDiagramPanel <- function() {
+  control<-fluidRow(
+    column(12, 
+      fluidRow(groupHeader(text="Diagrama", image="air_force.png")),
+      fluidRow(plotOutput("polar"))
+    )
+  )
+  return(control)
+}
+
+# panel con el gragico de histogramas
+histogramPanel <- function() {
+  control<-fluidRow(
+    column(12, 
+      fluidRow(groupHeader(text="Diagrama", image="bar.png")),
+      fluidRow(
+        column(4, plotOutput("histogramDist")),
+        column(4, plotOutput("histogramCore")),
+        column(4, plotOutput("histogramDegree"))
+      )
+    )
+  )
+  return(control)
+}
+
 # panel de configuracion del diagrama polar
 polarConfigPanel <- function() {
   panel<-fluidRow(
@@ -45,42 +81,6 @@ polarConfigPanel <- function() {
       column(2, polarLabelsSizeControl("AxisTitle", "Título de los ejes", 10)),
       column(2, polarLabelsSizeControl("LegendTitle", "Título de la leyenda", 10))
     )
-  )
-  return(panel)
-}
-
-# panel con el diagrama polar
-polarDiagramPanel <- function() {
-  control<-fluidRow(
-    column(12, 
-      fluidRow(groupHeader(text="Diagrama", image="air_force.png")),
-      fluidRow(plotOutput("polar"))
-    )
-  )
-  return(control)
-}
-
-# panel con el gragico de histogramas
-histogramPanel <- function() {
-  control<-fluidRow(
-    column(12, 
-      fluidRow(groupHeader(text="Diagrama", image="bar.png")),
-      fluidRow(
-        column(4, plotOutput("histogramDist")),
-        column(4, plotOutput("histogramCore")),
-        column(4, plotOutput("histogramDegree"))
-      )
-    )
-  )
-  return(control)
-}
-
-# panel del polar (configuracion + diagrama)
-polarPanel<-function() {
-  panel<-tabsetPanel(
-    tabPanel("Diagrama Polar",  tags$div(class="panelContent", polarDiagramPanel())),
-    tabPanel("Histogramas",     tags$div(class="panelContent", histogramPanel())),
-    tabPanel("Configuración",   tags$div(class="panelContent", polarConfigPanel()))
   )
   return(panel)
 }

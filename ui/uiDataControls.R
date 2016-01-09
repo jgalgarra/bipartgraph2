@@ -15,10 +15,12 @@ library(shinyjs)
 selectDataFileControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
+  choices<-list(c(""))
+  names(choices)<-strings$value("LABEL_SELECT_DATAFILE_LOADING")
   control<-selectInput(
     inputId   = "selectedDataFile", 
-    label     = controlLabel("Fichero de datos"),
-    choices   = list("Cargando..."=c("")),
+    label     = controlLabel(strings$value("LABEL_SELECT_DATAFILE_CONTROL")),
+    choices   = choices,
     selected  = NULL,
     multiple  = FALSE
   )
@@ -30,7 +32,7 @@ uploadFilesControl <- function() {
   control<-fileInput(
     inputId   = "uploadedFiles",
     accept    = c("txt/csv", "text/comma-separated-values", "text/plain", ".csv"),
-    label     = controlLabel("Subir ficheros"),
+    label     = controlLabel(strings$value("LABEL_UPLOAD_FILES_CONTROL")),
     multiple  = TRUE
   )
   return(control)
@@ -40,7 +42,7 @@ uploadFilesControl <- function() {
 refreshFilesControl <- function() {
   control<-actionButton(
     inputId   = "refreshFiles",
-    label     = controlLabel("Refrescar")
+    label     = controlLabel(strings$value("LABEL_REFRESH_FILES_CONTROL"))
   )
   return(control)
 }
@@ -49,7 +51,7 @@ refreshFilesControl <- function() {
 deleteFilesControl <- function() {
   control<-actionButton(
     inputId   = "deleteFiles",
-    label     = controlLabel("Borrar")
+    label     = controlLabel(strings$value("LABEL_DELETE_FILES_CONTROL"))
   )
   return(control)
 }

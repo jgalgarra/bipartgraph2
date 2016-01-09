@@ -16,7 +16,7 @@ source("global.R", encoding="UTF-8")
 zigguratPaintLinksControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratPaintLinks",
-    label   = controlLabel("Mostrar enlaces"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_PAINT_LINKS_CONTROL")),
     value   = TRUE
   )
   return(control)
@@ -26,7 +26,7 @@ zigguratPaintLinksControl <- function() {
 zigguratDisplayLabelsControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratDisplayLabels",
-    label   = controlLabel("Mostrar etiquetas"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_DISPLAY_LABELS_CONTROL")),
     value   = TRUE
   )
   return(control)
@@ -36,7 +36,7 @@ zigguratDisplayLabelsControl <- function() {
 zigguratFlipResultsControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratFlipResults",
-    label   = controlLabel("Invertir resultado"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_FLIP_RESULT_CONTROL")),
     value   = FALSE
   )
   return(control)
@@ -46,7 +46,7 @@ zigguratFlipResultsControl <- function() {
 zigguratAspectRatioControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAspectRatio",
-    label   = controlLabel("Relación de aspecto"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_ASPECT_RATIO_CONTROL")),
     min     = 0.1,
     max     = 5.0,
     value   = 1.0,
@@ -59,7 +59,7 @@ zigguratAspectRatioControl <- function() {
 zigguratAlphaLevelControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAlphaLevel",
-    label   = controlLabel("Transparencia"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_ALPHA_LEVEL_CONTROL")),
     min     = 0.0,
     max     = 1.0,
     value   = 0.2,
@@ -82,7 +82,7 @@ zigguratColorControl <- function(name, description, default) {
 zigguratAlphaLevelLinkControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAlphaLevelLink",
-    label   = controlLabel("Transparencia"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_ALPHA_LEVEL_LINK_CONTROL")),
     min     = 0.0,
     max     = 1.0,
     value   = 0.5,
@@ -92,10 +92,10 @@ zigguratAlphaLevelLinkControl <- function() {
 }
 
 # tamanyo de los enlaces
-zigguratSizeLinkControl <- function() {
+zigguratLinkSizeControl <- function() {
   control<-sliderInput(
-    inputId = "zigguratSizeLink",
-    label   = controlLabel("Grosor de los enlaces"),
+    inputId = "zigguratLinkSize",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_LINK_SIZE_CONTROL")),
     min     = 0.0,
     max     = 5.0,
     value   = 0.5,
@@ -105,10 +105,10 @@ zigguratSizeLinkControl <- function() {
 }
 
 # tamanyo de los core box
-zigguratSizeCoreBoxControl <- function() {
+zigguratCoreBoxSizeControl <- function() {
   control<-sliderInput(
-    inputId = "zigguratSizeCoreBox",
-    label   = controlLabel("Grosor del borde de los core box"),
+    inputId = "zigguratCoreBoxSize",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_COREBOX_SIZE_CONTROL")),
     min     = 0.0,
     max     = 2.0,
     value   = 0.2,
@@ -134,7 +134,7 @@ zigguratYDisplaceControl <- function(name, description) {
 zigguratHeightExpandControl <- function() {
   control<-sliderInput(
     inputId = "zigguratHeightExpand",
-    label   = controlLabel("Expansión de altura"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_HEIGHT_EXPAND_CONTROL")),
     min     = 0.5,
     max     = 2.0,
     value   = 1.0,
@@ -147,7 +147,7 @@ zigguratHeightExpandControl <- function() {
 zigguratKcore2TailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "zigguratKcore2TailVerticalSeparation",
-    label   = controlLabel("Distancia cola-kcore2"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_KCORE2_TAIL_VERTICAL_SEPARATION_CONTROL")),
     min     = 0.5,
     max     = 2.0,
     value   = 1.0,
@@ -173,7 +173,7 @@ zigguratKcore1TailDistToCoreControl <- function(name, description) {
 zigguratInnerTailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "zigguratInnerTailVerticalSeparation",
-    label   = controlLabel("Separacion vertical interna en la cola"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_INNER_TAIL_VERTICAL_SEPARATION_CONTROL")),
     min     = 0.5,
     max     = 2.0,
     value   = 1.0,
@@ -199,7 +199,7 @@ zigguratLabelsSizeControl <- function(name, description, default) {
 zigguratSvgScaleFactorControl <- function() {
   control<-sliderInput(
     inputId = "zigguratSvgScaleFactor",
-    label   = controlLabel("Escala SVG"),
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_SVG_SCALE_FACTOR_CONTROL")),
     min     = 10,
     max     = 100,
     value   = 50,

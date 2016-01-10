@@ -18,10 +18,10 @@ downloadPanel <- function() {
   panel<-tags$div(
     class="panelContent", 
     fluidRow(
-      column(12, groupHeader(text="Descarga de diagramas", image="download.png"))
+      column(12, groupHeader(text=strings$value("LABEL_DOWNLOAD_MAIN_HEADER"), image="download.png"))
     ),
     fluidRow(
-      column(12, tags$h5("Descarga individual en formato imagen"))
+      column(12, tags$h6(strings$value("LABEL_INDIVIDUAL_DOWNLOAD_TIP")))
     ),
     fluidRow(
       column(1, tags$span("")),
@@ -45,7 +45,7 @@ downloadPanel <- function() {
       column(12, tags$h5(""))
     ),
     fluidRow(
-      column(12, tags$h5("Descarga en PDF"))
+      column(12, tags$h6(strings$value("LABEL_PDF_DOWNLOAD_TIP")))
     ),
     fluidRow(
       column(1, tags$span("")),
@@ -54,7 +54,7 @@ downloadPanel <- function() {
     fluidRow(
       column(
         12, 
-        fluidRow(groupHeader(text="Tamaño de los diagramas", image="ruler.png"))
+        fluidRow(groupHeader(text=strings$value("LABEL_DOWNLOAD_SIZE_HEADER"), image="ruler.png"))
       )
     ),
     fluidRow(

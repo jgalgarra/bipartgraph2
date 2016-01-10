@@ -39,27 +39,27 @@ shinyUI(
       footer  = footerPanel(),
       # controles de entrada para la gestion de los ficheros de datos
       tabPanel(
-        "Datos",
+        strings$value("LABEL_MENU_DATA_PANEL"),
         dataPanel()
       ),
       # panel con el diagrama ziggurat
       tabPanel(
-        "Ziggurat",
+        strings$value("LABEL_MENU_ZIGGURAT_PANEL"),
         zigguratPanel()
       ),
       # panel con el diagrama polar
       tabPanel(
-        "Polar/Histogramas",
+        strings$value("LABEL_MENU_POLAR_PANEL"),
         polarPanel()
       ),
       # panel para descargar los diagramas
       tabPanel(
-        "Descargas",
+        strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
         downloadPanel()
       ),
       # acerca de
       tabPanel(
-        "Acerca de...",
+        strings$value("LABEL_MENU_ABOUT_PANEL"),
         summaryPanel()    
       )
     )

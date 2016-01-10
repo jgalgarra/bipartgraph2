@@ -16,7 +16,7 @@ source("global.R", encoding="UTF-8")
 polarDisplayTextControl <- function() {
   control<-checkboxInput(
     inputId = "polarDisplayText",
-    label   = controlLabel("Mostrar etiquetas"),
+    label   = controlLabel(strings$value("LABEL_POLAR_SHOW_LABELS_CONTROL")),
     value   = TRUE
   )
   return(control)
@@ -31,17 +31,6 @@ polarGuildLabelControl <- function(name, description, value) {
   )
   return(control)
 }
-
-# control para mostrar o no el texto
-polarDisplayTextControl <- function() {
-  control<-checkboxInput(
-    inputId = "polarDisplayText",
-    label   = controlLabel("Mostrar etiquetas"),
-    value   = TRUE
-  )
-  return(control)
-}
-
 
 # tamanyo de las etiquetas
 polarLabelsSizeControl <- function(name, description, default) {

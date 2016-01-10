@@ -27,11 +27,11 @@ footerPanel <- function() {
       class="footerPanelContent",
       tags$p(
         class="footerPanelContentLeft", 
-        "PFC Representación gráfica de redes bipartitas basada en descomposición k-core"
+        strings$value("LABEL_FOOTER_CONTENT_LEFT")
       ),
       tags$p(
         class="footerPanelContentRight", 
-        "EUITT - Universidad Politécnica de Madrid"
+        strings$value("LABEL_FOOTER_CONTENT_RIGHT")
       )
     )
   )
@@ -50,11 +50,11 @@ summaryPanel <- function() {
   version <- "v1.0 - Diciembre'15"
   panel<-tags$div(class="panelContent", fluidRow(
       column(12, 
-        fluidRow(groupHeader(text="Información", image="info.png")),
+        fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_INFO_HEADER"), image="info.png")),
         fluidRow(tags$h5(class="aboutInfo", info)),
-        fluidRow(groupHeader(text="Autor", image="worker.png")),
+        fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_AUTHOR_HEADER"), image="worker.png")),
         fluidRow(tags$h5(class="aboutAuthor", author)),
-        fluidRow(groupHeader(text="Versión", image="product.png")),
+        fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_VERSION_HEADER"), image="product.png")),
         fluidRow(tags$h5(class="aboutVersion", version))
       )
     ))

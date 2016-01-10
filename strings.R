@@ -19,9 +19,9 @@ LocalizedStrings<-function(locale="es") {
   
   # obtiene el texto para la clave indicada
   this$value<-function(key) {
-    val<-this$data[key, this$locale]
-    if (is.null(val) || is.na(val)) {
-      val<-""
+    val<-this$data[rownames(this$data)==c(key), this$locale]
+    if (length(val)==0) {
+      val<-"(error: undefined key)"
     }
     return(val)
   }

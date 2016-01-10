@@ -18,11 +18,10 @@ LocalizedStrings<-function(locale="es") {
   this<-list(locale=locale, data=read.csv("resources/strings.csv", header=TRUE, row.names=1, , encoding="UTF-8", colClasses="character"))
   
   # obtiene el texto para la clave indicada
-  this$value<-function(key) {
-    val<-this$data[rownames(this$data)==c(key), this$locale]
-    if (length(val)==0) {
-      val<-"(error: undefined key)"
-    }
+  this$value<-function(keys) {
+    val<-this$data[keys, this$locale]
+    val[is.na(val)]<-"(error: undefined key)"
+    val[is.null(val)]<-"(error: undefined language)"
     return(val)
   }
   

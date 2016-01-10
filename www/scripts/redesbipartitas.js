@@ -10,27 +10,28 @@
 //                 relativa a nodos y elementos
 //-----------------------------------------------------------------------------
 
-// timeout para establecer los tooltips
-var timeout;
-
 // funcion que se llama cuando la pagina esta cargada
-function documentReady() {
-    updateTooltips();
+function windowLoad() {
+    // actualiza los tooltips de ayuda
+    updateHelpTooltips();
+    
+    // indica al servidor que el cliente esta listo
+    Shiny.onInputChange("windowLoad", new Date());
 }
 
-// establece los tooltips de todos los elementos
-var tooltips=[
+// establece los tooltips de ayuda de todos los elementos
+var helpTooltips=[
     {id: "zoomin",      value: "Incrementar el nivel de zoom del ziggurat"},
     {id: "zoomout",     value: "Disminuir el nivel de zoom del ziggurat"},
     {id: "zoomfit",     value: "Ajustar el ziggurat a la ventana de visualización"},
     {id: "zoomreset",   value: "Visualizar el ziggurat en su tamaño real"}
 ];
-function updateTooltips() {
-    for (var i=0;i<tooltips.length;++i) {
-        $("#" + tooltips[i].id).each(function() {
+function updateHelpTooltips() {
+    for (var i=0;i<helpTooltips.length;++i) {
+        $("#" + helpTooltips[i].id).each(function() {
             $(this).qtip({
-                content:    {text: tooltips[i].value},
-                style:      {classes: "qtip-bootstrap rbtooltip"}
+                content:    {text: helpTooltips[i].value},
+                style:      {classes: "qtip-bootstrap rbtooltiphelp"}
             });
         });
     }
@@ -40,11 +41,14 @@ function updateTooltips() {
 function updateSVGEvents() {
     // actualiza los eventos asociados a las etiquetas
     var aGuilds=["a", "b"];
-    for (var i=0;i<aGuilds.length;++i) {
-        for (var j=0;j<10;++j) {
-            updateTextEvents("kcore" + j + "-" + aGuilds[i] + "-label", aGuilds[i], j);
-        }
+    var aGuildsData=[zigguratData.list_dfs_a, zigguratData.list_dfs_b];
+    for (var i=0;i<zigguratData.ids.length;++i) {
+        var guildId     = zigguratData.ids[i];
+        var guildName   = zigguratData.names[i];
+        var guildData   = zigguratData.data[guildId];
+        updateTextEvents(guildId, guildName, guildData);
     }
+    
     // actualiza los eventos asociados a los enlaces
     updatePathEvents("bentLink");
     updatePathEvents("straightLink");
@@ -60,32 +64,48 @@ function updateSVGEvents() {
 }
 
 // actualiza los eventos asociados a los textos del SVG
-function updateTextEvents(pattern, guild, kcore) {
-    // estilo del cursor
-    $("text[id*=" + pattern + "]").css("cursor", "pointer");
-    
-    // eventos
-    $("text[id*=" + pattern + "]").mouseover(function() {
-        var fontSize=parseInt($(this).css("font-size").replace("px",""));
-        $(this).css("font-size", (fontSize+4) + "px");
+function updateTextEvents(guildId, guildName, guildData) {
+    for (var kcore=1;kcore<=guildData.length;++kcore) {
+        var pattern="kcore" + kcore + "-" + guildId + "-label";
         
-        // indica el nodo por el que se ha pasado el raton
-        Shiny.onInputChange("nodeData", {
-            guild:      $(this).data("main").guild, 
-            kcore:      $(this).data("main").kcore, 
-            elements:   getElements($(this).find("tspan").html())
+        // estilo del cursor
+        $("text[id*=" + pattern + "]").css("cursor", "pointer");
+        
+        // eventos
+        $("text[id*=" + pattern + "]").mouseover(function() {
+            var fontSize=parseInt($(this).css("font-size").replace("px",""));
+            $(this).css("font-size", (fontSize+4) + "px");
+            
+            // indica el nodo por el que se ha pasado el raton
+            Shiny.onInputChange("nodeData", {
+                guild:      $(this).data("main").guild, 
+                kcore:      $(this).data("main").kcore, 
+                elements:   getElements($(this).find("tspan").html())
+            });
+            
+            // inicializa el nodo seleccionado
+            Shiny.onInputChange("elementData", null);
+        });
+        $("text[id*=" + pattern + "]").mouseout(function() {
+            var fontSize=parseInt($(this).css("font-size").replace("px",""));
+            $(this).css("font-size", (fontSize-4) + "px");
         });
         
-        // inicializa el nodo seleccionado
-        Shiny.onInputChange("elementsData", null);
-    });
-    $("text[id*=" + pattern + "]").mouseout(function() {
-        var fontSize=parseInt($(this).css("font-size").replace("px",""));
-        $(this).css("font-size", (fontSize-4) + "px");
-    });
-    
-    // datos asociados al nodo
-    $("text[id*=" + pattern + "]").data("main", {"guild":guild, "kcore":kcore});    
+        // datos asociados al nodo
+        $("text[id*=" + pattern + "]").data("main", {"guild":guildId, "kcore":kcore});
+        
+        // tooltips
+        var guildCoreData=guildData[kcore-1];
+        if (guildCoreData!=null) {
+            $("text[id*=" + pattern + "]").each(function() {
+                var aElements=getElements($(this).find("tspan").html());
+                $(this).qtip({
+                    content:    {text: getTooltipContent(guildName, kcore, guildCoreData, aElements)},
+                    style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500}
+                });
+            });            
+        }
+    }
 }
 
 // actualiza los eventos asociados a los enlaces del SVG
@@ -119,6 +139,70 @@ function getElements(strElements) {
     return result;
 }
 
+// obtiene el contenido para un tooltip de informacion de un
+// nodo del ziggurat
+function getTooltipContent(guildName, kcore, guildCoreData, aElements) {
+    var content="";
+    
+    // datos generales
+    content+="<table class='rbtooltiptableinfo1'>";
+    content+="<tr>";
+    content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_TYPE") + "</th>";
+    content+="<td>" + guildName + "</td>";
+    content+="</tr>";
+    content+="<tr>";
+    content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KCORE") + "</th>";
+    content+="<td>" + kcore + "</td>";
+    content+="</tr>";
+    content+="</table>";
+    
+    // datos de cada elemento
+    content+="<table class='rbtooltiptableinfo2'>";
+    content+="<tr>";
+    content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_ID") + "</th>";
+    content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_NAME") + "</th>";
+    content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS") + "</th>";
+    content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE") + "</th>";
+    content+="</tr>";
+    for (var i=0;i<aElements.length;++i) {
+        var id=aElements[i].id;
+        var element=getTooltipElementContent(guildCoreData, id);
+        content+="<tr>";
+        content+="<td>" +  id + "</td>";
+        content+="<td>" + element.name + "</td>";
+        content+="<td>" + element.kradius + "</td>";
+        content+="<td>" + element.kdegree + "</td>";
+        content+="</tr>";
+    }
+    content+="</table>";
+    return content;
+}
+
+// obtiene los datos concretos asociados a un elemento
+// de un nodo del ziggurat
+function getTooltipElementContent(guildCoreData, id) {
+    var bFound=false;
+    var i=0;
+    while (!bFound && i<guildCoreData.label.length) {
+        if (guildCoreData.label[i]==id) {
+            bFound=true;
+        } else {
+            ++i;
+        }
+    }
+    
+    var name="(error)";
+    var kdegree="(error)";
+    var kradius="(error)";
+    if (bFound) {
+        name=guildCoreData.name_species[i];
+        kdegree=Math.round(guildCoreData.kdegree[i]*100)/100;;
+        kradius=Math.round(guildCoreData.kradius[i]*100)/100;;
+    }
+    value={id:id, name:name, kdegree:kdegree, kradius:kradius};
+    return value;
+}
+
 // muestra la informacion obtenida de la wikipedia para un elemento concreto
 function showWiki(id, name) {
     //alert("showWiki(id=" + id + ", name=" + name + ")");
@@ -128,13 +212,68 @@ function showWiki(id, name) {
     });
 }
 
+
+//amplia el SVG del ziggurat
+function svgZoomIn() {
+ var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
+ var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
+ $("#ziggurat svg").css({
+     "width":    (_width*1.1) + "px",
+     "height":   (_height*1.1) + "px"
+ });
+}
+
+//reduce el SVG del ziggurat
+function svgZoomOut() {
+ var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
+ var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
+ $("#ziggurat svg").css({
+     "width":    (_width/1.1) + "px",
+     "height":   (_height/1.1) + "px"
+ });
+}
+
+//ajusta el SVG del ziggurat al marco que lo contiene
+function svgZoomFit() {
+ var _width  = $("#ziggurat").width();
+ var _height = $("#ziggurat").height();
+ $("#ziggurat svg").css({
+     "width":    (_width) + "px",
+     "height":   (_height) + "px"
+ });
+ 
+ // restablece el scroll
+ $("#ziggurat").scrollTop(0);
+ $("#ziggurat").scrollLeft(0);
+ $("#ziggurat").perfectScrollbar("update");
+}
+
+//establece el tamaño SVG del ziggurat a su tamaño real
+function svgZoomReset() { 
+ $("#ziggurat svg").each(
+     function() {
+         var _viewBox    = $(this)[0].getAttribute("viewBox");
+         var _width      = _viewBox.split(" ")[2];
+         var _height     = _viewBox.split(" ")[3];
+         $("#ziggurat svg").css({
+             "width":    _width + "px",
+             "height":   _height + "px"
+         });
+     }
+ );
+ 
+ // restablece el scroll
+ $("#ziggurat").scrollTop(0);
+ $("#ziggurat").scrollLeft(0);
+ $("#ziggurat").perfectScrollbar("update");
+}
+
 // registra la funcion que recorre la tabla en pantalla
 // y envia el evento al servidor para el borrado de los ficheros
-var deleteFilesList=[];
 Shiny.addCustomMessageHandler(
     "deleteFilesHandler",
     function(tableId) {
-        deleteFilesList=[];
+        var deleteFilesList=[];
         $("div[id=" + tableId + "] tbody tr td:nth-child(1)").each(
             function() {
                 //alert("this=" + $(this).html());
@@ -143,7 +282,7 @@ Shiny.addCustomMessageHandler(
         );
         
         if (deleteFilesList.length>0) {
-            var message="¿Desea borrar los ficheros siguientes?:\n";
+            var message=getMessage("MESSAGE_CONFIRM_DELETE_FILES") + ":\n";
             for (var i=0;i<deleteFilesList.length;++i) {
                 message=message + "  - " + deleteFilesList[i] + "\n"; 
             }
@@ -193,7 +332,7 @@ Shiny.addCustomMessageHandler(
                     //alert("name=" + property  + ", value=" + pages[property]);
                     var page=pages[property];
                     if (typeof page.revisions=="undefined") {
-                        $("div[id=wikiDetails-" + elementData.id + "]").html("No se ha podido encontrar información para " + elementData.name);
+                        $("div[id=wikiDetails-" + elementData.id + "]").html(getMessage("MESSAGE_WIKIPEDIA_NO_INFO_ERROR") + " " + elementData.name);
                     } else {
                         var revision=page.revisions[0];
                         var content=revision["*"];
@@ -221,7 +360,7 @@ Shiny.addCustomMessageHandler(
             });
             // no funciona el "fail" con callback, pero lo dejo por si acaso algún día....
             jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
-                alert("Error descargando contenido de wikipedia [status=" + textStatus+ ", error=" + errorThrown + "]");
+                alert(getMessage("MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR") + " [status=" + textStatus+ ", error=" + errorThrown + "]");
             });
         });
     }
@@ -230,68 +369,37 @@ Shiny.addCustomMessageHandler(
 // registra la funcion que se encarga de deshabilitar un div
 // de un diagrama mientras se esta generando
 Shiny.addCustomMessageHandler(
- "disableDivHandler",
- function(divData) {
-     //alert("disableDivHandler(divData=" + JSON.stringify(divData) + ")");
-     if (divData.disable) {
-         $("#" + divData.id).fadeOut(500);
-     } else {
-         $("#" + divData.id).fadeIn(500);
-     }
- }
+    "disableDivHandler",
+    function(divData) {
+        //alert("disableDivHandler(divData=" + JSON.stringify(divData) + ")");
+        if (divData.disable) {
+            $("#" + divData.id).fadeOut(500);
+        } else {
+            $("#" + divData.id).fadeIn(500);
+        }
+    }
 );
 
-// amplia el SVG del ziggurat
-function svgZoomIn() {
-    var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
-    var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
-    $("#ziggurat svg").css({
-        "width":    (_width*1.1) + "px",
-        "height":   (_height*1.1) + "px"
-    });
+// registra la funcion que se usa para mostrar los textos de los mensajes 
+// en el lenguage seleccionado
+var messagesMap=null;
+Shiny.addCustomMessageHandler(
+    "messagesHandler",
+    function(messages) {
+        messagesMap=messages;
+    }
+);
+function getMessage(key) {
+    return messagesMap[key];
 }
 
-// reduce el SVG del ziggurat
-function svgZoomOut() {
-    var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
-    var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
-    $("#ziggurat svg").css({
-        "width":    (_width/1.1) + "px",
-        "height":   (_height/1.1) + "px"
-    });
-}
-
-// ajusta el SVG del ziggurat al marco que lo contiene
-function svgZoomFit() {
-    var _width  = $("#ziggurat").width();
-    var _height = $("#ziggurat").height();
-    $("#ziggurat svg").css({
-        "width":    (_width) + "px",
-        "height":   (_height) + "px"
-    });
-    
-    // restablece el scroll
-    $("#ziggurat").scrollTop(0);
-    $("#ziggurat").scrollLeft(0);
-    $("#ziggurat").perfectScrollbar("update");
-}
-
-// establece el tamaño SVG del ziggurat a su tamaño real
-function svgZoomReset() { 
-    $("#ziggurat svg").each(
-        function() {
-            var _viewBox    = $(this)[0].getAttribute("viewBox");
-            var _width      = _viewBox.split(" ")[2];
-            var _height     = _viewBox.split(" ")[3];
-            $("#ziggurat svg").css({
-                "width":    _width + "px",
-                "height":   _height + "px"
-            });
-        }
-    );
-    
-    // restablece el scroll
-    $("#ziggurat").scrollTop(0);
-    $("#ziggurat").scrollLeft(0);
-    $("#ziggurat").perfectScrollbar("update");
-}
+//registra la funcion que se usa para mostrar los textos de los mensajes 
+//en el lenguage seleccionado
+var zigguratData=null;
+Shiny.addCustomMessageHandler(
+ "zigguratDataHandler",
+ function(data) {
+     zigguratData=data;
+     alert("zigguratData=" + JSON.stringify(zigguratData));
+ }
+);

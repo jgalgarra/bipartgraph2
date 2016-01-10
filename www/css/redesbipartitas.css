@@ -121,6 +121,38 @@
 }
 
 /* tooltips */
-.rbtooltip {
+.rbtooltiphelp {
     font-size:  x-small;
+}
+.rbtooltipinfo {
+    font-size:  x-small;
+    background: #FFFAB8;
+}
+
+.rbtooltiptableinfo1 {
+    width: 100%;
+}
+
+.rbtooltiptableinfo1 th {
+    font-weigth:bold;
+    width:      50px;
+    padding:    0px;
+}
+
+.rbtooltiptableinfo1 td {
+    padding:    0px;
+}
+
+.rbtooltiptableinfo2 {
+    width: 100%;
+}
+
+.rbtooltiptableinfo2 th {
+    font-weigth:    bold;
+    border-bottom:  1px solid lightgray;
+    padding:        0px;
+}
+
+.rbtooltiptableinfo2 td {
+    padding: 0px;
 }

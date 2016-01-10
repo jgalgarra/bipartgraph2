@@ -56,7 +56,7 @@ paint_kdegree_kradius <- function(graph, num_guild_a, num_guild_b,
     printable_points <- c(head(sort_radiuss,printable_range), tail(sort_radiuss,tailp))
   }
   for (i in 1:tot_species){
-    progress$inc((3/4)*(1/tot_species), detail=paste0("Procesando especie ", i , "..."))
+    progress$inc((3/4)*(1/tot_species), detail=paste0(strings$value("MESSAGE_POLAR_PROGRESS_PROCESING_SPECIE"), " ", i , "..."))
     if (length(which(printable_points == dfaux[i,]$name)) > 0)
       dfaux[i,]$kcol_label <- vcols[dfaux[i,]$kcorenum]
     if (i>nga)
@@ -213,7 +213,7 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
     slabels <<- c("Plant", "Disperser")
   }
 
-  progress$inc(1/4, detail="Analizando red...")
+  progress$inc(1/4, detail=strings$value("MESSAGE_POLAR_PROGRESS_ANALYZING_NETWORK"))
   result_analysis <- analyze_network(red, directory = directorystr, guild_a = sguild_a, guild_b = sguild_b, plot_graphs = FALSE)
   numlinks <- result_analysis$links
   
@@ -239,6 +239,7 @@ polar_graph <- function( red, directorystr = "data/", plotsdir = "plot_results/p
   #  print(r["polar_plot"][[1]])
   #if (print_to_file)
   #  dev.off()
+  progress$inc(0, detail=strings$value("MESSAGE_POLAR_PROGRESS_DONE"))
   return(r)
 }
 

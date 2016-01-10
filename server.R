@@ -37,7 +37,7 @@ showElements <- function(elementsDf) {
   
   # crea la cabecera
   columns <- ""
-  values  <- c("#", "Nombre", "k-radius", "k-degree")
+  values  <- c(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE"))
   for (i in 1:length(values)) {
     if (nchar(columns)>0) {
       columns<-paste0(columns, ", ")
@@ -84,7 +84,7 @@ showWiki <- function(session, elementData) {
     tab<-paste0(tab, elementData$id)
     tab<-paste0(tab, "\"")
     tab<-paste0(tab, ", class=\"wikiDetails\"")
-    tab<-paste0(tab, ", \"(cargando...)\"")
+    tab<-paste0(tab, ", \"", strings$value("MESSAGE_WIKI_LOADING"), "\"")
     #tab<-paste0(tab, "tags$h6(\"(información descargada de Wikipedia para el elemento ")
     #tab<-paste0(tab, elementData$name)
     #tab<-paste0(tab, "...)\"")
@@ -105,14 +105,14 @@ availableFilesList<-function() {
   
   # anyade la primera entrada
   empty<-c("")
-  names(empty)<-c("Seleccione un fichero...")
+  names(empty)<-c(strings$value("MESSAGE_SELECT_DATA_FILE_INPUT"))
   return(c(empty, filesList))
 }
 
 # obtiene la lista con los detalles de los ficheros disponibles
 availableFilesDetails<-function(filesList) {
   # columnas de los detalles
-  filesDetailsColumns<-c("Nombre", "Tamaño", "", "", "Fecha modificación", "", "Fecha acceso")
+  filesDetailsColumns<-c(strings$value("LABEL_AVAILABLE_FILES_DETAILS_NAME"), strings$value("LABEL_AVAILABLE_FILES_DETAILS_SIZE"), "", "", strings$value("LABEL_AVAILABLE_FILES_DETAILS_MODIFICATION_DATE"), "", strings$value("LABEL_AVAILABLE_FILES_DETAILS_ACCESS_DATE"))
 
   # elimina las entradas vacias
   filesList<-filesList[filesList!=""]
@@ -170,7 +170,7 @@ validateDiagramOptions<-function(options) {
   return(validate(
     need(
       options$ppi==600 && options$paperSize>3 || options$ppi==300 && options$paperSize>1 || options$ppi<300,  
-      paste0("ERROR: Debe usar una resolución menor de ", options$ppi, " para el tamaño de papel 'A", options$paperSize , "'")
+      paste0(strings$value("MESSAGE_PAPERSIZE_ERROR_1"), options$ppi, strings$value("MESSAGE_PAPERSIZE_ERROR_2"), options$paperSize, collapse="")
     )
   ))
 }
@@ -207,6 +207,17 @@ plotPDF<-function(file, ziggurat, polar, options) {
 # proceso de servidor
 #
 shinyServer(function(input, output, session) {
+  # recibe cuendo el cliente esta listo
+  observeEvent(input$windowLoad, {
+    # crea los mensajes que se usan desde javascript
+    messagesNames<-c("LABEL_ZIGGURAT_INFO_DETAILS_TYPE", "LABEL_ZIGGURAT_INFO_DETAILS_KCORE", "LABEL_ZIGGURAT_INFO_DETAILS_ID", "LABEL_ZIGGURAT_INFO_DETAILS_NAME", "LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS", "LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE", "MESSAGE_CONFIRM_DELETE_FILES", "MESSAGE_WIKIPEDIA_NO_INFO_ERROR", "MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR")
+    messages<-strings$value(messagesNames)
+    names(messages)<-messagesNames
+    
+    # inicializa la lista de mensajes en javascript
+    session$sendCustomMessage(type="messagesHandler", as.list(messages))
+  })
+
   # contenido del fichero seleccionado
   selectedDataFileContent<-reactive({
     file<-input$selectedDataFile
@@ -238,7 +249,7 @@ shinyServer(function(input, output, session) {
     }
     
     # renombra las columnas
-    names(files)<-c("Nombre", "Tamaño", "Tipo", "")
+    names(files)<-c(strings$value("LABEL_UPLOADED_FILES_DETAILS_NAME"), strings$value("LABEL_UPLOADED_FILES_DETAILS_SIZE"), strings$value("LABEL_UPLOADED_FILES_DETAILS_TYPE"), "")
     
     # elimina las columnas sin nombre
     files<-files[!(names(files) %in% c(""))]
@@ -270,7 +281,7 @@ shinyServer(function(input, output, session) {
 
   # borra los ficheros que se muestran en la lista de ficheros disponibles
   observeEvent(input$deleteFiles, {
-    # invoca a la funcion javascript que devuelve la lista de ficheros que se muestran
+    # invoca a la funcion javascript que devuelve la lista de ficheros que se muestran para ser borrados
     session$sendCustomMessage(type="deleteFilesHandler", "availableFilesTable")
   })
 
@@ -289,7 +300,7 @@ shinyServer(function(input, output, session) {
   # configuracion
   ziggurat<-reactive({
     validate(
-      need(nchar(input$selectedDataFile)>0, "Seleccione un fichero de datos (Datos > Seleccionar datos > Fichero de datos)")
+      need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
     )
 
     # indicador de progreso
@@ -365,6 +376,9 @@ shinyServer(function(input, output, session) {
       progress                                      = progress
     )
 
+    # informa de los datos del ziggurat
+    session$sendCustomMessage(type="zigguratDataHandler", list(ids=c("a", "b"), names=c(z$name_guild_a, z$name_guild_b), data=list(a=z$list_dfs_a, b=z$list_dfs_b)))
+    
     # habilita el contenedor del ziggurat
     session$sendCustomMessage(type="disableDivHandler", list(id="ziggurat", disable=FALSE))
     
@@ -416,8 +430,8 @@ shinyServer(function(input, output, session) {
     data    <- nodeData()
     details <- ""
     if (!is.null(data)) {
-      details <- paste(details, detailRow("Tipo", ifelse(data$guild=="a", z$name_guild_a, z$name_guild_b)), collapse="")
-      details <- paste(details, detailRow("k-core", data$kcore), collapse="")
+      details <- paste(details, detailRow(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"), ifelse(data$guild=="a", z$name_guild_a, z$name_guild_b)), collapse="")
+      details <- paste(details, detailRow(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE"), data$kcore), collapse="")
       if (data$kcore>1) {
         if (data$guild=="a") {
           kcore_df<-z$list_dfs_a[[data$kcore]]
@@ -450,7 +464,7 @@ shinyServer(function(input, output, session) {
   # configuracion
   polar<-reactive({
     validate(
-      need(nchar(input$selectedDataFile)>0, "Seleccione un fichero de datos (Datos > Seleccionar datos > Fichero de datos)")
+      need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
     )
     
     # indicador de progreso
@@ -599,5 +613,5 @@ shinyServer(function(input, output, session) {
       plotPDF(file, z, p, options)
     },
     contentType="application/pdf"
-  )
+  )  
 })

@@ -375,9 +375,21 @@ shinyServer(function(input, output, session) {
       svg_scale_factor                              = 10,
       progress                                      = progress
     )
-
+    z$svg$save("C:\\Temp\\kk.svg")
+    
+    # igraph del ziggurat
+    g<-z$result_analysis$graph
+    
+    # posiciones de los nodos de cada guild
+    guildAVertex<-which(V(g)$guild_id=="a")
+    guildBVertex<-which(V(g)$guild_id=="b")
+    
+    # vecinos para cada nodo
+    guildANeighbors<-sapply(guildAVertex, function(x) {neighbors(g, x)$id})
+    guildBNeighbors<-sapply(guildBVertex, function(x) {neighbors(g, x)$id})
+    
     # informa de los datos del ziggurat
-    session$sendCustomMessage(type="zigguratDataHandler", list(ids=c("a", "b"), names=c(z$name_guild_a, z$name_guild_b), data=list(a=z$list_dfs_a, b=z$list_dfs_b)))
+    session$sendCustomMessage(type="zigguratDataHandler", list(ids=c("a", "b"), names=c(z$name_guild_a, z$name_guild_b), data=list(a=z$list_dfs_a, b=z$list_dfs_b), neighbors=list(a=guildANeighbors, b=guildBNeighbors)))
     
     # habilita el contenedor del ziggurat
     session$sendCustomMessage(type="disableDivHandler", list(id="ziggurat", disable=FALSE))

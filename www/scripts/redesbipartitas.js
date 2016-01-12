@@ -46,12 +46,11 @@ function updateSVGEvents() {
         var guildId     = zigguratData.ids[i];
         var guildName   = zigguratData.names[i];
         var guildData   = zigguratData.data[guildId];
-        updateTextEvents(guildId, guildName, guildData);
+        updateNodeEvents(guildId, guildName, guildData);
     }
     
     // actualiza los eventos asociados a los enlaces
-    updatePathEvents("bentLink");
-    updatePathEvents("straightLink");
+    updateLinkEvents("link");
     
     // inicializa el scroll mediante "drag"
     $("#ziggurat").dragscrollable();
@@ -63,34 +62,23 @@ function updateSVGEvents() {
     svgZoomReset();
 }
 
-// actualiza los eventos asociados a los textos del SVG
-function updateTextEvents(guildId, guildName, guildData) {
+// actualiza los eventos asociados a los nodos del SVG
+function updateNodeEvents(guildId, guildName, guildData) {
     for (var kcore=1;kcore<=guildData.length;++kcore) {
-        var pattern="kcore" + kcore + "-" + guildId + "-label";
-        
+        var pattern="kcore" + kcore + "-" + guildId;
+
         // estilo del cursor
-        $("text[id*=" + pattern + "]").css("cursor", "pointer");
+        $("[id*=" + pattern + "]").css("cursor", "pointer");
         
         // eventos
-        $("text[id*=" + pattern + "]").mouseover(function() {
-            var fontSize=parseInt($(this).css("font-size").replace("px",""));
-            $(this).css("font-size", (fontSize+4) + "px");
-            
-            // indica el nodo por el que se ha pasado el raton
-            Shiny.onInputChange("nodeData", {
-                guild:      $(this).data("main").guild, 
-                kcore:      $(this).data("main").kcore, 
-                elements:   getElements($(this).find("tspan").html())
-            });
-            
-            // inicializa el nodo seleccionado
-            Shiny.onInputChange("elementData", null);
+        $("[id*=" + pattern + "]").mouseover(function() {
+            markNode($(this).attr("id").replace("-text", "").replace("-rect",""));
         });
-        $("text[id*=" + pattern + "]").mouseout(function() {
-            var fontSize=parseInt($(this).css("font-size").replace("px",""));
-            $(this).css("font-size", (fontSize-4) + "px");
+
+        $("[id*=" + pattern + "]").mouseout(function() {
+            unmarkNode($(this).attr("id").replace("-text", "").replace("-rect",""));
         });
-        
+
         // datos asociados al nodo
         $("text[id*=" + pattern + "]").data("main", {"guild":guildId, "kcore":kcore});
         
@@ -99,9 +87,11 @@ function updateTextEvents(guildId, guildName, guildData) {
         if (guildCoreData!=null) {
             $("text[id*=" + pattern + "]").each(function() {
                 var aElements=getElements($(this).find("tspan").html());
-                $(this).qtip({
-                    content:    {text: getTooltipContent(guildName, kcore, guildCoreData, aElements)},
-                    style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500}
+                $("[id*=" + pattern + "]").each(function() {
+                    $(this).qtip({
+                        content:    {text: getTooltipContent(guildName, kcore, guildCoreData, aElements)},
+                        style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500}
+                    });
                 });
             });            
         }
@@ -109,18 +99,57 @@ function updateTextEvents(guildId, guildName, guildData) {
 }
 
 // actualiza los eventos asociados a los enlaces del SVG
-function updatePathEvents(pattern) {
+function updateLinkEvents(pattern) {
     // estilo del cursor
     $("g[id*=" + pattern + "]").css("cursor", "pointer");
     
     // eventos
     $("g[id*=" + pattern + "]").mouseover(function() {
         var strokeWidth=parseFloat($(this).css("stroke-width"));
-        $(this).css("stroke-width", strokeWidth+2)
+        $(this).css("stroke-width", strokeWidth+2);
     });
     $("g[id*=" + pattern + "]").mouseout(function() {
         var strokeWidth=parseFloat($(this).css("stroke-width"));
-        $(this).css("stroke-width", strokeWidth-2)
+        $(this).css("stroke-width", strokeWidth-2);
+    });
+}
+
+// resalta el nodo indicado en el SVG
+function markNode(nodeId) {
+    // resalta el borde
+    $("rect[id*=" + nodeId + "]").each(function() {
+        var strokeWidth=parseFloat($(this).css("stroke-width"));
+        $(this).css("stroke-width", strokeWidth+2);
+    });
+
+    // resalta el texto
+    $("text[id*=" + nodeId + "]").each(function() {
+        var fontSize=parseInt($(this).css("font-size").replace("px",""));
+        $(this).css("font-size", (fontSize+4) + "px");
+        
+        // indica el nodo por el que se ha pasado el raton
+        Shiny.onInputChange("nodeData", {
+            guild:      $(this).data("main").guild, 
+            kcore:      $(this).data("main").kcore, 
+            elements:   getElements($(this).find("tspan").html())
+        });
+        
+        // inicializa el nodo seleccionado
+        Shiny.onInputChange("elementData", null);
+    });
+}
+
+// elimina el resaltado del nodo indicado en el SVG
+function unmarkNode(nodeId) {
+    // elimina el resaltado del texto
+    $("text[id*=" + nodeId + "]").each(function() {
+        var fontSize=parseInt($(this).css("font-size").replace("px",""));
+        $(this).css("font-size", (fontSize-4) + "px");
+    });
+    // elimina el resaltado del borde
+    $("rect[id*=" + nodeId + "]").each(function() {
+        var strokeWidth=parseFloat($(this).css("stroke-width"));
+        $(this).css("stroke-width", strokeWidth-2);
     });
 }
 
@@ -400,6 +429,6 @@ Shiny.addCustomMessageHandler(
  "zigguratDataHandler",
  function(data) {
      zigguratData=data;
-     alert("zigguratData=" + JSON.stringify(zigguratData));
+     //alert("zigguratData=" + JSON.stringify(zigguratData));
  }
 );

@@ -13,7 +13,7 @@ read_network <- function(namenetwork, guild_astr = "pl", guild_bstr = "pol", dir
   # Return List:
   #   graph: Newtork as an igraph object
   #   m    : Interaction matrix
-  #   num_guild_b : number of species of guild_b 
+  #   num_guild_b : number of species of guild_b
   #   num_guild_a" : number of species of guild_a
   #   names_guild_a : names of nodes of guild_a
   #   names_guild_b : names of species of guild_b
@@ -22,18 +22,18 @@ read_network <- function(namenetwork, guild_astr = "pl", guild_bstr = "pol", dir
   namesred <- read.csv(paste0(directory,namenetwork),header=FALSE,stringsAsFactors=FALSE)
   names_guild_a <- namesred[1,2:ncol(namesred)]
   names_guild_b <- namesred[2:nrow(namesred),1]
-  
+
   #Reading matrix data
   m <- read.csv(paste0(directory,namenetwork),header=TRUE,row.names=1)
-  
+
   num_guild_a <- ncol(m)
   num_guild_b <- nrow(m)
   g <- graph.empty()
   for (i in 1:num_guild_a){
-    g <- g + vertices(paste0(guild_astr,i),color="white")
+    g <- g + vertices(paste0(guild_astr,i),color="white",guild_id="a",id=i)
     }
   for (i in 1:num_guild_b){
-    g <- g + vertices(paste0(guild_bstr,i),color="red")
+    g <- g + vertices(paste0(guild_bstr,i),color="red",guild_id="b",id=i)
     }
   for (i in 1:num_guild_b){
     for (j in 1:num_guild_a){
@@ -42,7 +42,7 @@ read_network <- function(namenetwork, guild_astr = "pl", guild_bstr = "pol", dir
       }
     }
   }
-  calc_values <- list("graph" = g, "matrix" = m, "num_guild_b" = num_guild_b, "num_guild_a" = num_guild_a, 
+  calc_values <- list("graph" = g, "matrix" = m, "num_guild_b" = num_guild_b, "num_guild_a" = num_guild_a,
                       "names_guild_a" = names_guild_a, "names_guild_b"=names_guild_b)
   return(calc_values)
 }
@@ -59,9 +59,9 @@ randomize_and_write <- function(matrix, namenetwork, rlinks = 0,  directory = ""
       nolinks <- matrix == 0
       rows <- nrow(matrix)
       cols <- ncol(matrix)
-      if (bypercentage) 
+      if (bypercentage)
         extractions <- round(rlinks*sum(links)/100)
-      else 
+      else
         extractions <- rlinks
       onestozeroes <- sample(which(links),extractions)
       zeroestoones <- sample(which(nolinks),extractions)
@@ -75,7 +75,7 @@ randomize_and_write <- function(matrix, namenetwork, rlinks = 0,  directory = ""
     nfile <- paste0(directory,strsplit(namenetwork,"\\.")[[1]][1],filesuf,".csv")
     write.csv(matrix,nfile)
 }
-  
+
 analyze_network <- function(namenetwork, directory="", guild_a = "pl", guild_b = "pol", plot_graphs = FALSE)
 {
     nread <- read_network(namenetwork, directory = directory, guild_astr = guild_a, guild_bstr = guild_b)
@@ -88,12 +88,12 @@ analyze_network <- function(namenetwork, directory="", guild_a = "pl", guild_b =
     edge_matrix <- get.edges(g, E(g))
     spaths_mat <- shortest.paths(g)
     g_cores <- graph.coreness(g)
-    
+
     wtc <- walktrap.community(g)
     #modularity(wtc)
     modularity_measure <- modularity(g, membership(wtc))
-    
-        
+
+
     if (plot_graphs){
       plot(g, vertex.size=8, layout=layout.kamada.kawai)
       hist(g_cores,right=FALSE)
@@ -107,11 +107,11 @@ analyze_network <- function(namenetwork, directory="", guild_a = "pl", guild_b =
       p[k] <- list(names(g_cores[g_cores == k]))
     }
     # Find plants and plos of a core
-     
+
     plants_k <- list(rep(NA,max_core))
     pols_k <- list(rep(NA,max_core))
     for (i in 1:max_core)
-    { 
+    {
       auxincore <- c(p[[i]][grep(guild_a,as.character(unlist(p[i])))])
       if (length(auxincore)>0){
         plants_k[[i]] <- auxincore
@@ -131,7 +131,7 @@ analyze_network <- function(namenetwork, directory="", guild_a = "pl", guild_b =
     pols_maxcore <- p[[max_core]][grep(guild_b,as.character(unlist(p[max_core])))]
     # Purge possible nodes of kcore number maximum that are not part of the giant component
     # Only one case detected, when kcoremax == 2, network PL_30
-    
+
     if (max_core ==2)
     {
       meandiscnodes <- mean(spaths_mat== Inf)
@@ -180,7 +180,7 @@ analyze_network <- function(namenetwork, directory="", guild_a = "pl", guild_b =
     }
     meandist <- mean(V(g)$kradius[V(g)$kradius != Inf])
     nested_values<- nested(as.matrix(m), "ALL")
-    
+
     # kdegree computation
 
     for (l in 1:nrow(edge_matrix))
@@ -191,10 +191,10 @@ analyze_network <- function(namenetwork, directory="", guild_a = "pl", guild_b =
       V(g)[plantvertex]$kdegree = V(g)[plantvertex]$kdegree + 1/V(g)[polvertex]$kradius
     }
     meankdegree <- mean(V(g)$kdegree)
-    
-    
-    calc_values <- list("graph" = g, "max_core" = max_core, "nested_values" = nested_values, "num_guild_a" = num_guild_a, 
-                        "num_guild_b" = num_guild_b, "links" = length(V(g)), "meandist" = meandist, "meankdegree" = meankdegree, 
+
+
+    calc_values <- list("graph" = g, "max_core" = max_core, "nested_values" = nested_values, "num_guild_a" = num_guild_a,
+                        "num_guild_b" = num_guild_b, "links" = length(V(g)), "meandist" = meandist, "meankdegree" = meankdegree,
                         "spaths_mat" = spaths_mat, "matrix" = as.matrix(m), "g_cores" = g_cores, "modularity_measure" = modularity_measure)
     return(calc_values)
 }

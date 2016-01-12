@@ -34,11 +34,11 @@ SVG<-function(scale_factor) {
     maxy  <- ceiling(this$maxy/10)*10
     viewBox<-paste0(minx, " ", miny, " ", maxx-minx, " ", maxy-miny)
     #svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\" width=\"", maxx-minx, "\" height=\"", maxy-miny, "\">")
-    svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\">")
+    svg0<-paste0("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"", viewBox, "\">\n")
     svg1<-paste0("</svg>")
-    return(paste0(svg0, paste0(this$content, collapse="\n"), svg1, "", collapse="\n"))
+    return(paste0(svg0, paste0(this$content, collapse=""), svg1, sep=""))
   }
-  
+    
   # crea un rectangulo a partir de un conjunto de datos, con parametros similares
   # a ggplot2::geom_rect
   this$rect <- function(idPrefix, data, mapping, fill, alpha, color, size=0, linetype=1) {
@@ -57,7 +57,7 @@ SVG<-function(scale_factor) {
     ymax  <- -this$round_coords(eval(mapping$ymax, data)/this$scale_factor)
     # itera para cada rectangulo
     for (i in 1:nrow(data)) {
-      rect2<-this$rect2(id=paste0(idPrefix, "-", i), xmin=xmin[i], xmax=xmax[i], ymin=ymin[i], ymax=ymax[i], fill=fill[i], alpha=alpha, color=color[i], size=size, linetype=linetype)
+      rect2<-this$rect2(id=paste0(idPrefix, "-", i, "-rect"), xmin=xmin[i], xmax=xmax[i], ymin=ymin[i], ymax=ymax[i], fill=fill[i], alpha=alpha, color=color[i], size=size, linetype=linetype)
       result<-paste0(result, rect2)
     }
     
@@ -84,50 +84,18 @@ SVG<-function(scale_factor) {
     if (ymax<this$miny) this$miny<<-ymax
     if (ymax>this$maxy) this$maxy<<-ymax
     
-    # dibuja el borde
-    if (size>0) {
-      result <- paste0(result, "<g id=\"", id , "\" ")
-      result <- paste0(result, "fill=\"none\" ")
-      result <- paste0(result, "stroke=\"", color , "\" ")
-      if (linetype>0 && linetype<7) {
-        result <- paste0(result, "stroke-dasharray=\"", this$stroke_dasharray(linetype), "\" ")      
-      }
-      result <- paste0(result, "stroke-width=\"", size , "\"")
-      result <- paste0(result, ">\n")
-      
-      result <- paste0(result, "<path d=\"")
-      result <- paste0(result, "M", xmin, " ", ymin, " ")
-      result <- paste0(result, "L", xmax, " ", ymin, "\"")
-      result <- paste0(result, "/>\n")
-      
-      result <- paste0(result, "<path d=\"")
-      result <- paste0(result, "M", xmax, " ", ymin, " ")
-      result <- paste0(result, "L", xmax, " ", ymax, "\"")
-      result <- paste0(result, "/>\n")
-      
-      result <- paste0(result, "<path d=\"")
-      result <- paste0(result, "M", xmax, " ", ymax, " ")
-      result <- paste0(result, "L", xmin, " ", ymax, "\"")
-      result <- paste0(result, "/>\n")
-      
-      result <- paste0(result, "<path d=\"")
-      result <- paste0(result, "M", xmin, " ", ymax, " ")
-      result <- paste0(result, "L", xmin, " ", ymin, "\"")
-      result <- paste0(result, "/>\n")
-      
-      result <- paste0(result, "</g>\n")
+    # dibuja el rectangulo
+    result <- paste0(result, "<rect id=\"", id, "\" ")
+    result <- paste0(result, "style=\"", "fill:", fill, ";fill-opacity:", alpha, "\" ")
+    result <- paste0(result, "stroke=\"", color, "\" ")
+    if (linetype>0 && linetype<7) {
+      result <- paste0(result, "stroke-dasharray=\"", this$stroke_dasharray(linetype), "\" ")      
     }
-    
-    # dibuja el contenido del rectangunlo
-    # cambia de signo las coordenadas y, ya que en SVG es al contrario de lo que trata R con ggplot
-    result <- paste0(result, "<path id=\"", id, "\"", " ")
-    result <- paste0(result, "d=\"")
-    result <- paste0(result, "M", xmin, " ", ymin, " ")
-    result <- paste0(result, "L", xmax, " ", ymin, " ")
-    result <- paste0(result, "L", xmax, " ", ymax, " ")
-    result <- paste0(result, "L", xmin, " ", ymax, " ")
-    result <- paste0(result, "Z\"", " ")
-    result <- paste0(result, "style=\"", "fill:", fill, ";fill-opacity:", alpha, "\"")
+    result <- paste0(result, "stroke-width=\"", size, "\"")
+    result <- paste0(result, "x=\"", min(xmin, xmax), "\" ")
+    result <- paste0(result, "y=\"", min(ymin, ymax), "\" ")
+    result <- paste0(result, "width=\"", abs(xmax-xmin), "\" ")
+    result <- paste0(result, "height=\"", abs(ymax-ymin), "\" ")
     result <- paste0(result, "/>\n")
     
     return(result)
@@ -149,7 +117,7 @@ SVG<-function(scale_factor) {
     y <- -this$round_coords(eval(mapping$y, data)/this$scale_factor)
     # itera para cada texto
     for (i in 1:nrow(data)) {
-      text2<-this$text2(id=paste0(idPrefix, "-", i), x=x[i], y=y[i], label=label[i], color[i], size, angle)
+      text2<-this$text2(id=paste0(idPrefix, "-", i, "-text"), x=x[i], y=y[i], label=label[i], color[i], size, angle)
       result<-paste0(result, text2)
     }
     
@@ -225,7 +193,7 @@ SVG<-function(scale_factor) {
     yend  <- -this$round_coords(eval(mapping$yend, data)/this$scale_factor)
     # itera para cada segmento
     for (i in 1:nrow(data)) {
-      segment2<-this$segment2(id=paste0(idPrefix, "-", i), x=x[i], xend=xend[i], y=y[i], yend=yend[i], alpha=alpha, color=color[i], size=size, linetype=linetype)
+      segment2<-this$segment2(id=paste0(idPrefix, "-", i, "-segment"), x=x[i], xend=xend[i], y=y[i], yend=yend[i], alpha=alpha, color=color[i], size=size, linetype=linetype)
       result<-paste0(result, segment2)
     }
     
@@ -285,7 +253,7 @@ SVG<-function(scale_factor) {
       g <- data[data[[as.character(mapping$group)]]==i,]
       x <- this$round_coords(g[,c(as.character(mapping$x))]/this$scale_factor)
       y <- -this$round_coords(g[,c(as.character(mapping$y))]/this$scale_factor)
-      path2<-this$path2(id=paste0(idPrefix, "-", i), x=x, y=y, alpha=alpha, color=color[i], size=size, linetype=linetype)
+      path2<-this$path2(id=paste0(idPrefix, "-", i, "-path"), x=x, y=y, alpha=alpha, color=color[i], size=size, linetype=linetype)
       result<-paste0(result, path2)
     }
     

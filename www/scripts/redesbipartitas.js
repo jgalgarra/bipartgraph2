@@ -40,13 +40,11 @@ function updateHelpTooltips() {
 //actualiza los eventos asociados a todos los elementos del SVG
 function updateSVGEvents() {
     // actualiza los eventos asociados a las etiquetas
-    var aGuilds=["a", "b"];
-    var aGuildsData=[zigguratData.list_dfs_a, zigguratData.list_dfs_b];
     for (var i=0;i<zigguratData.ids.length;++i) {
-        var guildId     = zigguratData.ids[i];
+        var guild       = zigguratData.ids[i];
         var guildName   = zigguratData.names[i];
-        var guildData   = zigguratData.data[guildId];
-        updateNodeEvents(guildId, guildName, guildData);
+        var guildData   = zigguratData.data[guild];
+        updateNodeEvents(guild, guildName, guildData);
     }
     
     // actualiza los eventos asociados a los enlaces
@@ -63,34 +61,47 @@ function updateSVGEvents() {
 }
 
 // actualiza los eventos asociados a los nodos del SVG
-function updateNodeEvents(guildId, guildName, guildData) {
+function updateNodeEvents(guild, guildName, guildData) {
     for (var kcore=1;kcore<=guildData.length;++kcore) {
-        var pattern="kcore" + kcore + "-" + guildId;
+        var pattern="kcore" + kcore + "-" + guild;
 
         // estilo del cursor
         $("[id*=" + pattern + "]").css("cursor", "pointer");
         
-        // eventos
+        // eventos para resaltar un nodo informacion de un nodo
+        /*
         $("[id*=" + pattern + "]").mouseover(function() {
             markNode($(this).attr("id").replace("-text", "").replace("-rect",""));
         });
-
         $("[id*=" + pattern + "]").mouseout(function() {
             unmarkNode($(this).attr("id").replace("-text", "").replace("-rect",""));
         });
+        */
+        // eventos para resaltar un nodo y los asociados
+        $("[id*=" + pattern + "]").click(function() {
+            markRelatedNodes($(this).attr("id").replace("-text", "").replace("-rect",""));
+        });
 
         // datos asociados al nodo
-        $("text[id*=" + pattern + "]").data("main", {"guild":guildId, "kcore":kcore});
+        $("text[id*=" + pattern + "]").each(function() {
+            $(this).data("guild", guild);
+            $(this).data("kcore", kcore);
+            $(this).data("elements", getElements($(this).find("tspan").toArray()));
+            $(this).data("marked", false);
+        });
         
         // tooltips
         var guildCoreData=guildData[kcore-1];
         if (guildCoreData!=null) {
             $("text[id*=" + pattern + "]").each(function() {
-                var aElements=getElements($(this).find("tspan").html());
-                $("[id*=" + pattern + "]").each(function() {
+                var elements=$(this).data("elements");
+                var id=$(this).attr("id").replace("-text", "");
+                $("[id*=" + id + "]").each(function() {
                     $(this).qtip({
-                        content:    {text: getTooltipContent(guildName, kcore, guildCoreData, aElements)},
-                        style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500}
+                        content:    {text: getTooltipContent(guildName, kcore, guildCoreData, elements)},
+                        style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500},
+                        show:       {delay:50},
+                        hide:       {delay:0}
                     });
                 });
             });            
@@ -118,20 +129,25 @@ function updateLinkEvents(pattern) {
 function markNode(nodeId) {
     // resalta el borde
     $("rect[id*=" + nodeId + "]").each(function() {
+        // incrementa el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth+2);
     });
 
     // resalta el texto
     $("text[id*=" + nodeId + "]").each(function() {
+        // actualiza el estado
+        $(this).data("marked", true);
+        
+        // incrementa la fuente
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize+4) + "px");
         
         // indica el nodo por el que se ha pasado el raton
         Shiny.onInputChange("nodeData", {
-            guild:      $(this).data("main").guild, 
-            kcore:      $(this).data("main").kcore, 
-            elements:   getElements($(this).find("tspan").html())
+            guild:      $(this).data("guild"), 
+            kcore:      $(this).data("kcore"), 
+            elements:   $(this).data("elements")
         });
         
         // inicializa el nodo seleccionado
@@ -143,25 +159,70 @@ function markNode(nodeId) {
 function unmarkNode(nodeId) {
     // elimina el resaltado del texto
     $("text[id*=" + nodeId + "]").each(function() {
+        // decrementa la fuente
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize-4) + "px");
+        
+        // actualiza el estado
+        $(this).data("marked", false);
     });
+    
     // elimina el resaltado del borde
     $("rect[id*=" + nodeId + "]").each(function() {
+        // decrementa el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2);
     });
 }
 
-// obtiene los identificadores de los elementos en un nodo de texto del SVG
-// dividiendo la cadena por los espacios en blanco
-function getElements(strElements) {    
-    var aElements=strElements.split(" ");
+// resalta el nodo y los relacionados
+function markRelatedNodes(nodeId) {
+    var elements    = $("text[id*=" + nodeId + "]").data("elements");
+    var guild       = $("text[id*=" + nodeId + "]").data("guild");
+    var neighbors   = (zigguratData.neighbors[guild])[elements[0]-1];
+    if (!$.isArray(neighbors)) {
+        neighbors=[neighbors];
+    }
+    
+    // desmarca todos los nodos marcados
+    $("text[id*=kcore]").each(function() {
+        if ($(this).data("marked")) {
+            unmarkNode($(this).attr("id").replace("-text", ""));
+        }
+    });
+    
+    // busca los nodos que son vecinos y los marca
+    $("text[id*=kcore]").each(function() {
+        // si es del guild contrario comprueba si el contenido es alguno de los vecinos
+        if ((typeof $(this).data("guild")!="undefined") && $(this).data("guild")!=guild) {
+            var i=0;
+            var isNeighbor=false;
+            var nodeElements=$(this).data("elements");
+            while (i<neighbors.length && !isNeighbor) {
+                if ($.inArray(neighbors[i], nodeElements)!=-1) {
+                    isNeighbor=true;
+                }
+                ++i;
+            }
+            
+            // si es vecino lo marca
+            if (isNeighbor) {
+                markNode($(this).attr("id").replace("-text", ""));
+            }
+        }
+    });
+}
+
+// obtiene los identificadores de los elementos en un nodo del SVG
+function getElements(aElements) {
     var result=[];
     for (var i=0;i<aElements.length;++i) {
-        var strElement=aElements[i].trim();
+        var strElement=aElements[i].innerHTML.trim();
         if (strElement.length>0) {
-            result.push({id:strElement});
+            var ids=strElement.split(" ");
+            for (var j=0;j<ids.length;++j) {
+                result.push(parseInt(ids[j]));
+            }
         }
     }
     //alert(JSON.stringify(result));
@@ -170,7 +231,7 @@ function getElements(strElements) {
 
 // obtiene el contenido para un tooltip de informacion de un
 // nodo del ziggurat
-function getTooltipContent(guildName, kcore, guildCoreData, aElements) {
+function getTooltipContent(guildName, kcore, guildCoreData, elements) {
     var content="";
     
     // datos generales
@@ -193,8 +254,8 @@ function getTooltipContent(guildName, kcore, guildCoreData, aElements) {
     content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS") + "</th>";
     content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE") + "</th>";
     content+="</tr>";
-    for (var i=0;i<aElements.length;++i) {
-        var id=aElements[i].id;
+    for (var i=0;i<elements.length;++i) {
+        var id=elements[i];
         var element=getTooltipElementContent(guildCoreData, id);
         content+="<tr>";
         content+="<td>" +  id + "</td>";
@@ -426,9 +487,9 @@ function getMessage(key) {
 //en el lenguage seleccionado
 var zigguratData=null;
 Shiny.addCustomMessageHandler(
- "zigguratDataHandler",
- function(data) {
-     zigguratData=data;
-     //alert("zigguratData=" + JSON.stringify(zigguratData));
- }
+    "zigguratDataHandler",
+    function(data) {
+        zigguratData=data;
+        alert("zigguratData=" + JSON.stringify(zigguratData));
+    }
 );

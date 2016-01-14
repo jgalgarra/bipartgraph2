@@ -183,12 +183,14 @@ function unmarkLink(linkId) {
 
 // resalta el nodo, los nodos relacionados y los enlaces que les unen
 function markRelatedNodes(nodeId) {
-    var svg         = $("#ziggurat svg");
-    var node        = $("rect[id*=" + nodeId + "]");
-    var elements    = node.data("elements");
-    var guild       = node.data("guild");
-    var marked      = node.data("marked");
-    var neighbors   = (zigguratData.neighbors[guild])[elements[0]-1];
+    var svg             = $("#ziggurat svg");
+    var node            = $("rect[id*=" + nodeId + "]");
+    var elements        = node.data("elements");
+    var guild           = node.data("guild");
+    var marked          = node.data("marked");
+    var markedNodes     = [];
+    var markedNodesData = [];
+    var neighbors       = (zigguratData.neighbors[guild])[elements[0]-1];
     if (!$.isArray(neighbors)) {
         neighbors=[neighbors];
     }
@@ -200,7 +202,6 @@ function markRelatedNodes(nodeId) {
     // desmarca todos los nodos y enlaces marcados
     nodes.each(function() {
         if ($(this).data("marked")) {
-            console.log("Desmarcando " + $(this).attr("id"));
             unmarkNode($(this).attr("id").replace("-rect", ""));
         }
     });
@@ -228,12 +229,14 @@ function markRelatedNodes(nodeId) {
                 // si es vecino lo marca
                 if (isNeighbor) {
                     markNode($(this).attr("id").replace("-rect", ""));
+                    markedNodes.push($(this).attr("id").replace("-rect", ""));
                 }
             }
         });
         
         // marca el nodo seleccionado
         markNode(node.attr("id").replace("-rect", ""));
+        markedNodes.push(node.attr("id").replace("-rect", ""));
         
         // comprueba los enlaces que intersectan
         $("g[id*=link-] path").each(function() {
@@ -243,7 +246,20 @@ function markRelatedNodes(nodeId) {
            }
         });
         
+        // obtiene la informacion de los nodos marcados
+        for (var i=0;i<markedNodes.length;++i) {
+            var markedNode      = $("#" + markedNodes[i] + "-rect");
+            var markedNodeData  = {};
+            markedNodeData[(i+1)]={
+                guild:      markedNode.data("guild"), 
+                kcore:      markedNode.data("kcore"), 
+                elements:   markedNode.data("elements")
+            };
+            markedNodesData.push(markedNodeData);
+        }
         // notifica los nodos marcados
+        console.log("markedNodesData=" + JSON.stringify(markedNodesData));
+        Shiny.onInputChange("markedNodesData", markedNodesData);
         /*
         Shiny.onInputChange("nodeData", {
             guild:      $(this).data("guild"), 

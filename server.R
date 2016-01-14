@@ -18,53 +18,45 @@ source("jga/ziggurat_graph.R", encoding="UTF-8")
 source("jga/polar_graph.R", encoding="UTF-8")
 source("global.R", encoding="UTF-8")
 
-# muestra una fila en el detalle con [etiqueta, valor]
-detailRow <- function(label, value) {
-  label   <- tags$b(label)
-  value   <- paste0(value, collapse="")
-  if (length(grep(pattern = "^http", x = value, ignore.case = TRUE))>0 || length(grep(pattern = "^javascript", x = value, ignore.case = TRUE))>0) {
-    value <- tags$a(value, href = value)  
-  } else {
-    value <- tags$div(value)
-  }
-  return(fluidRow(column(2, tags$small(label)), column(6, tags$small(value))))
-}
-
 # muestra la informacion de detalle sobre un conjunto de elementos
-showElements <- function(elementsDf) {
+showElements <- function(type, kcore, elementDf, showHeader) {
   # tamanyo de las columnas
-  sizes<-c(1, 5, 2, 2)
+  rows    <- eval(parse(text="fluidRow()"))
+  columns <- ""
+  sizes   <- c(1, 2, 4, 1, 1, 1)
   
   # crea la cabecera
-  columns <- ""
-  values  <- c(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE"))
-  for (i in 1:length(values)) {
-    if (nchar(columns)>0) {
-      columns<-paste0(columns, ", ")
-    }
-    value   <- paste0("tags$b(\"", values[i], "\")") 
-    columns <- paste0(columns, "column(", sizes[i], ", tags$small(", value, "))")
-  }
-  rows<-eval(parse(text=paste0("fluidRow(", columns, ")")))
-  
-  # crea las filas
-  for (i in 1:nrow(elementsDf)) {
-    label   <- elementsDf[i, c("label")]
-    name    <- elementsDf[i, c("name_species")]
-    label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki(", label, ", '", name , "')"), "\")") 
-    name    <- paste0("\"", name, "\"")
-    kradius <- paste0("\"", round(elementsDf[i, c("kradius")], 2), "\"")
-    kdegree <- paste0("\"", round(elementsDf[i, c("kdegree")], 2), "\"")
-    columns <- ""
-    values  <- c(label, name, kradius, kdegree) 
+  if (showHeader) {
+    values  <- c(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS"), strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE"))
     for (i in 1:length(values)) {
       if (nchar(columns)>0) {
         columns<-paste0(columns, ", ")
-      } 
-      columns <- paste0(columns, "column(", sizes[i], ", tags$small(", values[i], "))")
+      }
+      value   <- paste0("tags$b(\"", values[i], "\")") 
+      columns <- paste0(columns, "column(", sizes[i], ", tags$small(", value, "))")
     }
-    rows<-paste(rows, eval(parse(text=paste0("fluidRow(", columns, ")"))))
+    rows<-eval(parse(text=paste0("fluidRow(", columns, ")")))
   }
+  
+  # crea las filas
+  type    <- paste0("\"", type, "\"")
+  kcore   <- paste0("\"", kcore, "\"")
+  label   <- elementDf[1, c("label")]
+  name    <- elementDf[1, c("name_species")]
+  label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki(", label, ", '", name , "')"), "\")") 
+  name    <- paste0("\"", name, "\"")
+  kradius <- paste0("\"", round(elementDf[1, c("kradius")], 2), "\"")
+  kdegree <- paste0("\"", round(elementDf[1, c("kdegree")], 2), "\"")
+  columns <- ""
+  values  <- c(label, type, name, kcore, kradius, kdegree) 
+  for (i in 1:length(values)) {
+    if (nchar(columns)>0) {
+      columns<-paste0(columns, ", ")
+    } 
+    columns <- paste0(columns, "column(", sizes[i], ", tags$small(", values[i], "))")
+  }
+  rows<-paste(rows, eval(parse(text=paste0("fluidRow(", columns, ")"))))
+
   return(rows)
 }
 
@@ -397,10 +389,21 @@ shinyServer(function(input, output, session) {
     return(z)
   })
   
-  # actualiza la informacion sobre el nodo del grafico seleccionado
-  nodeData<-reactive({
-    data<-input$nodeData
-    return(data)
+  # actualiza la informacion sobre los nodos del ziggurat seleccionados
+  markedNodesData<-reactive({
+    result    <- data.frame(guild=character(0), kcore=character(0), element=integer(0), stringsAsFactors=FALSE)
+    nodesData <- input$markedNodesData
+    guilds    <- nodesData[grep("\\.guild", names(nodesData))]
+    kcores    <- nodesData[grep("\\.kcore", names(nodesData))]
+    if (!is.null(guilds)) {
+      for (i in 1:length(guilds)) {
+        elements  <- nodesData[grep(paste0(i, "\\.elements"), names(nodesData))]
+        row       <- data.frame(guild=guilds[i], kcore=kcores[i], element=elements, row.names=NULL, stringsAsFactors=FALSE)
+        result    <- rbind(result, row)
+      }
+    }
+    row.names(result)<-NULL
+    return(result)
   })
 
   # actualiza la informacion de detalle de un elemento
@@ -438,28 +441,27 @@ shinyServer(function(input, output, session) {
   
   # muestra los destalles de un nodo seleccionado del grafico ziggurat
   output$zigguratDetails<-renderUI({
-    z       <- ziggurat()
-    data    <- nodeData()
-    details <- ""
-    if (!is.null(data)) {
-      details <- paste(details, detailRow(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"), ifelse(data$guild=="a", z$name_guild_a, z$name_guild_b)), collapse="")
-      details <- paste(details, detailRow(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE"), data$kcore), collapse="")
-      if (data$kcore>1) {
-        if (data$guild=="a") {
-          kcore_df<-z$list_dfs_a[[data$kcore]]
-        } else {
-          kcore_df<-z$list_dfs_b[[data$kcore]]
+    z         <- ziggurat()
+    nodesData <- markedNodesData()
+    details   <- ""
+    if (nrow(nodesData)>0) {
+      for (i in 1:nrow(nodesData)) {
+        guild   <- nodesData[i, "guild"]
+        type    <- ifelse(guild=="a", z$name_guild_a, z$name_guild_b)
+        kcore   <- as.integer(nodesData[i, "kcore"])
+        element <- as.integer(nodesData[i, "element"])
+        if (kcore>1) {
+          if (guild=="a") {
+            kcore_df<-z$list_dfs_a[[kcore]]
+          } else {
+            kcore_df<-z$list_dfs_b[[kcore]]
+          }
+          # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
+          elementDf <- kcore_df[kcore_df$label==element, c("label", "name_species", "kdegree", "kradius")]
+          details   <- paste(details, showElements(type, kcore, elementDf, showHeader=(i==1)), collapse="")
         }
-        # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
-        elementsDf<-kcore_df[kcore_df$label==unlist(data$elements),c("label", "name_species", "kdegree", "kradius")]
-        details <- paste(details, showElements(elementsDf), collapse="")
       }
     }
-    #df<-z$list_dfs_a[[2]]
-    #df<-z
-    #for (name in names(df)) {
-    #  details <- paste(details, detailRow(name, df[[name]]), collapse="")
-    #}
     
     return(HTML(details))
   })

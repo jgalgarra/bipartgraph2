@@ -296,7 +296,7 @@ draw_edge_tails <- function(p,svg,point_x,point_y,kcoreother,long_tail,list_dfs,
         point_y <- (zgg$innertail_vertical_separation-1)*sign(point_y)*zgg$height_y + point_y
         ryy <- point_y
       }
-      v<- draw_tail(ifelse(is_guild_a, "edge-kcore1-a", "edge-kcore1-b"), p,svg,little_tail,zgg$lado,color_guild[1],
+      v<- draw_tail(paste0(ifelse(is_guild_a, "edge-kcore1-a-", "edge-kcore1-b-"), i), p,svg,little_tail,zgg$lado,color_guild[1],
                     gen_sq_label(little_tail$orph,joinchars = " "),
                     rxx,ryy,zgg$gap,lxx2 = xx2,
                     lyy2 = yy2, sqinverse = inverse, position = orientation,
@@ -840,7 +840,7 @@ draw_weird_chains <- function(grafo, svg, df_chains, paintsidex)
     hjust <- 0
     vjust <- 0
     labelcolor <- ifelse(length(zgg$labels_color)>0,zgg$labels_color[2-as.numeric(is_guild_a)], bgcolor)
-    f <- draw_square(ifelse(is_guild_a, "weird-chains-kcore1-a", "weird-chains-kcore1-b"),p,svg,df_chains[i,]$x1,df_chains[i,]$y1,1.5*paintsidex,bgcolor,zgg$alpha_level,
+    f <- draw_square(paste0(ifelse(is_guild_a, "weird-chains-kcore1-a-", "weird-chains-kcore1-b-"), i),p,svg,df_chains[i,]$x1,df_chains[i,]$y1,1.5*paintsidex,bgcolor,zgg$alpha_level,
                      labelcolor,0,hjust,vjust,
                      slabel=df_chains[i,]$orph,
                      lbsize = zgg$lsize_kcore1,inverse = "no")

@@ -128,14 +128,14 @@ function updateLinkEvents(pattern) {
 // resalta el nodo indicado en el SVG
 function markNode(nodeId) {
     // resalta el borde
-    $("rect[id*=" + nodeId + "]").each(function() {
+    $("#" + nodeId + "-rect").each(function() {
         // incrementa el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth+2);
     });
 
     // resalta el texto
-    $("text[id*=" + nodeId + "]").each(function() {
+    $("#" + nodeId + "-text").each(function() {
         // actualiza el estado
         $(this).data("marked", true);
         
@@ -158,7 +158,7 @@ function markNode(nodeId) {
 // elimina el resaltado del nodo indicado en el SVG
 function unmarkNode(nodeId) {
     // elimina el resaltado del texto
-    $("text[id*=" + nodeId + "]").each(function() {
+    $("#" + nodeId + "-text").each(function() {
         // decrementa la fuente
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize-4) + "px");
@@ -168,7 +168,7 @@ function unmarkNode(nodeId) {
     });
     
     // elimina el resaltado del borde
-    $("rect[id*=" + nodeId + "]").each(function() {
+    $("#" + nodeId + "-rect").each(function() {
         // decrementa el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2);
@@ -201,7 +201,6 @@ function markRelatedNodes(nodeId) {
     var guild       = node.data("guild");
     var marked      = node.data("marked");
     var neighbors   = (zigguratData.neighbors[guild])[elements[0]-1];
-    
     if (!$.isArray(neighbors)) {
         neighbors=[neighbors];
     }

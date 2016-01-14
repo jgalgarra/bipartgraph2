@@ -68,34 +68,26 @@ function updateNodeEvents(guild, guildName, guildData) {
         // estilo del cursor
         $("[id*=" + pattern + "]").css("cursor", "pointer");
         
-        // eventos para resaltar un nodo informacion de un nodo
-        /*
-        $("[id*=" + pattern + "]").mouseover(function() {
-            markNode($(this).attr("id").replace("-text", "").replace("-rect",""));
-        });
-        $("[id*=" + pattern + "]").mouseout(function() {
-            unmarkNode($(this).attr("id").replace("-text", "").replace("-rect",""));
-        });
-        */
         // eventos para resaltar un nodo y los asociados
         $("[id*=" + pattern + "]").click(function() {
             markRelatedNodes($(this).attr("id").replace("-text", "").replace("-rect",""));
         });
 
         // datos asociados al nodo
-        $("text[id*=" + pattern + "]").each(function() {
+        $("rect[id*=" + pattern + "]").each(function() {
+            var id=$(this).attr("id").replace("-rect", "");
             $(this).data("guild", guild);
             $(this).data("kcore", kcore);
-            $(this).data("elements", getElements($(this).find("tspan").toArray()));
+            $(this).data("elements", getElements($("#" + id + "-text").find("tspan").toArray()));
             $(this).data("marked", false);
         });
         
         // tooltips
         var guildCoreData=guildData[kcore-1];
         if (guildCoreData!=null) {
-            $("text[id*=" + pattern + "]").each(function() {
+            $("rect[id*=" + pattern + "]").each(function() {
                 var elements=$(this).data("elements");
-                var id=$(this).attr("id").replace("-text", "");
+                var id=$(this).attr("id").replace("-rect", "");
                 $("[id*=" + id + "]").each(function() {
                     $(this).qtip({
                         content:    {text: getTooltipContent(guildName, kcore, guildCoreData, elements)},
@@ -127,76 +119,72 @@ function updateLinkEvents(pattern) {
 
 // resalta el nodo indicado en el SVG
 function markNode(nodeId) {
-    // resalta el borde
+    // marca el texto
+    $("#" + nodeId + "-text").each(function() {
+        // incrementa la fuente
+        var fontSize=parseInt($(this).css("font-size").replace("px",""));
+        $(this).css("font-size", (fontSize+4) + "px");        
+    });
+
+    // marca el nodo
     $("#" + nodeId + "-rect").each(function() {
         // incrementa el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth+2);
-    });
-
-    // resalta el texto
-    $("#" + nodeId + "-text").each(function() {
-        // actualiza el estado
+        
+        // indica que el nodo esta marcado
         $(this).data("marked", true);
-        
-        // incrementa la fuente
-        var fontSize=parseInt($(this).css("font-size").replace("px",""));
-        $(this).css("font-size", (fontSize+4) + "px");
-        
-        // indica el nodo por el que se ha pasado el raton
-        Shiny.onInputChange("nodeData", {
-            guild:      $(this).data("guild"), 
-            kcore:      $(this).data("kcore"), 
-            elements:   $(this).data("elements")
-        });
-        
-        // inicializa el nodo seleccionado
-        Shiny.onInputChange("elementData", null);
     });
 }
 
 // elimina el resaltado del nodo indicado en el SVG
 function unmarkNode(nodeId) {
-    // elimina el resaltado del texto
+    // desmarca el texto
     $("#" + nodeId + "-text").each(function() {
-        // decrementa la fuente
+        // reduce la fuente
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize-4) + "px");
-        
-        // actualiza el estado
-        $(this).data("marked", false);
     });
     
-    // elimina el resaltado del borde
+    // desmarca el nodo
     $("#" + nodeId + "-rect").each(function() {
-        // decrementa el borde
+        // reduce el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2);
+        
+        // indica que el nodo no esta marcado
+        $(this).data("marked", false);
     });
 }
 
 // resalta el enlace indicado en el SVG
 function markLink(linkId) {
     $("g[id*=" + linkId + "]").each(function() {
-       var strokeWidth=parseFloat($(this).css("stroke-width"));
-       $(this).css("stroke-width", strokeWidth+2);
-       $(this).data("marked", true);
+        // incrementa el ancho del enlace
+        var strokeWidth=parseFloat($(this).css("stroke-width"));
+        $(this).css("stroke-width", strokeWidth+2);
+        
+        // indica que el enlace esta marcado
+        $(this).data("marked", true);
     });
 }
 
 // elimina el resaltado del enlace indicado en el SVG
 function unmarkLink(linkId) {
     $("g[id*=" + linkId + "]").each(function() {
+        // reduce el ancho del enlace
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2);
+        
+        // indica que el enlace no esta marcado
+        $(this).data("marked", false);
     });
 }
 
 // resalta el nodo, los nodos relacionados y los enlaces que les unen
 function markRelatedNodes(nodeId) {
     var svg         = $("#ziggurat svg");
-    var node        = $("text[id*=" + nodeId + "]");
-    var rect        = $("rect[id*=" + nodeId + "]");
+    var node        = $("rect[id*=" + nodeId + "]");
     var elements    = node.data("elements");
     var guild       = node.data("guild");
     var marked      = node.data("marked");
@@ -207,12 +195,13 @@ function markRelatedNodes(nodeId) {
     
     // si el nodo estaba marcado solo deshace el marcado de todos los nodos, si no lo
     // estaba desmarca los nodos anteriores y marca los nuevos
-    var nodes=$("text[id*=kcore]");
+    var nodes=$("rect[id*=kcore]");
         
     // desmarca todos los nodos y enlaces marcados
     nodes.each(function() {
         if ($(this).data("marked")) {
-            unmarkNode($(this).attr("id").replace("-text", ""));
+            console.log("Desmarcando " + $(this).attr("id"));
+            unmarkNode($(this).attr("id").replace("-rect", ""));
         }
     });
     $("g[id*=link-]").each(function() {
@@ -238,21 +227,33 @@ function markRelatedNodes(nodeId) {
                 
                 // si es vecino lo marca
                 if (isNeighbor) {
-                    markNode($(this).attr("id").replace("-text", ""));
+                    markNode($(this).attr("id").replace("-rect", ""));
                 }
             }
         });
         
         // marca el nodo seleccionado
-        markNode(node.attr("id").replace("-text", ""));
+        markNode(node.attr("id").replace("-rect", ""));
         
         // comprueba los enlaces que intersectan
         $("g[id*=link-] path").each(function() {
-           var intersect=pathIntersectRect($(this)[0], rect[0]); 
+           var intersect=pathIntersectRect($(this)[0], node[0]); 
            if (intersect) {
                markLink($(this).parent().attr("id"));
            }
         });
+        
+        // notifica los nodos marcados
+        /*
+        Shiny.onInputChange("nodeData", {
+            guild:      $(this).data("guild"), 
+            kcore:      $(this).data("kcore"), 
+            elements:   $(this).data("elements")
+        });
+        
+        // inicializa el nodo seleccionado
+        Shiny.onInputChange("elementData", null);
+        */
     }
 }
 

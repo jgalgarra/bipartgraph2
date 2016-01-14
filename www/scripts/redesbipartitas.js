@@ -175,42 +175,97 @@ function unmarkNode(nodeId) {
     });
 }
 
-// resalta el nodo y los relacionados
+// resalta el enlace indicado en el SVG
+function markLink(linkId) {
+    $("g[id*=" + linkId + "]").each(function() {
+       var strokeWidth=parseFloat($(this).css("stroke-width"));
+       $(this).css("stroke-width", strokeWidth+2);
+       $(this).data("marked", true);
+    });
+}
+
+// elimina el resaltado del enlace indicado en el SVG
+function unmarkLink(linkId) {
+    $("g[id*=" + linkId + "]").each(function() {
+        var strokeWidth=parseFloat($(this).css("stroke-width"));
+        $(this).css("stroke-width", strokeWidth-2);
+    });
+}
+
+// resalta el nodo, los nodos relacionados y los enlaces que les unen
 function markRelatedNodes(nodeId) {
-    var elements    = $("text[id*=" + nodeId + "]").data("elements");
-    var guild       = $("text[id*=" + nodeId + "]").data("guild");
+    var svg         = $("#ziggurat svg");
+    var node        = $("text[id*=" + nodeId + "]");
+    var rect        = $("rect[id*=" + nodeId + "]");
+    var elements    = node.data("elements");
+    var guild       = node.data("guild");
+    var marked      = node.data("marked");
     var neighbors   = (zigguratData.neighbors[guild])[elements[0]-1];
+    
     if (!$.isArray(neighbors)) {
         neighbors=[neighbors];
     }
     
-    // desmarca todos los nodos marcados
-    $("text[id*=kcore]").each(function() {
+    // si el nodo estaba marcado solo deshace el marcado de todos los nodos, si no lo
+    // estaba desmarca los nodos anteriores y marca los nuevos
+    var nodes=$("text[id*=kcore]");
+        
+    // desmarca todos los nodos y enlaces marcados
+    nodes.each(function() {
         if ($(this).data("marked")) {
             unmarkNode($(this).attr("id").replace("-text", ""));
         }
     });
-    
-    // busca los nodos que son vecinos y los marca
-    $("text[id*=kcore]").each(function() {
-        // si es del guild contrario comprueba si el contenido es alguno de los vecinos
-        if ((typeof $(this).data("guild")!="undefined") && $(this).data("guild")!=guild) {
-            var i=0;
-            var isNeighbor=false;
-            var nodeElements=$(this).data("elements");
-            while (i<neighbors.length && !isNeighbor) {
-                if ($.inArray(neighbors[i], nodeElements)!=-1) {
-                    isNeighbor=true;
-                }
-                ++i;
-            }
-            
-            // si es vecino lo marca
-            if (isNeighbor) {
-                markNode($(this).attr("id").replace("-text", ""));
-            }
+    $("g[id*=link-]").each(function() {
+        if ($(this).data("marked")) {
+            unmarkLink($(this).attr("id"));
         }
     });
+    
+    if (!marked) {
+        // busca los nodos que son vecinos y los marca
+        nodes.each(function() {
+            // si es del guild contrario comprueba si el contenido es alguno de los vecinos
+            if ((typeof $(this).data("guild")!="undefined") && $(this).data("guild")!=guild) {
+                var i=0;
+                var isNeighbor=false;
+                var nodeElements=$(this).data("elements");
+                while (i<neighbors.length && !isNeighbor) {
+                    if ($.inArray(neighbors[i], nodeElements)!=-1) {
+                        isNeighbor=true;
+                    }
+                    ++i;
+                }
+                
+                // si es vecino lo marca
+                if (isNeighbor) {
+                    markNode($(this).attr("id").replace("-text", ""));
+                }
+            }
+        });
+        
+        // marca el nodo seleccionado
+        markNode(node.attr("id").replace("-text", ""));
+        
+        // comprueba los enlaces que intersectan
+        $("g[id*=link-] path").each(function() {
+           var intersect=pathIntersectRect($(this)[0], rect[0]); 
+           if (intersect) {
+               markLink($(this).parent().attr("id"));
+           }
+        });
+    }
+}
+
+// comprueba si un path del SVG intersecta con un rectangulo
+function pathIntersectRect(path, rect) {
+    var pp1     = path.getPointAtLength(0);
+    var pp2     = path.getPointAtLength(path.getTotalLength())
+    var margin  = 10;
+    var pr1     = {x:rect.x.baseVal.value-margin, y:rect.y.baseVal.value-margin};
+    var pr2     = {x:rect.x.baseVal.value+rect.width.baseVal.value+margin, y:rect.y.baseVal.value+rect.height.baseVal.value+margin};
+    var result  = (pr1.x<pp1.x && pp1.x<pr2.x && pr1.y<pp1.y && pp1.y<pr2.y) || (pr1.x<pp2.x && pp2.x<pr2.x && pr1.y<pp2.y && pp2.y<pr2.y)  
+    return result;
 }
 
 // obtiene los identificadores de los elementos en un nodo del SVG
@@ -305,57 +360,59 @@ function showWiki(id, name) {
 
 //amplia el SVG del ziggurat
 function svgZoomIn() {
- var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
- var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
- $("#ziggurat svg").css({
-     "width":    (_width*1.1) + "px",
-     "height":   (_height*1.1) + "px"
- });
+    var svg     = $("#ziggurat svg");
+    var _width  = parseFloat(svg.css("width").replace("px", ""));
+    var _height = parseFloat(svg.css("height").replace("px", ""));
+    svg.css({
+        "width":    (_width*1.1) + "px",
+        "height":   (_height*1.1) + "px"
+    });
 }
 
 //reduce el SVG del ziggurat
 function svgZoomOut() {
- var _width  = parseFloat($("#ziggurat svg").css("width").replace("px", ""));
- var _height = parseFloat($("#ziggurat svg").css("height").replace("px", ""));
- $("#ziggurat svg").css({
-     "width":    (_width/1.1) + "px",
-     "height":   (_height/1.1) + "px"
- });
+    var svg     = $("#ziggurat svg");
+    var _width  = parseFloat(svg.css("width").replace("px", ""));
+    var _height = parseFloat(svg.css("height").replace("px", ""));
+    svg.css({
+        "width":    (_width/1.1) + "px",
+        "height":   (_height/1.1) + "px"
+    });
 }
 
 //ajusta el SVG del ziggurat al marco que lo contiene
 function svgZoomFit() {
- var _width  = $("#ziggurat").width();
- var _height = $("#ziggurat").height();
- $("#ziggurat svg").css({
-     "width":    (_width) + "px",
-     "height":   (_height) + "px"
- });
+    var ziggurat    = $("#ziggurat");
+    var svg         = $("#ziggurat svg");
+    var _width      = ziggurat.width();
+    var _height     = ziggurat.height();
+    svg.css({
+        "width":    (_width) + "px",
+        "height":   (_height) + "px"
+    });
  
- // restablece el scroll
- $("#ziggurat").scrollTop(0);
- $("#ziggurat").scrollLeft(0);
- $("#ziggurat").perfectScrollbar("update");
+    // restablece el scroll    
+    ziggurat.scrollTop(0);
+    ziggurat.scrollLeft(0);
+    ziggurat.perfectScrollbar("update");
 }
 
 //establece el tamaño SVG del ziggurat a su tamaño real
-function svgZoomReset() { 
- $("#ziggurat svg").each(
-     function() {
-         var _viewBox    = $(this)[0].getAttribute("viewBox");
-         var _width      = _viewBox.split(" ")[2];
-         var _height     = _viewBox.split(" ")[3];
-         $("#ziggurat svg").css({
-             "width":    _width + "px",
-             "height":   _height + "px"
-         });
-     }
- );
- 
- // restablece el scroll
- $("#ziggurat").scrollTop(0);
- $("#ziggurat").scrollLeft(0);
- $("#ziggurat").perfectScrollbar("update");
+function svgZoomReset() {
+    var ziggurat    = $("#ziggurat");
+    var svg         = $("#ziggurat svg");
+    var _viewBox    = svg[0].getAttribute("viewBox");
+    var _width      = _viewBox.split(" ")[2];
+    var _height     = _viewBox.split(" ")[3];
+    svg.css({
+        "width":    _width + "px",
+        "height":   _height + "px"
+    });
+    
+    // restablece el scroll    
+    ziggurat.scrollTop(0);
+    ziggurat.scrollLeft(0);
+    ziggurat.perfectScrollbar("update");
 }
 
 // registra la funcion que recorre la tabla en pantalla
@@ -490,6 +547,6 @@ Shiny.addCustomMessageHandler(
     "zigguratDataHandler",
     function(data) {
         zigguratData=data;
-        alert("zigguratData=" + JSON.stringify(zigguratData));
+        //alert("zigguratData=" + JSON.stringify(zigguratData));
     }
 );

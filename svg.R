@@ -91,7 +91,7 @@ SVG<-function(scale_factor) {
     if (linetype>0 && linetype<7) {
       result <- paste0(result, "stroke-dasharray=\"", this$stroke_dasharray(linetype), "\" ")      
     }
-    result <- paste0(result, "stroke-width=\"", size, "\"")
+    result <- paste0(result, "stroke-width=\"", size, "\" ")
     result <- paste0(result, "x=\"", min(xmin, xmax), "\" ")
     result <- paste0(result, "y=\"", min(ymin, ymax), "\" ")
     result <- paste0(result, "width=\"", abs(xmax-xmin), "\" ")

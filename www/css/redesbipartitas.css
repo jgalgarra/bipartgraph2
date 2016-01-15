@@ -12,8 +12,20 @@
 }
 
 /* paneles de informacion del ziggurat */
-#zigguratDetails, #zigguratWikiDetails {
+#zigguratNodesDetail, #zigguratWikiDetail {
     padding: 8px; 
+}
+
+#zigguratNodesDetail {
+  margin-top:   0px;
+  position:     relative;
+  height:       180px; 
+}
+
+.wikiDetail {
+  margin-top:   10px;
+  position:     relative;
+  height:       180px; 
 }
 
 .wikiDetails {

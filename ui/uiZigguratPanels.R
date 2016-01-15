@@ -48,13 +48,21 @@ zigguratDiagramPanel <- function() {
         groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_INFO_HEADER"), image="document.png")
       ),
       fluidRow(
-        tags$div(uiOutput("zigguratDetails"))
+        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID")))), 
+        column(2, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE")))), 
+        column(4, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME")))), 
+        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE")))), 
+        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS")))), 
+        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE"))))
+      ),
+      fluidRow(
+        uiOutput("zigguratNodesDetail")
       ),
       fluidRow(
         groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_WIKI_HEADER"), image="wikipedia.png")
       ),
       fluidRow(
-        tags$div(uiOutput("zigguratWikiDetails"))
+        uiOutput("zigguratWikiDetail")
       )
     )
   )

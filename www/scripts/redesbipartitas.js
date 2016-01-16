@@ -62,7 +62,7 @@ function updateSVGEvents() {
     svgZoomFit();
 }
 
-// actualiza el scroll de los detalles
+// actualiza el scroll de los detalles de los nodos del ziggurat
 function updateZigguratNodesDetailScroll() {
     $("#zigguratNodesDetail").perfectScrollbar("update");
 }
@@ -89,7 +89,7 @@ function updateNodeEvents() {
                 var id=$(this).attr("id").replace("-rect", "");
                 $(this).data("guild", guild);
                 $(this).data("kcore", kcore);
-                $(this).data("elements", getElements($("#" + id + "-text").find("tspan").toArray()));
+                $(this).data("nodeIds", getNodeIds($("#" + id + "-text").find("tspan").toArray()));
                 $(this).data("marked", false);
             });
         }
@@ -125,12 +125,12 @@ function updateNodeTooltips() {
             var guildCoreData=guildData[kcore-1];
             if (guildCoreData!=null) {
                 $("rect[id*=" + pattern + "]").each(function() {
-                    var elements=$(this).data("elements");
+                    var nodeIds=$(this).data("nodeIds");
                     var id=$(this).attr("id").replace("-rect", "");
                     $("[id*=" + id + "]").each(function() {
                         $(this).qtip("destroy", true);
                         $(this).qtip({
-                            content:    {text: getTooltipContent(guildName, kcore, guildCoreData, elements)},
+                            content:    {text: getTooltipContent(guildName, kcore, guildCoreData, nodeIds)},
                             style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500},
                             show:       {delay:50},
                             hide:       {delay:0},
@@ -211,12 +211,12 @@ function unmarkLink(linkId) {
 function markRelatedNodes(nodeId) {
     var svg             = $("#ziggurat svg");
     var node            = $("rect[id*=" + nodeId + "]");
-    var elements        = node.data("elements");
+    var nodeIds         = node.data("nodeIds");
     var guild           = node.data("guild");
     var marked          = node.data("marked");
     var markedNodes     = [];
     var markedNodesData = [];
-    var neighbors       = (zigguratData.neighbors[guild])[elements[0]-1];
+    var neighbors       = (zigguratData.neighbors[guild])[nodeIds[0]-1];
     if (!$.isArray(neighbors)) {
         neighbors=[neighbors];
     }
@@ -237,8 +237,8 @@ function markRelatedNodes(nodeId) {
         }
     });
     
-    // notifica los nodos marcados
-    Shiny.onInputChange("markedNodesData", markedNodesData);
+    // elimina los nodos marcados
+    Shiny.onInputChange("markedNodesData", new Date());
     
     if (!marked) {
         // busca los nodos que son vecinos y los marca
@@ -247,9 +247,9 @@ function markRelatedNodes(nodeId) {
             if ((typeof $(this).data("guild")!="undefined") && $(this).data("guild")!=guild) {
                 var i=0;
                 var isNeighbor=false;
-                var nodeElements=$(this).data("elements");
+                var nodeIds2=$(this).data("nodeIds");
                 while (i<neighbors.length && !isNeighbor) {
-                    if ($.inArray(neighbors[i], nodeElements)!=-1) {
+                    if ($.inArray(neighbors[i], nodeIds2)!=-1) {
                         isNeighbor=true;
                     }
                     ++i;
@@ -282,7 +282,7 @@ function markRelatedNodes(nodeId) {
             markedNodeData[(i+1)]={
                 guild:      markedNode.data("guild"), 
                 kcore:      markedNode.data("kcore"), 
-                elements:   markedNode.data("elements")
+                nodeIds:    markedNode.data("nodeIds")
             };
             markedNodesData.push(markedNodeData);
         }
@@ -303,12 +303,12 @@ function pathIntersectRect(path, rect) {
 }
 
 // obtiene los identificadores de los elementos en un nodo del SVG
-function getElements(aElements) {
+function getNodeIds(aNodes) {
     var result=[];
-    for (var i=0;i<aElements.length;++i) {
-        var strElement=aElements[i].innerHTML.trim();
-        if (strElement.length>0) {
-            var ids=strElement.split(" ");
+    for (var i=0;i<aNodes.length;++i) {
+        var strNode=aNodes[i].innerHTML.trim();
+        if (strNode.length>0) {
+            var ids=strNode.split(" ");
             for (var j=0;j<ids.length;++j) {
                 result.push(parseInt(ids[j]));
             }
@@ -320,7 +320,7 @@ function getElements(aElements) {
 
 // obtiene el contenido para un tooltip de informacion de un
 // nodo del ziggurat
-function getTooltipContent(guildName, kcore, guildCoreData, elements) {
+function getTooltipContent(guildName, kcore, guildCoreData, nodeIds) {
     var content="";
     
     // datos generales
@@ -343,14 +343,14 @@ function getTooltipContent(guildName, kcore, guildCoreData, elements) {
     content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS") + "</th>";
     content+="<th>" + getMessage("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE") + "</th>";
     content+="</tr>";
-    for (var i=0;i<elements.length;++i) {
-        var id=elements[i];
-        var element=getTooltipElementContent(guildCoreData, id);
+    for (var i=0;i<nodeIds.length;++i) {
+        var id=nodeIds[i];
+        var node=getNodeTooltipContent(guildCoreData, id);
         content+="<tr>";
         content+="<td>" +  id + "</td>";
-        content+="<td>" + element.name + "</td>";
-        content+="<td>" + element.kradius + "</td>";
-        content+="<td>" + element.kdegree + "</td>";
+        content+="<td>" + node.name + "</td>";
+        content+="<td>" + node.kradius + "</td>";
+        content+="<td>" + node.kdegree + "</td>";
         content+="</tr>";
     }
     content+="</table>";
@@ -359,7 +359,7 @@ function getTooltipContent(guildName, kcore, guildCoreData, elements) {
 
 // obtiene los datos concretos asociados a un elemento
 // de un nodo del ziggurat
-function getTooltipElementContent(guildCoreData, id) {
+function getNodeTooltipContent(guildCoreData, id) {
     var bFound=false;
     var i=0;
     while (!bFound && i<guildCoreData.label.length) {
@@ -382,13 +382,88 @@ function getTooltipElementContent(guildCoreData, id) {
     return value;
 }
 
-// muestra la informacion obtenida de la wikipedia para un elemento concreto
-function showWiki(id, name) {
+// muestra la informacion obtenida de la wikipedia para un nodo concreto
+function showWiki(type, id, name) {
     //alert("showWiki(id=" + id + ", name=" + name + ")");
-    Shiny.onInputChange("elementData", {
-        id:     id, 
-        name:   name
+    var wikiPanelId     = "wikiDetail-" + type + "-" + id;
+    var wikiPanelName   = type + " [#" + id + "]";
+    var wikiPanel       = $("#" + wikiPanelId);
+    var wikiLoaded      = wikiPanel.data("loaded");
+        
+    // selecciona el tab concreto
+    Shiny.onInputChange("wikiPanelName", wikiPanelName);
+    
+    // muestra el "tab" y el contenido
+    $("#zigguratWikiDetail ul.nav-pills a").each(function() {
+        if ($(this).html()==wikiPanelName) {
+            $(this).css("display", "block");
+        }
     });
+    $("#" + wikiPanelId).css("display", "block");
+        
+    // carga los datos si no estan cargados
+    if (typeof wikiLoaded=="undefined" || !wikiLoaded) {
+        // http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=content&rvparse=&titles=Bombus%20dahlbomii
+        // solo funciona si se usa jquery.getJSON y "callback=?" como parametro
+        // si no da error de CORS 'Access-Control-Allow-Origin
+        var wikiBase        = "https://en.wikipedia.org";
+        var wikiApi         = "/w/api.php";
+        var wikiParameters  = {
+             cache:         false,
+             format:        "json",
+             action:        "query",
+             prop:          "revisions",
+             rvprop:        "content",
+             rvparse:       "",
+             titles:        name
+        }
+        var wikiUrl         = wikiBase + wikiApi + "?" + $.param(wikiParameters) + "&callback=?";
+        //alert("Consultando wikipedia: " + wikiUrl);
+        var jqXHR=$.getJSON(wikiUrl);
+        jqXHR.done(function(data) {
+            //alert("data=" + JSON.stringify(data));
+            var pages=data.query.pages;
+            for (var property in pages) {
+                // establece el contenido a partir de la primera revision
+                //alert("name=" + property  + ", value=" + pages[property]);
+                var page=pages[property];
+                if (typeof page.revisions=="undefined") {
+                    wikiPanel.html(getMessage("MESSAGE_WIKIPEDIA_NO_INFO_ERROR") + " " + name);
+                } else {
+                    var revision=page.revisions[0];
+                    var content=revision["*"];
+                    wikiPanel.html(content);
+                    
+                    // modifica todos los enlaces para que se abran en una nueva ventana
+                    // y los relativos para que apunten a wikipedia 
+                    $("#" + wikiPanelId + " a").each(function() {
+                        var _href=$(this).attr("href");
+                        // nueva ventana
+                        if (_href.substring(0,1)!="#") {
+                            $(this).attr("target", "_blank");
+    
+                            // completa los enlaces relativos
+                            if (_href.substring(0,1)=="/") {
+                                $(this).attr("href", wikiBase + _href);
+                            }
+                        }
+                    });
+                    
+                    // inicializa el scroll
+                    wikiPanel.perfectScrollbar({scrollXMarginOffset:10, scrollYMarginOffset:4});
+                    wikiPanel.perfectScrollbar("update");           
+                }
+                
+                // marca el panel como cargado
+                wikiPanel.data("loaded", true);
+            }
+        });
+        
+        // no funciona el "fail" con callback, pero lo dejo por si acaso algún día....
+        jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
+            alert(getMessage("MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR") + " [status=" + textStatus+ ", error=" + errorThrown + "]");
+        });
+    }
 }
 
 // amplia el SVG del ziggurat
@@ -444,8 +519,7 @@ function svgZoomStore() {
     var _viewBox    = svg[0].getAttribute("viewBox");
     var _width      = _viewBox.split(" ")[2];
     var _height     = _viewBox.split(" ")[3];
-    svg.data("size", {width:parseFloat(_width), height:parseFloat(_height)})
-    console.log("Tamaño original: " + JSON.stringify(svg.data("size")));
+    svg.data("size", {width:parseFloat(_width), height:parseFloat(_height)});
 }
 
 // registra la funcion que recorre la tabla en pantalla
@@ -473,77 +547,6 @@ Shiny.addCustomMessageHandler(
                 Shiny.onInputChange("deleteFilesData", {timestamp: new Date(), fileList: deleteFilesList});
             }
         }
-    }
-);
-
-// registra la funcion que se encarga de la visualizacion de la informacion
-// de la wikipedia
-Shiny.addCustomMessageHandler(
-    "wikiDetailHandler",
-    function(elementData) {
-        //alert("wikiDetailHandler: " + JSON.stringify(elementData));
-        // modifica el contenido del DIV
-        // se apoya en un plugin jQuery que permite esperar a que el elemento exista
-        // es necesario porque el message handler y el pintado de la pestaña van en hilos
-        // de ejecución distintos
-        $("#wikiDetail-" + elementData.id).waitUntilExists(function() {
-            //alert("wikiDetailHandler.waitUntilExists: " + JSON.stringify(elementData));
-            // http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=content&rvparse=&titles=Bombus%20dahlbomii
-            // solo funciona si se usa jquery.getJSON y "callback=?" como parametro
-            // si no da error de CORS 'Access-Control-Allow-Origin
-            var wikiBase        = "https://en.wikipedia.org";
-            var wikiApi         = "/w/api.php";
-            var wikiParameters  = {
-                 cache:         false,
-                 format:        "json",
-                 action:        "query",
-                 prop:          "revisions",
-                 rvprop:        "content",
-                 rvparse:       "",
-                 titles:        elementData.name
-            }
-            var wikiUrl         = wikiBase + wikiApi + "?" + $.param(wikiParameters) + "&callback=?";
-            //alert("Consultando wikipedia: " + wikiUrl);
-            var jqXHR=$.getJSON(wikiUrl);
-            jqXHR.done(function(data) {
-                //alert("data=" + JSON.stringify(data));
-                var pages=data.query.pages;
-                for (var property in pages) {
-                    // establece el contenido a partir de la primera revision
-                    //alert("name=" + property  + ", value=" + pages[property]);
-                    var page=pages[property];
-                    if (typeof page.revisions=="undefined") {
-                        $("#wikiDetail-" + elementData.id).html(getMessage("MESSAGE_WIKIPEDIA_NO_INFO_ERROR") + " " + elementData.name);
-                    } else {
-                        var revision=page.revisions[0];
-                        var content=revision["*"];
-                        $("#wikiDetail-" + elementData.id).html(content);
-                        
-                        // modifica todos los enlaces para que se abran en una nueva ventana
-                        // y los relativos para que apunten a wikipedia 
-                        $("#wikiDetail-" + elementData.id + " a").each(function() {
-                            var _href=$(this).attr("href");
-                            // nueva ventana
-                            if (_href.substring(0,1)!="#") {
-                                $(this).attr("target", "_blank");
-
-                                // completa los enlaces relativos
-                                if (_href.substring(0,1)=="/") {
-                                    $(this).attr("href", wikiBase + _href);
-                                }
-                            }
-                        });
-                        
-                        // inicializa el scroll
-                        $("#wikiDetail-" + elementData.id).perfectScrollbar({scrollXMarginOffset:10, scrollYMarginOffset:4});
-                    }
-                }
-            });
-            // no funciona el "fail" con callback, pero lo dejo por si acaso algún día....
-            jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
-                alert(getMessage("MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR") + " [status=" + textStatus+ ", error=" + errorThrown + "]");
-            });
-        });
     }
 );
 

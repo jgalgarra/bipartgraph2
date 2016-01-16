@@ -13,25 +13,26 @@
 
 /* paneles de informacion del ziggurat */
 #zigguratNodesDetail, #zigguratWikiDetail {
-    padding: 8px; 
+    padding:    0px 0px 5px 10px; 
 }
 
 #zigguratNodesDetail {
-  margin-top:   0px;
-  position:     relative;
-  height:       180px; 
+    margin-top: 0px;
+    position:   relative;
+    height:     180px; 
+}
+
+#zigguratWikiDetail ul.nav-pills a {
+    font-size:  x-small;
+    padding:    5px 10px 5px 10px;
+    display:    none; 
 }
 
 .wikiDetail {
-  margin-top:   10px;
-  position:     relative;
-  height:       180px; 
-}
-
-.wikiDetails {
-  margin-top:   10px;
-  position:     relative;
-  height:       200px; 
+    margin-top: 10px;
+    position:   relative;
+    height:     180px; 
+    display:    none;
 }
 
 /* panel de botones del zoom */

@@ -18,22 +18,22 @@ source("jga/ziggurat_graph.R", encoding="UTF-8")
 source("jga/polar_graph.R", encoding="UTF-8")
 source("global.R", encoding="UTF-8")
 
-# muestra la informacion de detalle sobre un conjunto de elementos
-showElements <- function(type, kcore, elementDf) {
+# muestra la informacion de detalle sobre un nodo del ziggurat
+showNodeDetails <- function(type, kcore, nodeDf) {
   # tamanyo de las columnas
   rows    <- eval(parse(text="fluidRow()"))
   columns <- ""
   sizes   <- c(1, 2, 4, 1, 1, 1)
     
   # crea las filas
-  type    <- paste0("\"", type, "\"")
+  name    <- nodeDf[1, c("name_species")]
+  label   <- nodeDf[1, c("label")]
+  label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki('", type, "',", label, ", '", name , "')"), "\")")
   kcore   <- paste0("\"", kcore, "\"")
-  label   <- elementDf[1, c("label")]
-  name    <- elementDf[1, c("name_species")]
-  label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki(", label, ", '", name , "')"), "\")") 
+  type    <- paste0("\"", type, "\"")
   name    <- paste0("\"", name, "\"")
-  kradius <- paste0("\"", round(elementDf[1, c("kradius")], 2), "\"")
-  kdegree <- paste0("\"", round(elementDf[1, c("kdegree")], 2), "\"")
+  kradius <- paste0("\"", round(nodeDf[1, c("kradius")], 2), "\"")
+  kdegree <- paste0("\"", round(nodeDf[1, c("kdegree")], 2), "\"")
   columns <- ""
   values  <- c(label, type, name, kcore, kradius, kdegree) 
   for (i in 1:length(values)) {
@@ -47,31 +47,35 @@ showElements <- function(type, kcore, elementDf) {
   return(rows)
 }
 
-# muestra la informacion de detalle sobre un elemento
-showWiki <- function(session, elementData) {
+# muestra la informacion de la wikioedia sobre un nodo
+showWiki <- function(types, nodesData) {
   content<-""
-  if (is.null(elementData)) {
+  if (is.null(nodesData)) {
     content<-paste(content,eval(parse(text="fluidRow()")))
   } else {
     tab<-""
     tab<-paste0(tab, "tabsetPanel(")
-    tab<-paste0(tab, "tabPanel(\"")
-    tab<-paste0(tab, elementData$id)
-    tab<-paste0(tab, "\", fluidRow(")
-    tab<-paste0(tab, "column(12, ")
-    tab<-paste0(tab, "tags$div(id=\"wikiDetail-")
-    tab<-paste0(tab, elementData$id)
-    tab<-paste0(tab, "\"")
-    tab<-paste0(tab, ", class=\"wikiDetail\"")
-    tab<-paste0(tab, ", \"", strings$value("MESSAGE_WIKI_LOADING"), "\"")
-    #tab<-paste0(tab, "tags$h6(\"(información descargada de Wikipedia para el elemento ")
-    #tab<-paste0(tab, elementData$name)
-    #tab<-paste0(tab, "...)\"")
-    tab<-paste0(tab, ")))))")
-    content<-paste(content, eval(parse(text=tab)))
-    
-    # llama al javascript que realiza la descarga de la informacion de la wikipedia
-    session$sendCustomMessage(type="wikiDetailHandler", elementData)
+    for (i in 1:nrow(nodesData)) {
+      if (i>1) {
+        tab<-paste0(tab, ", ")
+      }
+      type<-types[i]
+      nodeData<-nodesData[i,]
+      tab<-paste0(tab, "tabPanel(")
+      tab<-paste0(tab, "\"", type, " [#", nodeData$nodeId, "]\"")
+      tab<-paste0(tab, ", fluidRow(")
+      tab<-paste0(tab, "column(12, ")
+      tab<-paste0(tab, "tags$div(id=\"wikiDetail-", type, "-", nodeData$nodeId)
+      tab<-paste0(tab, "\"")
+      tab<-paste0(tab, ", class=\"wikiDetail\"")
+      tab<-paste0(tab, ", \"", strings$value("MESSAGE_WIKI_LOADING"), "\"")
+      #tab<-paste0(tab, "tags$h6(\"(información descargada de Wikipedia para el elemento ")
+      #tab<-paste0(tab, nodeData$name)
+      #tab<-paste0(tab, "...)\"")
+      tab<-paste0(tab, "))))")
+    }
+    tab<-paste0(tab, ", id=\"wikiTabsetPanel\", type=\"pills\")")
+    content<-paste(content, eval(parse(text=tab))) 
   }
   return(content)
 }
@@ -240,6 +244,9 @@ shinyServer(function(input, output, session) {
   # lista de ficheros disponibles
   availableFiles<-reactiveValues(list=list(), details=list())
   
+  # lista de nodos marcados en el ziggurat
+  markedNodes<-reactiveValues(data=data.frame())
+  
   # actua ante los cambios en la lista de ficheros disponibles
   observeEvent(availableFiles$list, {
       availableFiles$details<-availableFilesDetails(availableFiles$list)
@@ -281,6 +288,9 @@ shinyServer(function(input, output, session) {
     validate(
       need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
     )
+    
+    # vacia los nodos seleccionados
+    markedNodes$data<-data.frame()
 
     # indicador de progreso
     progress<-shiny::Progress$new()
@@ -377,26 +387,20 @@ shinyServer(function(input, output, session) {
   })
   
   # actualiza la informacion sobre los nodos del ziggurat seleccionados
-  markedNodesData<-reactive({
-    result    <- data.frame(guild=character(0), kcore=integer(0), element=integer(0), stringsAsFactors=FALSE)
+  observeEvent(input$markedNodesData, {
+    result    <- data.frame(guild=character(0), kcore=integer(0), nodeId=integer(0), stringsAsFactors=FALSE)
     nodesData <- input$markedNodesData
     guilds    <- nodesData[grep("\\.guild", names(nodesData))]
     kcores    <- as.integer(nodesData[grep("\\.kcore", names(nodesData))])
-    if (!is.null(guilds)) {
+    if (!is.null(guilds) && length(guilds)>0) {
       for (i in 1:length(guilds)) {
-        elements  <- as.integer(nodesData[grep(paste0("^", i, "\\.elements"), names(nodesData))])
-        row       <- data.frame(guild=guilds[i], kcore=kcores[i], element=elements, row.names=NULL, stringsAsFactors=FALSE)
-        result    <- rbind(result, row)
+        nodeIds <- as.integer(nodesData[grep(paste0("^", i, "\\.nodeIds"), names(nodesData))])
+        row     <- data.frame(guild=guilds[i], kcore=kcores[i], nodeId=nodeIds, row.names=NULL, stringsAsFactors=FALSE)
+        result  <- rbind(result, row)
       }
     }
     row.names(result)<-NULL
-    return(result)
-  })
-
-  # actualiza la informacion de detalle de un elemento
-  elementData<-reactive({
-    data<-input$elementData
-    return(data)
+    markedNodes$data<-result
   })
 
   # muestra el contenido de un fichero subido al servidor
@@ -429,17 +433,17 @@ shinyServer(function(input, output, session) {
   # muestra los destalles de un nodo seleccionado del grafico ziggurat
   output$zigguratNodesDetail<-renderUI({
     z         <- ziggurat()
-    nodesData <- markedNodesData()
+    nodesData <- markedNodes$data
     details   <- ""
     if (nrow(nodesData)>0) {
       # ordena los nodos seleccionados
-      nodesData <- nodesData[order(strtoi(nodesData$guild), -nodesData$kcore, nodesData$element),]
+      nodesData <- nodesData[order(ifelse(nodesData$guild=="a", 0, 1), -nodesData$kcore, nodesData$nodeId),]
       # muestra los datos de cada nodo seleccionado
       for (i in 1:nrow(nodesData)) {
         guild   <- nodesData[i, "guild"]
         type    <- ifelse(guild=="a", z$name_guild_a, z$name_guild_b)
         kcore   <- as.integer(nodesData[i, "kcore"])
-        element <- as.integer(nodesData[i, "element"])
+        nodeId  <- as.integer(nodesData[i, "nodeId"])
         if (kcore>1) {
           if (guild=="a") {
             # selecciona los datos del k-core
@@ -449,23 +453,36 @@ shinyServer(function(input, output, session) {
             kcore_df<-z$list_dfs_b[[kcore]]
           }
           # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
-          elementDf <- kcore_df[kcore_df$label==element, c("label", "name_species", "kdegree", "kradius")]
-          details   <- paste(details, showElements(type, kcore, elementDf), collapse="")
+          nodeDf  <- kcore_df[kcore_df$label==nodeId, c("label", "name_species", "kdegree", "kradius")]
+          details <- paste(details, showNodeDetails(type, kcore, nodeDf), collapse="")
         }
       }
-      # truqui para el scroll
-      details<-paste(details, "<script>updateZigguratNodesDetailScroll()</script>")
     }
-
+    
+    # truqui para el scroll
+    details<-paste(details, "<script>updateZigguratNodesDetailScroll()</script>")
     return(HTML(details))
   })
 
   # informacion de Wiki
   output$zigguratWikiDetail<-renderUI({
-    data    <- elementData()
-    details <- ""
-    details <- paste(details, showWiki(session, data), collapse="")
-    return(HTML(details))
+      z         <- ziggurat()
+      nodesData <- markedNodes$data
+      details   <- ""
+      if (nrow(nodesData)>0) {
+        # ordena los nodos seleccionados
+        nodesData <- nodesData[order(ifelse(nodesData$guild=="a", 0, 1), -nodesData$kcore, nodesData$nodeId),]
+        # muestra la pestaña de cada nodo seleccionado
+        types   <- ifelse(nodesData$guild=="a", z$name_guild_a, z$name_guild_b)
+        details <- paste(details, showWiki(types, nodesData), collapse="")
+      }
+      
+      return(HTML(details))
+  })
+
+  # selelecciona la pestaña de detalle de la wikipedia
+  observeEvent(input$wikiPanelName, {
+    updateTabsetPanel(session, "wikiTabsetPanel", selected=input$wikiPanelName)
   })
 
   # actualiza el grafico polar en base a los controles de

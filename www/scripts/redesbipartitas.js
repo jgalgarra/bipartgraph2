@@ -39,9 +39,6 @@ function updateHelpTooltips() {
 
 //actualiza los eventos asociados a todos los elementos del SVG
 function updateSVGEvents() {
-    // establece el SVG a su tamaño real
-    svgZoomReset();
-
     // actualiza los eventos asociados a las etiquetas
     updateNodeEvents();
     
@@ -56,7 +53,13 @@ function updateSVGEvents() {
     
     // inicializa el scroll
     $("#ziggurat").perfectScrollbar({scrollXMarginOffset:4, scrollYMarginOffset:4});    
-    $("#zigguratNodesDetail").perfectScrollbar({scrollXMarginOffset:10, scrollYMarginOffset:4});    
+    $("#zigguratNodesDetail").perfectScrollbar({scrollXMarginOffset:10, scrollYMarginOffset:4});
+    
+    // almacena la informacion del tamaño del SVG
+    svgZoomStore();
+    
+    // establece el SVG a su tamaño real
+    svgZoomFit();
 }
 
 // actualiza el scroll de los detalles
@@ -125,11 +128,13 @@ function updateNodeTooltips() {
                     var elements=$(this).data("elements");
                     var id=$(this).attr("id").replace("-rect", "");
                     $("[id*=" + id + "]").each(function() {
+                        $(this).qtip("destroy", true);
                         $(this).qtip({
                             content:    {text: getTooltipContent(guildName, kcore, guildCoreData, elements)},
                             style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500},
                             show:       {delay:50},
-                            hide:       {delay:0}
+                            hide:       {delay:0},
+                            position:   {viewport: $("#ziggurat")}
                         });
                     });
                 });            
@@ -386,61 +391,61 @@ function showWiki(id, name) {
     });
 }
 
-//amplia el SVG del ziggurat
+// amplia el SVG del ziggurat
 function svgZoomIn() {
-    var svg     = $("#ziggurat svg");
-    var _width  = parseFloat(svg.css("width").replace("px", ""));
-    var _height = parseFloat(svg.css("height").replace("px", ""));
-    svg.css({
-        "width":    (_width*1.1) + "px",
-        "height":   (_height*1.1) + "px"
-    });
+    var svg         = $("#ziggurat svg");
+    var _width      = parseFloat(svg[0].getAttribute("width"));
+    var _height     = parseFloat(svg[0].getAttribute("height"));
+    svg[0].setAttribute("width", Math.floor(_width*1.1));
+    svg[0].setAttribute("height", Math.floor(_height*1.1));
 }
 
-//reduce el SVG del ziggurat
+// reduce el SVG del ziggurat
 function svgZoomOut() {
-    var svg     = $("#ziggurat svg");
-    var _width  = parseFloat(svg.css("width").replace("px", ""));
-    var _height = parseFloat(svg.css("height").replace("px", ""));
-    svg.css({
-        "width":    (_width/1.1) + "px",
-        "height":   (_height/1.1) + "px"
-    });
+    var svg         = $("#ziggurat svg");
+    var _width      = parseFloat(svg[0].getAttribute("width"));
+    var _height     = parseFloat(svg[0].getAttribute("height"));
+    svg[0].setAttribute("width", Math.floor(_width/1.1));
+    svg[0].setAttribute("height", Math.floor(_height/1.1));
 }
 
-//ajusta el SVG del ziggurat al marco que lo contiene
+// ajusta el SVG del ziggurat al marco que lo contiene
 function svgZoomFit() {
     var ziggurat    = $("#ziggurat");
     var svg         = $("#ziggurat svg");
     var _width      = ziggurat.width();
     var _height     = ziggurat.height();
-    svg.css({
-        "width":    (_width) + "px",
-        "height":   (_height) + "px"
-    });
- 
+    svg[0].setAttribute("width", _width);
+    svg[0].setAttribute("height", _height);
+    
     // restablece el scroll    
     ziggurat.scrollTop(0);
     ziggurat.scrollLeft(0);
     ziggurat.perfectScrollbar("update");
 }
 
-//establece el tamaño SVG del ziggurat a su tamaño real
+// establece el tamaño SVG del ziggurat a su tamaño real
 function svgZoomReset() {
     var ziggurat    = $("#ziggurat");
     var svg         = $("#ziggurat svg");
-    var _viewBox    = svg[0].getAttribute("viewBox");
-    var _width      = _viewBox.split(" ")[2];
-    var _height     = _viewBox.split(" ")[3];
-    svg.css({
-        "width":    _width + "px",
-        "height":   _height + "px"
-    });
+    var size        = svg.data("size");
+    svg[0].setAttribute("width", size.width);
+    svg[0].setAttribute("height", size.height);
     
     // restablece el scroll    
     ziggurat.scrollTop(0);
     ziggurat.scrollLeft(0);
     ziggurat.perfectScrollbar("update");
+}
+
+// almacena la informacion sobre el tamaño original del ziggurat
+function svgZoomStore() {
+    var svg         = $("#ziggurat svg");
+    var _viewBox    = svg[0].getAttribute("viewBox");
+    var _width      = _viewBox.split(" ")[2];
+    var _height     = _viewBox.split(" ")[3];
+    svg.data("size", {width:parseFloat(_width), height:parseFloat(_height)})
+    console.log("Tamaño original: " + JSON.stringify(svg.data("size")));
 }
 
 // registra la funcion que recorre la tabla en pantalla

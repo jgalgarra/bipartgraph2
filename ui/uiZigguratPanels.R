@@ -88,7 +88,12 @@ zigguratConfigPanel <- function() {
         column(3, zigguratPaintLinksControl())
       ),
       fluidRow(
-        column(6, zigguratFlipResultsControl())
+        column(3, zigguratFlipResultsControl()),
+        column(3, zigguratPaintOutsidersControl())
+      ),
+      fluidRow(
+        column(3, zigguratUseSplineControl()),
+        column(3, zigguratSplinePointsControl())
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_SIZES_HEADER"), image="ruler.png"))
@@ -140,6 +145,13 @@ zigguratConfigPanel <- function() {
     ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_PANEL"),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_GENERAL_HEADER"), image="settings.png"))
+      ),
+      fluidRow(
+        column(3, zigguratLabelGuildAControl()),
+        column(3, zigguratLabelGuildBControl())
+      ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_SIZE_HEADER"), image="generic_text.png"))
       ),

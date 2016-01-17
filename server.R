@@ -288,6 +288,8 @@ shinyServer(function(input, output, session) {
     validate(
       need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
     )
+    # funcion para eliminar espacios
+    trim <- function (x) gsub("^\\s+|\\s+$", "", x)
     
     # vacia los nodos seleccionados
     markedNodes$data<-data.frame()
@@ -338,7 +340,7 @@ shinyServer(function(input, output, session) {
       fattailjumpvert                               = c(1,1),
       coremax_triangle_height_factor                = 1,
       coremax_triangle_width_factor                 = 1,
-      paint_outsiders                               = TRUE,
+      paint_outsiders                               = input$zigguratPaintOutsiders,
       displace_outside_component                    = c(1,1),
       outsiders_separation_expand                   = 1,
       outsiders_legend_expand                       = 1,
@@ -353,13 +355,13 @@ shinyServer(function(input, output, session) {
       kcore_species_name_display                    = c(),
       kcore_species_name_break                      = c(),
       shorten_species_name                          = 0,
-      label_strguilda                               = "",
-      label_strguildb                               = "",
+      label_strguilda                               = trim(input$zigguratLabelGuildA),
+      label_strguildb                               = trim(input$zigguratLabelGuildB),
       landscape_plot                                = TRUE,
       backg_color                                   = "white",
       show_title                                    = TRUE,
-      use_spline                                    = TRUE,
-      spline_points                                 = 100,  
+      use_spline                                    = input$zigguratUseSpline,
+      spline_points                                 = input$zigguratSplinePoints,  
       #svg_scale_factor                              = input$zigguratSvgScaleFactor
       svg_scale_factor                              = 10,
       progress                                      = progress

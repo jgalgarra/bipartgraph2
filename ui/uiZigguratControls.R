@@ -42,6 +42,39 @@ zigguratFlipResultsControl <- function() {
   return(control)
 }
 
+# control para dibujar los outsiders
+zigguratPaintOutsidersControl <- function() {
+  control<-checkboxInput(
+    inputId = "zigguratPaintOutsiders",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_PAINT_OUTSIDERS_CONTROL")),
+    value   = TRUE
+  )
+  return(control)
+}
+
+# control para usar splines
+zigguratUseSplineControl <- function() {
+  control<-checkboxInput(
+    inputId = "zigguratUseSpline",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_USE_SPLINE_CONTROL")),
+    value   = TRUE
+  )
+  return(control)
+}
+
+# control para indicar os puntos de los splines
+zigguratSplinePointsControl <- function() {
+  control<-sliderInput(
+    inputId = "zigguratSplinePoints",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_SPLINE_POINTS_CONTROL")),
+    min     = 50,
+    max     = 150,
+    value   = 100,
+    step    = 10
+  )
+  return(control)
+}
+
 # control para el factor de escala del grafico SVG
 zigguratAspectRatioControl <- function() {
   control<-sliderInput(
@@ -180,6 +213,24 @@ zigguratInnerTailVerticalSeparationControl <- function() {
     step    = 0.1
   )
   return(control)
+}
+
+# etiqueta clan A
+zigguratLabelGuildAControl<-function() {
+  control<-textInput(
+    inputId = "zigguratLabelGuildA",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_LABEL_GUILDA")),
+    value   = strings$value("LABEL_ZIGGURAT_LABEL_GUILDA_DEFAULT")
+  )
+}
+
+# etiqueta clan B
+zigguratLabelGuildBControl<-function() {
+  control<-textInput(
+    inputId = "zigguratLabelGuildB",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_LABEL_GUILDB")),
+    value   = strings$value("LABEL_ZIGGURAT_LABEL_GUILDB_DEFAULT")
+  )
 }
 
 # tamanyo de las etiquetas

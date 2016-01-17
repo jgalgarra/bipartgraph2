@@ -19,10 +19,11 @@ LocalizedStrings<-function(locale="es") {
   
   # obtiene el texto para la clave indicada
   this$value<-function(keys) {
+    trim <- function (x) gsub("^\\s+|\\s+$", "", x)
     val<-this$data[keys, this$locale]
     val[is.na(val)]<-"(error: undefined key)"
     val[is.null(val)]<-"(error: undefined language)"
-    return(val)
+    return(trim(val))
   }
   
   return(this)

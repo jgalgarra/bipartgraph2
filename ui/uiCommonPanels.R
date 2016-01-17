@@ -41,11 +41,10 @@ footerPanel <- function() {
 # panel de resumen
 summaryPanel <- function() {
   info    <- ""
-  info    <- paste0(info, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer scelerisque non felis sed egestas. ")
-  info    <- paste0(info, "Nullam nec lorem orci. In volutpat urna sit amet porta vulputate. Quisque pharetra nunc ut fringilla vestibulum. ")
-  info    <- paste0(info, "Quisque mauris augue, vehicula id porttitor feugiat, ornare sed nibh. Etiam sed lectus mauris. Aliquam placerat quam id nibh lobortis euismod. ")
-  info    <- paste0(info, "Nam vel feugiat odio. Donec aliquet nibh quis felis aliquam accumsan. Aliquam elementum in neque et condimentum.")
-  info    <- paste0(info, "Nunc et ullamcorper elit, in pellentesque tellus.")
+  info    <- paste0(info, "Interfaz gráfico para la representación de redes bipartitas basada en la técnica de descomposición k-core. ")
+  info    <- paste0(info, "Desarrollado como Proyecto Fin de Carrera en la Universidad Politécnica de Madrid a propuesta del Departamento de Ingeniería Telemática y Electrónica. ")
+  info    <- paste0(info, "El intefaz gráfico consume un \"backend\" desarrollado en R, que implementa la lógica para el análisis y la representación de los distintos diagramas que se ofrecen desde el interfaz gráfico: el diagrama ziggurat y los diagramas polar e histogramas. ")
+  info    <- paste0(info, "Este backend está desarrollado por Javier García Algarra como parte de su estudio de nuevas formas de representar gráficamente las redes mutualistas.")
   author  <- "Juan Manuel García Santi"
   version <- "v1.0 - Diciembre'15"
   panel<-tags$div(class="panelContent", fluidRow(

@@ -1675,7 +1675,7 @@ init_working_values <- function()
 
 draw_ziggurat_plot <- function(svg_scale_factor, progress)
 {
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_PROCESSING_NODES"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_PROCESSING_NODES"))
   zinit_time <- proc.time()
   for (i in zgg$ind_cores) {
     nodes_in_core_a <- zgg$g[(zgg$g$guild == zgg$str_guild_a)&(zgg$g$kcorenum == i)]$name
@@ -1723,7 +1723,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   zgg$strips_height <- 0.6*(zgg$ymax-zgg$yoffset)/max(1,(zgg$kcoremax-2))
   # Draw max core triangles
   svg <-SVG(svg_scale_factor)
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_MAXCORE"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_MAXCORE"))
   f <- draw_maxcore(svg)
   p <- f["p"][[1]]
   svg <- f["svg"][[1]]
@@ -1743,7 +1743,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   zgg$pointer_y <- zgg$ymax+zgg$height_y*max(zgg$df_cores$num_species_guild_a[zgg$kcoremax-1],zgg$df_cores$num_species_guild_b[zgg$kcoremax-1])
   zgg$width_zig <- 0.3*zgg$hop_x
   zgg$primerkcore <- TRUE
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_ZIGGURAT"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_ZIGGURAT"))
   f <- draw_all_ziggurats(p, svg)
   p <- f["p"][[1]]
   svg <- f["svg"][[1]]
@@ -1765,7 +1765,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
     }
 
   # Hanlde orphans, species outside the ziggurat
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_ORPHANS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_ORPHANS"))
   f <- handle_orphans(zgg$result_analysis$graph)
   zgg$mtxlinks <- f["mtxlinks"][[1]]
   zgg$orphans_a <- f["orphans_a"][[1]]
@@ -1774,7 +1774,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   zgg$df_orph_b <- f["df_orph_b"][[1]]
   # Species of core 1 linked to max core (except the most generalist)
   zgg$gap <-  4*zgg$height_y
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_MAXCORE_TAILS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_MAXCORE_TAILS"))
   f <- draw_coremax_tails(p, svg)
   p <- f["p"][[1]]
   svg <- f["svg"][[1]]
@@ -1789,7 +1789,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   svg <- z["svg"][[1]]
   zgg$pos_tail_x <- z["pos_tail_x"][[1]]
   # Nodes of core 1 linked to species in cores kcoremax-1 to core 2.
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_INNER_ORPHANS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_INNER_ORPHANS"))
   z <- draw_inner_orphans(p, svg)
   p <- z["p"][[1]]
   svg <- z["svg"][[1]]
@@ -1798,7 +1798,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   print(zend_time - zinit_time)
 
   # Draw inner links
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_INNER_LINKS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_INNER_LINKS"))
   if (zgg$paintlinks) {
     z <- draw_inner_links(p, svg)
     p <- z["p"][[1]]
@@ -1810,7 +1810,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   print(zend_time - zinit_time)
 
   # Weirds management
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_WEIRDS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_WEIRDS"))
   v <- handle_weirds(p,svg,weirds_a,weirds_b,zgg$lado,zgg$gap)
   p <- v["p"][[1]]
   svg <- v["svg"][[1]]
@@ -1821,7 +1821,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
 
   zgg$df_chains <- v["df_chains"][[1]]
   # Specied outside the giant componente
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_OUTSIDERS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_OUTSIDERS"))
   if (zgg$paint_outsiders) {
     v <- handle_outsiders(p,svg,outsiders,zgg$df_chains)
     p <- v["p"][[1]]
@@ -1843,7 +1843,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   print(zend_time - zinit_time)
 
   # Plot straight links
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_LINKS"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_LINKS"))
   if (zgg$paintlinks){
     if (nrow(zgg$straight_links)>0) {
       p <- p+ geom_segment(data=zgg$straight_links, aes(x=x1, y=y1, xend=x2, yend=y2),
@@ -1865,7 +1865,7 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   zend_time <- proc.time()
   print("despues de display plot")
   print(zend_time - zinit_time)
-  progress$inc(0, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DONE"))
+  if (!is.null(progress)) progress$inc(0, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DONE"))
 
   return(zgg)
 }
@@ -1891,15 +1891,15 @@ ziggurat_graph <- function(datadir,filename,
                            kcore_species_name_display = c(), kcore_species_name_break = c(),
                            shorten_species_name = 0, label_strguilda = "", label_strguildb = "", landscape_plot = TRUE,
                            backg_color = "white", show_title = TRUE, use_spline =TRUE, spline_points = 100,
-                           svg_scale_factor,
-                           progress
+                           svg_scale_factor=10,
+                           progress=NULL
                            )
 {
   zgg <<- new.env()
   print("Environment")
   print(environment())
 
-  progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_ANALYZING_NETWORK"))
+  if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_ANALYZING_NETWORK"))
   f <- read_and_analyze(datadir,filename,label_strguilda, label_strguildb)
   zgg$result_analysis <- f["result_analysis"][[1]]
   zgg$str_guild_a <- f["str_guild_a"][[1]]

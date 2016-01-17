@@ -363,7 +363,6 @@ shinyServer(function(input, output, session) {
       use_spline                                    = input$zigguratUseSpline,
       spline_points                                 = input$zigguratSplinePoints,  
       #svg_scale_factor                              = input$zigguratSvgScaleFactor
-      svg_scale_factor                              = 10,
       progress                                      = progress
     )
     z$svg$save("C:\\Temp\\kk.svg")

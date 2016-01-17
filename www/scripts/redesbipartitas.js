@@ -53,7 +53,7 @@ function updateSVGEvents() {
     
     // inicializa el scroll
     $("#ziggurat").perfectScrollbar({scrollXMarginOffset:4, scrollYMarginOffset:4});    
-    $("#zigguratNodesDetail").perfectScrollbar({scrollXMarginOffset:10, scrollYMarginOffset:4});
+    $("#zigguratNodesDetail").perfectScrollbar({scrollXMarginOffset:16, scrollYMarginOffset:4});
     
     // almacena la informacion del tamaño del SVG
     svgZoomStore();

@@ -31,7 +31,8 @@ function updateHelpTooltips() {
         $("#" + helpTooltips[i].id).each(function() {
             $(this).qtip({
                 content:    {text: helpTooltips[i].value},
-                style:      {classes: "qtip-bootstrap rbtooltiphelp"}
+                style:      {classes: "qtip-bootstrap rbtooltiphelp"},
+                position:   {my: "bottom right", at: "top center"}
             });
         });
     }
@@ -134,7 +135,7 @@ function updateNodeTooltips() {
                             style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500},
                             show:       {delay:50},
                             hide:       {delay:0},
-                            position:   {viewport: $("#ziggurat")}
+                            position:   {my: "top left", at: "top left", target: "mouse", adjust:{x:8, y:24}}
                         });
                     });
                 });            

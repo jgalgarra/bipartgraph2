@@ -137,9 +137,10 @@
 .rbtooltiphelp {
     font-size:  x-small;
 }
+
 .rbtooltipinfo {
     font-size:  x-small;
-    background: #FFFFD0;
+    background-color: rgba(192, 192, 192, 0.25);
 }
 
 .rbtooltiptableinfo1 {

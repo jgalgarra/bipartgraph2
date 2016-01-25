@@ -169,7 +169,7 @@ zigguratHeightExpandControl <- function() {
     inputId = "zigguratHeightExpand",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_HEIGHT_EXPAND_CONTROL")),
     min     = 0.5,
-    max     = 2.0,
+    max     = 5.0,
     value   = 1.0,
     step    = 0.5
   )

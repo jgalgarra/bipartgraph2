@@ -83,8 +83,7 @@ draw_square<- function(idPrefix, grafo,svg,basex,basey,side,fillcolor,alphasq,la
   pyy <- signo*(y1+(y2-y1)/2)
   p <- p +annotate(geom="text", x=pxx, y=pyy, label=slabel,
                    colour = labelcolor, size=lbsize, hjust = hjust,
-                   vjust = vjust, angle = langle,
-                   guide =FALSE)
+                   vjust = vjust, angle = langle)
   svg$rect(idPrefix=idPrefix, data=ds, mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), fill = fillcolor, alpha=alphasq, size=0.5, color=fillcolor)
   svg$text(idPrefix=idPrefix, data=data.frame(x=c(x1+(x2-x1)/2), y=c(ifelse(signo==1, max(y1,y2), min(-y1,-y2)))), mapping=aes(x=x, y=y), color=labelcolor, label=slabel, size=lbsize, angle=langle)
   calc_vals <- list("p" = p, "svg" = svg)
@@ -109,7 +108,7 @@ draw_rectangle<- function(idPrefix,basex,basey,widthx,widthy,grafo,svg,bordercol
                          mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2),
                          fill = fillcolor, alpha =palpha, color=bordercolor, size = bordersize, linetype = 3)
   p <- p +annotate(geom="text", x=x1+(x2-x1)/8, y=signo*(y1+(y2-y1)/2), label=slabel,
-                   colour = fillcolor, size=sizelabel, hjust = 0,  guide =FALSE)
+                   colour = fillcolor, size=sizelabel, hjust = 0)
   svg$rect(idPrefix=idPrefix, data=ds, mapping=aes(xmin=x1, xmax=x2, ymin=y1, ymax=y2), fill=fillcolor, alpha=palpha, color=bordercolor, size=bordersize, linetype=3)
   svg$text(idPrefix=idPrefix, data=data.frame(x=c(x1+(x2-x1)/8), y=c(signo*(y1+(y2-y1)/2))), mapping=aes(x=x, y=y), color=fillcolor, label=slabel, size=sizelabel)
   
@@ -163,7 +162,7 @@ draw_core_box <- function(grafo, svg, kcore)
     ifelse (zgg$flip_results,pangle<-0,pangle <- 90)
   }
   p <- p +annotate(geom="text", x=px, y=py, label=corelabel, colour = divcolor,  fontface="italic",
-                   size=zgg$lsize_core_box, hjust = phjust, vjust = 0, angle = pangle, guide =FALSE)
+                   size=zgg$lsize_core_box, hjust = phjust, vjust = 0, angle = pangle)
   svg$text(idPrefix=paste0("kcore", kcore), data=data.frame(x=c(px), y=c(py)), mapping=aes(x=x, y=y), color=divcolor, label=corelabel, size=zgg$lsize_core_box, angle=pangle)
 
   calc_vals <- list("p" = p, "svg" = svg, "max_position_y_text_core" = zgg$max_position_y_text_core)
@@ -428,7 +427,7 @@ handle_outsiders <- function(p,svg,outsiders,df_chains) {
       py <- y_inf
     }
     p <- p +annotate(geom="text", x=px, y=py, label=corelabel, colour = divcolor,
-                     size=zgg$lsize_core_box, hjust = 0, vjust = 0, angle = 0, guide =FALSE)
+                     size=zgg$lsize_core_box, hjust = 0, vjust = 0, angle = 0)
 
     svg$text("corelabel", data=data.frame(x=c(px), y=c(py)), mapping=aes(x=x, y=y), color=divcolor, label=corelabel, size=zgg$lsize_core_box)
   }
@@ -1166,14 +1165,12 @@ write_annotations <- function(p, svg)
   p <- f["p"][[1]]
   svg <- f["svg"][[1]]
   p <- p +annotate(geom="text", x= landmark_right, y=0, label=mlabel,
-                   colour = "red", size=1, hjust = 0, vjust = 0, angle = 0,
-                   guide =FALSE)
+                   colour = "red", size=1, hjust = 0, vjust = 0, angle = 0)
   svg$text("annotation", data=data.frame(x=landmark_right, y=0), mapping=aes(x=x, y=y), color="red", label=mlabel, size=1, angle=0)
   landmark_left <- min(zgg$last_xtail_a[[zgg$kcoremax]],zgg$last_xtail_b[[zgg$kcoremax]])-min(zgg$hop_x,0.2*min(zgg$last_xtail_a[[zgg$kcoremax]],zgg$last_xtail_b[[zgg$kcoremax]]))
   landmark_left <- min(landmark_left, zgg$pos_tail_x)*zgg$rescale_plot_area[1]
   p <- p +annotate(geom="text", x=landmark_left, y=0, label=mlabel,
-                   colour = "red", size=2, hjust = 0, vjust = 0, angle = 0,
-                   guide =FALSE)
+                   colour = "red", size=2, hjust = 0, vjust = 0, angle = 0)
   svg$text("annotation", data=data.frame(x=landmark_left, y=0), mapping=aes(x=x, y=y), color="red", label=mlabel, size=1, angle=0)
   x_span <- landmark_right - landmark_left
 
@@ -1188,23 +1185,20 @@ write_annotations <- function(p, svg)
                     y=y_legend,
                     label=zgg$name_guild_a,
                     colour = zgg$color_guild_a[1], size=zgg$lsize_legend,
-                    hjust = 0, vjust = 0, angle = 0,
-                    guide =FALSE)
+                    hjust = 0, vjust = 0, angle = 0)
   #svg$text("legend", data=data.frame(x=x_legend, y=y_legend), mapping=aes(x=x, y=y), color=zgg$color_guild_a[1], label=zgg$name_guild_a, size=zgg$lsize_legend, angle=0)
   p <- p + annotate(geom="text", x=x_legend,
                     y=y_legend,
                     label= paste("            ",zgg$name_guild_b),
                     colour = zgg$color_guild_b[1], size=zgg$lsize_legend,
-                    hjust = 0, vjust = 0, angle = 0,
-                    guide =FALSE)
+                    hjust = 0, vjust = 0, angle = 0)
   #svg$text("legend", data=data.frame(x=x_legend, y=y_legend+20), mapping=aes(x=x, y=y), color=zgg$color_guild_b[1], label=zgg$name_guild_b, size=zgg$lsize_legend, angle=0)
   p <- p +annotate(geom="text", x=landmark_left,
                    y = y_legend,
                    label="1-shell",
                    colour = zgg$corecols[2], size=zgg$lsize_core_box, hjust = 0, vjust = 0,
                    angle = 0,
-                   fontface="italic",
-                   guide =FALSE)
+                   fontface="italic")
   svg$text("core-1", data=data.frame(x=landmark_left, y=y_legend), mapping=aes(x=x, y=y), color=zgg$corecols[2], label="1-shell", size=zgg$lsize_core_box, angle=0)
 
   calc_vals <- list("p" = p, "svg" = svg)

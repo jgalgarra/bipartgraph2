@@ -135,7 +135,7 @@ function updateNodeTooltips() {
                             style:      {classes: "qtip-bootstrap rbtooltipinfo", width: 500},
                             show:       {delay:50},
                             hide:       {delay:0},
-                            position:   {my: "top left", at: "top left", target: "mouse", adjust:{x:8, y:24}}
+                            position:   {my: "bottom left", at: "top left", target: "mouse"}
                         });
                     });
                 });            
@@ -311,7 +311,9 @@ function getNodeIds(aNodes) {
         if (strNode.length>0) {
             var ids=strNode.split(" ");
             for (var j=0;j<ids.length;++j) {
-                result.push(parseInt(ids[j]));
+                if ($.isNumeric(ids[j])) {
+                    result.push(parseInt(ids[j]));
+                }
             }
         }
     }

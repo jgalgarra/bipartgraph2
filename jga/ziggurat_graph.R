@@ -1,7 +1,7 @@
 library(scales)
 library(grid)
 library(gridExtra)
-library(Hmisc)
+library(stringr)
 library(RColorBrewer)
 source("jga/network-kanalysis.R", encoding="UTF-8")
 source("svg.R", encoding="UTF-8")
@@ -488,6 +488,53 @@ draw_coremax_triangle <- function(basex,topx,basey,topy,numboxes,fillcolor,strla
     d1$name_species <- d1[ordvector,]$name_species
   }
   return(d1)
+}
+
+# This function adds the following information for species of kcore 1 in lists_dfs_x: label, name_species, kdegree, kradius
+conf_kcore1_info <- function(strguild)
+{
+  auxlistdf <- data.frame(x1=NA,x2=NA,y1=NA,y2=NA,r=NA,col_row=NA,kdegree=NA,kradius=NA,name_species=NA,label=NA)
+  retlistdf <- data.frame(x1=c(),x2=c(),y1=c(),y2=c(),r=c(),col_row=c(),kdegree=c(),kradius=c(),name_species=c(),label=c())
+  num_s <- zgg$cores[1,]$num_species_guild_a
+  if (strguild == zgg$str_guild_a)
+    listspecies = zgg$df_cores[1,]$species_guild_a
+  else
+    listspecies = zgg$df_cores[1,]$species_guild_b
+  for (j in listspecies[[1]])
+  {
+    ind <- paste0(strguild,j)
+    auxlistdf$label <- j
+    auxlistdf$kdegree <-  V(zgg$result_analysis$graph)[ind]$kdegree
+    auxlistdf$kradius <-  V(zgg$result_analysis$graph)[ind]$kradius
+    auxlistdf$name_species <-  V(zgg$result_analysis$graph)[ind]$name_species
+    retlistdf <- rbind(retlistdf,auxlistdf)
+  }
+  return(retlistdf)
+}
+
+# Similar to conf_kcore1_info for species outside the giant component
+conf_outsiders_info <- function(strguild)
+{
+  auxlistdf <- data.frame(x1=NA,x2=NA,y1=NA,y2=NA,r=NA,col_row=NA,kdegree=NA,kradius=NA,name_species=NA,label=NA)
+  retlistdf <- data.frame(x1=c(),x2=c(),y1=c(),y2=c(),r=c(),col_row=c(),kdegree=c(),kradius=c(),name_species=c(),label=c())
+  listspecies <- NULL
+  num_s <- zgg$cores[1,]$num_species_guild_a
+  if (strguild == zgg$str_guild_a)
+    #if (!is.null(zgg$outsiders_a))
+      listspecies = zgg$outsiders_a
+  else
+    #if (!is.null(zgg$outsiders_b))
+      listspecies = zgg$outsiders_b
+  for (j in listspecies)
+  {
+    #ind <- paste0(strguild,j)
+    auxlistdf$label <- str_replace(j,strguild,"")
+    auxlistdf$kdegree <-  V(zgg$result_analysis$graph)[j]$kdegree
+    auxlistdf$kradius <-  V(zgg$result_analysis$graph)[j]$kradius
+    auxlistdf$name_species <-  V(zgg$result_analysis$graph)[j]$name_species
+    retlistdf <- rbind(retlistdf,auxlistdf)
+  }
+  return(retlistdf)
 }
 
 conf_ziggurat <- function(igraphnet, basex,widthx,basey,ystep,numboxes,fillcolor, strlabels, strguild, inverse = "no", edge_tr = "no")
@@ -1749,6 +1796,14 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   zgg$last_ytail_a <- f["last_ytail_a"][[1]]
   zgg$last_xtail_b <- f["last_xtail_b"][[1]]
   zgg$last_ytail_b <- f["last_ytail_b"][[1]]
+  # Add kcore1 information
+  zgg$list_dfs_a[[1]] <- conf_kcore1_info(zgg$str_guild_a)
+  zgg$list_dfs_b[[1]] <- conf_kcore1_info(zgg$str_guild_b)
+  # Add outsiders information
+  info_out_a <- conf_outsiders_info(zgg$str_guild_a)
+  info_out_b <- conf_outsiders_info(zgg$str_guild_b)
+  zgg$list_dfs_a[[1]] <- rbind(zgg$list_dfs_a[[1]], info_out_a)
+  zgg$list_dfs_b[[1]] <- rbind(zgg$list_dfs_b[[1]], info_out_b)
   # Draw core boxex
   for (i in seq(zgg$kcoremax,2))
     if ((length(zgg$list_dfs_a[[i]])+length(zgg$list_dfs_b[[i]]))>0){

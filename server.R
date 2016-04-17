@@ -365,7 +365,6 @@ shinyServer(function(input, output, session) {
       #svg_scale_factor                              = input$zigguratSvgScaleFactor
       progress                                      = progress
     )
-    z$svg$save("C:\\Temp\\kk.svg")
     
     # igraph del ziggurat
     g<-z$result_analysis$graph
@@ -445,18 +444,17 @@ shinyServer(function(input, output, session) {
         type    <- ifelse(guild=="a", z$name_guild_a, z$name_guild_b)
         kcore   <- as.integer(nodesData[i, "kcore"])
         nodeId  <- as.integer(nodesData[i, "nodeId"])
-        if (kcore>1) {
-          if (guild=="a") {
-            # selecciona los datos del k-core
-            kcore_df<-z$list_dfs_a[[kcore]]
-          } else {
-            # selecciona los datos del k-core
-            kcore_df<-z$list_dfs_b[[kcore]]
-          }
-          # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
-          nodeDf  <- kcore_df[kcore_df$label==nodeId, c("label", "name_species", "kdegree", "kradius")]
-          details <- paste(details, showNodeDetails(type, kcore, nodeDf), collapse="")
+      
+        if (guild=="a") {
+          # selecciona los datos del k-core
+          kcore_df<-z$list_dfs_a[[kcore]]
+        } else {
+          # selecciona los datos del k-core
+          kcore_df<-z$list_dfs_b[[kcore]]
         }
+        # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
+        nodeDf  <- kcore_df[kcore_df$label==nodeId, c("label", "name_species", "kdegree", "kradius")]
+        details <- paste(details, showNodeDetails(type, kcore, nodeDf), collapse="")
       }
     }
     

@@ -3,6 +3,8 @@ library(grid)
 library(gridExtra)
 library(stringr)
 library(RColorBrewer)
+
+
 source("jga/network-kanalysis.R", encoding="UTF-8")
 source("svg.R", encoding="UTF-8")
 
@@ -1842,9 +1844,9 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   z <- draw_inner_orphans(p, svg)
   p <- z["p"][[1]]
   svg <- z["svg"][[1]]
-  zend_time <- proc.time()
-  print("despues de draw_inner_orphans")
-  print(zend_time - zinit_time)
+  # zend_time <- proc.time()
+  # print("despues de draw_inner_orphans")
+  # print(zend_time - zinit_time)
 
   # Draw inner links
   if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_INNER_LINKS"))
@@ -1854,9 +1856,9 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
     svg <- z["svg"][[1]]
   }
 
-  zend_time <- proc.time()
-  print("despues de draw_inner_links")
-  print(zend_time - zinit_time)
+  # zend_time <- proc.time()
+  # print("despues de draw_inner_links")
+  # print(zend_time - zinit_time)
 
   # Weirds management
   if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_WEIRDS"))
@@ -1864,9 +1866,9 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   p <- v["p"][[1]]
   svg <- v["svg"][[1]]
 
-  zend_time <- proc.time()
-  print("despues de handle_weirds")
-  print(zend_time - zinit_time)
+  # zend_time <- proc.time()
+  # print("despues de handle_weirds")
+  # print(zend_time - zinit_time)
 
   zgg$df_chains <- v["df_chains"][[1]]
   # Specied outside the giant componente
@@ -1877,9 +1879,9 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
     svg <- v["svg"][[1]]
   }
 
-  zend_time <- proc.time()
-  print("despues de handle_outsiders")
-  print(zend_time - zinit_time)
+  # zend_time <- proc.time()
+  # print("despues de handle_outsiders")
+  # print(zend_time - zinit_time)
 
 
   # Legend, title and final annotations
@@ -1887,9 +1889,9 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
   p <- v["p"][[1]]
   svg <- v["svg"][[1]]
 
-  zend_time <- proc.time()
-  print("despues de write annotations")
-  print(zend_time - zinit_time)
+  # zend_time <- proc.time()
+  # print("despues de write annotations")
+  # print(zend_time - zinit_time)
 
   # Plot straight links
   if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DRAWING_LINKS"))
@@ -1905,15 +1907,16 @@ draw_ziggurat_plot <- function(svg_scale_factor, progress)
       svg$path(idPrefix="link", data=zgg$bent_links, mapping=aes(x, y, group=number), alpha=zgg$alpha_link, color=zgg$color_link, size=zgg$size_link)
     }
   }
-  #display_plot(p,zgg$print_to_file,zgg$flip_results, landscape = zgg$landscape_plot)
+  if (is.null(progress))
+    display_plot(p,zgg$print_to_file,zgg$flip_results, landscape = zgg$landscape_plot)
 
   # guarda los resultados
   zgg$plot  <- p
   zgg$svg   <- svg
 
-  zend_time <- proc.time()
-  print("despues de display plot")
-  print(zend_time - zinit_time)
+  # zend_time <- proc.time()
+  # print("despues de display plot")
+  # print(zend_time - zinit_time)
   if (!is.null(progress)) progress$inc(0, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_DONE"))
 
   return(zgg)
@@ -1945,8 +1948,8 @@ ziggurat_graph <- function(datadir,filename,
                            )
 {
   zgg <<- new.env()
-  print("Environment")
-  print(environment())
+  # print("Environment")
+  # print(environment())
 
   if (!is.null(progress)) progress$inc(1/11, detail=strings$value("MESSAGE_ZIGGURAT_PROGRESS_ANALYZING_NETWORK"))
   f <- read_and_analyze(datadir,filename,label_strguilda, label_strguildb)
@@ -1977,7 +1980,7 @@ ziggurat_graph <- function(datadir,filename,
   draw_ziggurat_plot(svg_scale_factor, progress)
   return(zgg)
 }
-#
+
 # ziggurat_graph("data/","M_PL_031.csv",plotsdir="named/",print_to_file = FALSE,
 #                color_link = "Lavender", show_title = FALSE,
 #                alpha_link = 0.7, size_link = 0.4 )

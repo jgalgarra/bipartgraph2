@@ -14,8 +14,7 @@
 library(shiny)
 library(gridExtra)
 library(grDevices)
-source("jga/ziggurat_graph.R", encoding="UTF-8")
-source("jga/polar_graph.R", encoding="UTF-8")
+library(kcorebip)
 source("global.R", encoding="UTF-8")
 
 # muestra la informacion de detalle sobre un nodo del ziggurat

@@ -10,6 +10,11 @@
 library(shiny)
 source("strings.R", encoding="UTF-8")
 
+# desambigua la funcion get.edges utilizada en el paquete kcorebip
+# ya que colisionan los nombres de esta funcion en el paquete igraph en el 
+# paquete network
+get.edges<-igraph::get.edges
+
 # variable global para la gestion de los mensajes y cadenas
 # de texto en los diferentes idiomas
 #strings<-LocalizedStrings("es")

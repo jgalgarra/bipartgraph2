@@ -5,11 +5,8 @@
 # 
 # Autor         : Juan Manuel García Santi
 # Módulo        : svg.R
-# Descricpción  : Funciones básicas para la generación de un gráfico en formato
-#                 SVG (Scalable Vectors Graphics). Contiene las funciones
-#                 necesarias para generar un SVG con rectángulos, rutas y 
-#                 segmentos, y proporcionar o almacenar el XML correspondiente
-#                 al SVG generado
+# Descricpción  : Funcion para definir todas las cadenas de texto en base al
+#                 idioma que se quiere utilizar en el interfaz de usuario
 ###############################################################################
 library(ggplot2)
 

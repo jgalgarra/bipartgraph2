@@ -15,7 +15,6 @@ library(shiny)
 library(gridExtra)
 library(grDevices)
 library(kcorebip)
-source("global.R", encoding="UTF-8")
 
 # muestra la informacion de detalle sobre un nodo del ziggurat
 showNodeDetails <- function(type, kcore, nodeDf) {

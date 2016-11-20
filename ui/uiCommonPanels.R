@@ -10,7 +10,6 @@
 ###############################################################################
 library(shiny)
 library(shinythemes)
-source("global.R", encoding="UTF-8")
 
 # cabecera de pagina comun
 headerPanel <- function() {

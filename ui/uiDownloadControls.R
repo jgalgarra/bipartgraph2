@@ -9,7 +9,6 @@
 #                 de descarga de ficheros en el interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
-source("global.R", encoding="UTF-8")
 
 # descarga del diagrama ziggurat
 zigguratDownloadControl <- function() {

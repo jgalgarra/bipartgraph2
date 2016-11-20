@@ -11,7 +11,6 @@
 ###############################################################################
 library(shiny)
 library(shinythemes)
-source("global.R", encoding="UTF-8")
 source("ui/uiPolarControls.R", encoding="UTF-8")
 
 # panel del polar (configuracion + diagrama)

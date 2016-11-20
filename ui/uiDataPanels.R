@@ -10,7 +10,6 @@
 ###############################################################################
 library(shiny)
 library(shinythemes)
-source("global.R", encoding="UTF-8")
 source("ui/uiDataControls.R", encoding="UTF-8")
 
 # panel de gestion de datos

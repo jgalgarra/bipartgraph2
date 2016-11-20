@@ -10,7 +10,6 @@
 ###############################################################################
 library(shiny)
 library(shinythemes)
-source("global.R", encoding="UTF-8")
 source("ui/uiDownloadControls.R", encoding="UTF-8")
 
 # panel de descargas

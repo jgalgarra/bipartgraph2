@@ -8,6 +8,7 @@
 # Descricpción  : Ejecución de la aplicación
 ###############################################################################
 library(shiny)
+source("global.R", encoding="UTF-8")
 source("strings.R", encoding="UTF-8")
 
 # desambigua la funcion get.edges utilizada en el paquete kcorebip

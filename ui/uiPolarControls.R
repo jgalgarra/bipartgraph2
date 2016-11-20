@@ -10,7 +10,6 @@
 #                 interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
-source("global.R", encoding="UTF-8")
 
 # control para mostrar o no el texto
 polarDisplayTextControl <- function() {

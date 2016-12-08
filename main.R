@@ -18,8 +18,8 @@ get.edges<-igraph::get.edges
 
 # variable global para la gestion de los mensajes y cadenas
 # de texto en los diferentes idiomas
-#strings<-LocalizedStrings("es")
-strings<-LocalizedStrings("en")
+strings<-LocalizedStrings("es")
+#strings<-LocalizedStrings("en")
 
 # ejecuta la aplicacion
 runApp(

@@ -11,7 +11,8 @@
 # directorio de datos y patron para buscar los ficheros
 dataDir         <- "data"
 fileExtension   <- ".csv"
-dataFilePattern <- paste0("M_.*", fileExtension)
+#dataFilePattern <- paste0("M_.*", fileExtension)
+dataFilePattern <- paste0("*.*", fileExtension)
 
 # cabecera de un grupo en un panel
 groupHeader<-function(text, image) {

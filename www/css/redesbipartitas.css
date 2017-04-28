@@ -6,9 +6,12 @@
 /* panel del ziggurat */
 #ziggurat {
     position:   relative;
-    height:     400px;
+    vertical-align: top;
+    /* height:     400px; */
+    height: 70%;
+    width: 90%;
     cursor:     move;
-    margin-top: 8px;
+    margin-top: 1px;
 }
 
 /* paneles de informacion del ziggurat */
@@ -19,19 +22,21 @@
 #zigguratNodesDetail {
     margin-top: 0px;
     position:   relative;
-    height:     180px; 
+    /* height:     180px; */
+    height: 40%
 }
 
 #zigguratWikiDetail ul.nav-pills a {
     font-size:  x-small;
-    padding:    5px 10px 5px 10px;
+    padding:    5px 5px 5px 5px;
     display:    none; 
 }
 
 .wikiDetail {
     margin-top: 10px;
     position:   relative;
-    height:     180px; 
+    /* height:     180px; */
+    height: 20%;
     display:    none;
 }
 

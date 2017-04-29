@@ -296,7 +296,7 @@ function markRelatedNodes(nodeId) {
 function pathIntersectRect(path, rect) {
     var pp1     = path.getPointAtLength(0);
     var pp2     = path.getPointAtLength(path.getTotalLength())
-    var margin  = 10;
+    var margin  = 1;
     var pr1     = {x:rect.x.baseVal.value-margin, y:rect.y.baseVal.value-margin};
     var pr2     = {x:rect.x.baseVal.value+rect.width.baseVal.value+margin, y:rect.y.baseVal.value+rect.height.baseVal.value+margin};
     var result  = (pr1.x<pp1.x && pp1.x<pr2.x && pr1.y<pp1.y && pp1.y<pr2.y) || (pr1.x<pp2.x && pp2.x<pr2.x && pr1.y<pp2.y && pp2.y<pr2.y)  

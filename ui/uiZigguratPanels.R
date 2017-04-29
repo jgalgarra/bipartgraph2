@@ -27,7 +27,7 @@ zigguratDiagramPanel <- function() {
   control<-fluidRow(
     column(7,
       fluidRow(
-        groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_HEADER"), image="network.png")
+        groupHeader(text=paste(strings$value("LABEL_ZIGGURAT_DIAGRAM_HEADER"),"    ",zgg$network_name), image="network.png")
       ),
       fluidRow(
         tags$span(

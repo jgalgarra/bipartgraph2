@@ -5,7 +5,7 @@
 
 /* panel del ziggurat */
 #ziggurat {
-    /* position:   relative; */
+    position:   relative;
     vertical-align: top;
     /* height:     400px; */
     height: 80%;
@@ -95,7 +95,7 @@
 /* contenido de los paneles */
 .panelContent {
     font-size:  small;
-    padding:    10px;
+    padding:    3px;
     border:     0px;
 }
 

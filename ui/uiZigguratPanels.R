@@ -25,7 +25,7 @@ zigguratPanel<-function() {
 # panel con el gragico ziggurat
 zigguratDiagramPanel <- function() {
   control<-fluidRow(
-    column(7,
+    column(8,
       # fluidRow(
       #   groupHeader(text=paste(strings$value("LABEL_ZIGGURAT_DIAGRAM_HEADER")), image="network.png")
       # ),
@@ -42,17 +42,20 @@ zigguratDiagramPanel <- function() {
         uiOutput("ziggurat")
       )
     ),
-    column(5,
+    column(4,
       # fluidRow(
       #   groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_INFO_HEADER"), image="document.png")
       # ),
       fluidRow(
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID")))),
-        column(2, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE")))),
-        column(4, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME")))),
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE")))),
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS")))),
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE"))))
+        column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"))),
+        column(2, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"))),
+        column(4, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"))),
+        #column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE"))),
+        # column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS"))),
+        # column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE")))
+        column(1, tags$small("kshell")),
+        column(1, tags$small("krad") ),
+        column(1, tags$small("kdeg"))
       ),
       fluidRow(
         uiOutput("zigguratNodesDetail")

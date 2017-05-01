@@ -82,38 +82,56 @@ zigguratConfigPanel <- function() {
     #),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_PANEL"),
+      # fluidRow(
+      #   column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
+      # ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
       ),
       fluidRow(
-        column(3, zigguratDisplayLabelsControl()),
-        column(3, zigguratPaintLinksControl())
+        column(2, zigguratDisplayLabelsControl()),
+        column(2, zigguratPaintOutsidersControl()),
+        column(2, zigguratAspectRatioControl())
+      ),
+      # fluidRow(
+      #   #column(3, zigguratFlipResultsControl()),                      Only works for non interactive ziggurats
+      # ),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_LINKS_HEADER"), image="link.png"))
       ),
       fluidRow(
-        column(3, zigguratFlipResultsControl()),
-        column(3, zigguratPaintOutsidersControl())
+        column(2, zigguratPaintLinksControl()),
+        column(2, zigguratUseSplineControl()),
+        column(2, zigguratSplinePointsControl()),
+        column(2, zigguratLinkSizeControl()),
+        column(2, zigguratAlphaLevelLinkControl()),
+        column(2, zigguratColorControl("Link", strings$value("LABEL_ZIGGURAT_LINKS_COLOR_CONTROL"), "#888888"))
       ),
       fluidRow(
-        column(3, zigguratUseSplineControl()),
-        column(3, zigguratSplinePointsControl())
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
+      ),
+      fluidRow(
+        column(3, zigguratHeightExpandControl())
+      ),
+      fluidRow(
+        column(2, zigguratAlphaLevelControl()),
+        column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), "#4169E1")),
+        column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), "#00008B")),
+        column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), "#F08080")),
+        column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_SIZES_HEADER"), image="ruler.png"))
       ),
+
       fluidRow(
-        column(3, zigguratAspectRatioControl())
-      ),
-      fluidRow(
-        column(3, zigguratLinkSizeControl()),
         column(3, zigguratCoreBoxSizeControl())
       ),
       fluidRow(
         column(3, zigguratYDisplaceControl("GuildA", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_A_CONTROL"))),
         column(3, zigguratYDisplaceControl("GuildB", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_B_CONTROL")))
       ),
-      fluidRow(
-        column(3, zigguratHeightExpandControl())
-      ),
+
       fluidRow(
         column(3, zigguratKcore2TailVerticalSeparationControl()),
         column(3, zigguratKcore1TailDistToCoreControl("1", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1"))),
@@ -121,30 +139,22 @@ zigguratConfigPanel <- function() {
         column(3, zigguratInnerTailVerticalSeparationControl())
       )
     ),
-    tabPanel(
-      strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_PANEL"),
-      fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
-      ),
-      fluidRow(
-        column(4, zigguratAlphaLevelControl())
-      ),
-      fluidRow(
-        column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), "#4169E1")),
-        column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), "#00008B")),
-        column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), "#F08080")),
-        column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
-      ),
-      fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_LINKS_HEADER"), image="link.png"))
-      ),
-      fluidRow(
-        column(4, zigguratAlphaLevelLinkControl())
-      ),
-      fluidRow(
-        column(4, zigguratColorControl("Link", strings$value("LABEL_ZIGGURAT_LINKS_COLOR_CONTROL"), "#888888"))
-      )
-    ),
+    # tabPanel(
+    #   strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_PANEL"),
+    #   fluidRow(
+    #     column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
+    #   ),
+    #   fluidRow(
+    #     column(4, zigguratAlphaLevelControl())
+    #   ),
+    #   fluidRow(
+    #     column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), "#4169E1")),
+    #     column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), "#00008B")),
+    #     column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), "#F08080")),
+    #     column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
+    #   )
+    #
+    # ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_PANEL"),
       fluidRow(

@@ -310,7 +310,6 @@ shinyServer(function(input, output, session) {
       displaylabelszig                              = input$zigguratDisplayLabels,
       print_to_file                                 = FALSE,
       plotsdir                                      = tempdir(),
-      flip_results                                  = input$zigguratFlipResults,
       aspect_ratio                                  = input$zigguratAspectRatio,
       alpha_level                                   = input$zigguratAlphaLevel,
       color_guild_a                                 = c(input$zigguratColorGuildA1, input$zigguratColorGuildA2),
@@ -362,6 +361,7 @@ shinyServer(function(input, output, session) {
       spline_points                                 = input$zigguratSplinePoints,
       svg_scale_factor                              = 25*input$zigguratSvgScaleFactor,
       move_all_SVG_up                               = 0.01*input$zigguratSVGup,
+      flip_results                                  = FALSE, #input$zigguratFlipResults only works for non interactive ziggurats
       progress                                      = progress
     )
 

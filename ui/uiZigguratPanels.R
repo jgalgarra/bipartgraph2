@@ -174,6 +174,16 @@ zigguratConfigPanel <- function() {
         column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
         column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
       )
+    ),
+    tabPanel(
+      strings$value("LABEL_ZIGGURAT_CONFIG_SVG_HEADER"),
+      fluidRow(
+        column(12, groupHeader(text="Plot", image="settings.png"))
+      ),
+      fluidRow(
+        column(4, zigguratSVGup()),
+        column(4, zigguratSvgScaleFactorControl())
+      )
     )
   )
   return(panel)

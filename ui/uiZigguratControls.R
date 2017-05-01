@@ -1,12 +1,12 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : uiZigguratControls.R
 # Descricpción  : Funciones para la representación de los disintos controles
-#                 de configuración, relativos al diagrama ziggurat, en el 
+#                 de configuración, relativos al diagrama ziggurat, en el
 #                 interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
@@ -104,7 +104,7 @@ zigguratAlphaLevelControl <- function() {
 zigguratColorControl <- function(name, description, default) {
   control <- colourInput(
     paste0("zigguratColor" , name),
-    controlLabel(description), 
+    controlLabel(description),
     value = default
   )
   return(control)
@@ -245,15 +245,28 @@ zigguratLabelsSizeControl <- function(name, description, default) {
   return(control)
 }
 
-# control para el factor de escala del grafico SVG
+# control para el factor de escala de los textos del grafico SVG
 zigguratSvgScaleFactorControl <- function() {
   control<-sliderInput(
     inputId = "zigguratSvgScaleFactor",
-    label   = controlLabel(strings$value("LABEL_ZIGGURAT_SVG_SCALE_FACTOR_CONTROL")),
-    min     = 10,
-    max     = 100,
-    value   = 50,
-    step    = 10
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_SVG_SCALE")),
+    min     = 0.2,
+    max     = 5,
+    value   = 1,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# control para recortar la parte superior del SVG
+zigguratSVGup <- function() {
+  control<-sliderInput(
+    inputId = "zigguratSVGup",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_SVG_UP")),
+    min     = 0,
+    max     = 50,
+    value   = 0,
+    step    = 5
   )
   return(control)
 }

@@ -339,7 +339,7 @@ shinyServer(function(input, output, session) {
       coremax_triangle_height_factor                = 1,
       coremax_triangle_width_factor                 = 1,
       paint_outsiders                               = input$zigguratPaintOutsiders,
-      displace_outside_component                    = c(1,1),
+      displace_outside_component                    = c(0,0),
       outsiders_separation_expand                   = 1,
       outsiders_legend_expand                       = 1,
       weirdskcore2_horizontal_dist_rootleaf_expand  = 1,

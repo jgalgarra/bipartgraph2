@@ -162,7 +162,7 @@ zigguratYDisplaceControl <- function(name, description) {
   return(control)
 }
 
-# ampliacion de la altura de la caja
+# Expandir de la altura de la caja
 zigguratHeightExpandControl <- function() {
   control<-sliderInput(
     inputId = "zigguratHeightExpand",
@@ -171,6 +171,32 @@ zigguratHeightExpandControl <- function() {
     max     = 5.0,
     value   = 1.0,
     step    = 0.5
+  )
+  return(control)
+}
+
+# Coremax height expand control
+zigguratCoreMaxHExp <- function(){
+  control<-sliderInput(
+    inputId = "zigguratCoreMaxHExp",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_COREMAX_HEIGHT_EXPAND_CONTROL")),
+    min     = 0.5,
+    max     = 2.0,
+    value   = 1.0,
+    step    = 0.1
+  )
+  return(control)
+}
+
+# Coremax width expand control
+zigguratCoreMaxWExp <- function(){
+  control<-sliderInput(
+    inputId = "zigguratCoreMaxWExp",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_COREMAX_WIDTH_EXPAND_CONTROL")),
+    min     = 0.5,
+    max     = 2.0,
+    value   = 1.0,
+    step    = 0.1
   )
   return(control)
 }

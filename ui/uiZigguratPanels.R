@@ -91,7 +91,8 @@ zigguratConfigPanel <- function() {
       fluidRow(
         column(2, zigguratDisplayLabelsControl()),
         column(2, zigguratPaintOutsidersControl()),
-        column(2, zigguratAspectRatioControl())
+        column(2, zigguratAspectRatioControl()),
+        column(2, zigguratCoreBoxSizeControl())
       ),
       # fluidRow(
       #   #column(3, zigguratFlipResultsControl()),                      Only works for non interactive ziggurats
@@ -111,7 +112,10 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
       ),
       fluidRow(
-        column(3, zigguratHeightExpandControl())
+        column(3, zigguratHeightExpandControl()),
+        column(3, zigguratCoreMaxHExp()),
+        column(3, zigguratCoreMaxWExp())
+
       ),
       fluidRow(
         column(2, zigguratAlphaLevelControl()),
@@ -124,9 +128,9 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_SIZES_HEADER"), image="ruler.png"))
       ),
 
-      fluidRow(
-        column(3, zigguratCoreBoxSizeControl())
-      ),
+      # fluidRow(
+      #   column(3, zigguratCoreBoxSizeControl())
+      # ),
       fluidRow(
         column(3, zigguratYDisplaceControl("GuildA", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_A_CONTROL"))),
         column(3, zigguratYDisplaceControl("GuildB", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_B_CONTROL")))

@@ -89,7 +89,6 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
       ),
       fluidRow(
-        column(2, zigguratDisplayLabelsControl()),
         column(2, zigguratPaintOutsidersControl()),
         column(2, zigguratAspectRatioControl()),
         column(2, zigguratCoreBoxSizeControl())
@@ -177,7 +176,7 @@ zigguratConfigPanel <- function() {
         column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 5))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("", strings$value("LABEL_ZIGGURAT_GENERAL_LABEL_SIZE_CONTROL"), 6)),
+        #column(2, zigguratLabelsSizeControl("", strings$value("LABEL_ZIGGURAT_GENERAL_LABEL_SIZE_CONTROL"), 6)),
         column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 6)),
         column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 6))
       ),

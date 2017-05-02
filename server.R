@@ -309,7 +309,6 @@ shinyServer(function(input, output, session) {
       paintlinks                                    = input$zigguratPaintLinks,
       print_to_file                                 = FALSE,
       plotsdir                                      = tempdir(),
-      aspect_ratio                                  = input$zigguratAspectRatio,
       alpha_level                                   = input$zigguratAlphaLevel,
       color_guild_a                                 = c(input$zigguratColorGuildA1, input$zigguratColorGuildA2),
       color_guild_b                                 = c(input$zigguratColorGuildB1, input$zigguratColorGuildB2),
@@ -329,10 +328,10 @@ shinyServer(function(input, output, session) {
       kcore1tail_disttocore                         = c(input$zigguratKcore1TailDistToCore1, input$zigguratKcore1TailDistToCore2),
       innertail_vertical_separation                 = input$zigguratInnerTailVerticalSeparation,
       horiz_kcoremax_tails_expand                   = 1,
-      factor_hop_x                                  = 1,
+      factor_hop_x                                  = input$zigguratHopx,
       displace_legend                               = c(0,0),
-      fattailjumphoriz                              = c(1,1),
-      fattailjumpvert                               = c(1,1),
+      fattailjumphoriz                              = c(input$zigguratfattailjumphorizA,input$zigguratfattailjumphorizB),
+      fattailjumpvert                               = c(input$zigguratfattailjumpvertA,input$zigguratfattailjumpvertB),
       coremax_triangle_height_factor                = input$zigguratCoreMaxHExp,
       coremax_triangle_width_factor                 = input$zigguratCoreMaxWExp,
       paint_outsiders                               = input$zigguratPaintOutsiders,
@@ -360,6 +359,7 @@ shinyServer(function(input, output, session) {
       svg_scale_factor                              = 25*input$zigguratSvgScaleFactor,
       move_all_SVG_up                               = 0.01*input$zigguratSVGup,
       flip_results                                  = FALSE, #input$zigguratFlipResults only works for non interactive ziggurats
+      aspect_ratio                                  = 1,     #input$zigguratAspectRatio only works for non interactive ziggurats
       progress                                      = progress
     )
 

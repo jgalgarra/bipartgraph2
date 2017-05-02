@@ -87,6 +87,32 @@ zigguratAspectRatioControl <- function() {
   return(control)
 }
 
+# Legend expansion horiz
+zigguratdisplace_legend_horiz <- function() {
+  control<-sliderInput(
+    inputId = "zigguratdisplace_legend_horiz",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_LEGEND_DISPLACE_HORIZ")),
+    min     = -2,
+    max     = 10.0,
+    value   = 0,
+    step    = 0.2
+  )
+  return(control)
+}
+
+
+# Legend expansion vert
+zigguratdisplace_legend_vert<- function() {
+  control<-sliderInput(
+    inputId = "zigguratdisplace_legend_vert",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_LEGEND_DISPLACE_VERT")),
+    min     = -2,
+    max     = 10.0,
+    value   = 0,
+    step    = 0.2
+  )
+  return(control)
+}
 # Expand horizontal separation among inner ziggurats
 zigguratHopx <- function() {
   control<-sliderInput(
@@ -210,6 +236,58 @@ zigguratCoreMaxWExp <- function(){
     max     = 2.0,
     value   = 1.0,
     step    = 0.1
+  )
+  return(control)
+}
+
+# outsiders distance horizontal expansion
+zigguratoutsiders_expand_horiz <- function() {
+  control<-sliderInput(
+    inputId = "zigguratoutsiders_expand_horiz",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_DISPLACE_COMPONENT__HORIZ")),
+    min     = -5.0,
+    max     = 5.0,
+    value   = 0.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# outsiders distance vertical expansion
+zigguratoutsiders_expand_vert <- function() {
+  control<-sliderInput(
+    inputId = "zigguratoutsiders_expand_vert",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_DISPLACE_COMPONENT__VERT")),
+    min     = -5.0,
+    max     = 5.0,
+    value   = 0.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# outsider boxes expansion
+zigguratoutsiders_separation_expand <- function() {
+  control<-sliderInput(
+    inputId = "zigguratoutsiders_separation_expand",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_SEP_EXPAND")),
+    min     = 0.5,
+    max     = 5.0,
+    value   = 1,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# outsider legend expansion
+zigguratoutsiders_legend_expand <- function() {
+  control<-sliderInput(
+    inputId = "zigguratoutsiders_legend_expand",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_LEGEND_EXPAND")),
+    min     = 0.5,
+    max     = 5.0,
+    value   = 1,
+    step    = 0.2
   )
   return(control)
 }

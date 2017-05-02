@@ -80,9 +80,10 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
       ),
       fluidRow(
-        column(2, zigguratPaintOutsidersControl()),
         #column(2, zigguratAspectRatioControl()),                        Only works for non interactive ziggurats
-        column(2, zigguratCoreBoxSizeControl())
+        column(3, zigguratCoreBoxSizeControl()),
+        column(3, zigguratdisplace_legend_horiz()),
+        column(3, zigguratdisplace_legend_vert())
       ),
       # fluidRow(
       #   #column(3, zigguratFlipResultsControl()),                      Only works for non interactive ziggurats
@@ -125,6 +126,16 @@ zigguratConfigPanel <- function() {
 
       fluidRow(
         column(3, zigguratHopx())
+      ),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_HEADER"), image="outsiders.png"))
+      ),
+      fluidRow(
+        column(2, zigguratPaintOutsidersControl()),
+        column(3, zigguratoutsiders_expand_horiz()),
+        column(3, zigguratoutsiders_expand_vert()),
+        column(3, zigguratoutsiders_separation_expand()),
+        column(3, zigguratoutsiders_legend_expand())
       )
     ),
     tabPanel(

@@ -74,17 +74,8 @@ zigguratDiagramPanel <- function() {
 # panel de configuracion del diagrama ziggurat
 zigguratConfigPanel <- function() {
   panel<-tabsetPanel(
-    #tabPanel(
-    #  "SVG",
-    #  fluidRow(
-    #    column(4, svgScaleFactorControl())
-    #  )
-    #),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_PANEL"),
-      # fluidRow(
-      #   column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
-      # ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
       ),
@@ -127,9 +118,6 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_SIZES_HEADER"), image="ruler.png"))
       ),
 
-      # fluidRow(
-      #   column(3, zigguratCoreBoxSizeControl())
-      # ),
       fluidRow(
         column(3, zigguratYDisplaceControl("GuildA", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_A_CONTROL"))),
         column(3, zigguratYDisplaceControl("GuildB", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_B_CONTROL")))
@@ -157,7 +145,6 @@ zigguratConfigPanel <- function() {
         column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 5))
       ),
       fluidRow(
-        #column(2, zigguratLabelsSizeControl("", strings$value("LABEL_ZIGGURAT_GENERAL_LABEL_SIZE_CONTROL"), 6)),
         column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 6)),
         column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 6))
       ),
@@ -185,6 +172,18 @@ zigguratConfigPanel <- function() {
         column(3, zigguratfattailjumpvertA()),
         column(3, zigguratfattailjumphorizB()),
         column(3, zigguratfattailjumpvertB())
+      ),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_WEIRD"), image="weird.png"))
+      ),
+      fluidRow(
+        column(3, zigguratroot_weird_expand_horiz()),
+        column(3, zigguratroot_weird_expand_vert()),
+        column(3, zigguratroot_weirdskcore2_horiz()),
+        column(3, zigguratroot_weirdskcore2_vert())
+      ),
+      fluidRow(
+        column(3, zigguratroot_weird_boxesseparation())
       )
     ),
     tabPanel(

@@ -159,13 +159,16 @@ zigguratConfigPanel <- function() {
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),
       fluidRow(
-        column(12, groupHeader(text="Plot", image="tails.png"))
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"), image="tails.png"))
       ),
       fluidRow(
         column(3, zigguratKcore2TailVerticalSeparationControl()),
         column(3, zigguratKcore1TailDistToCoreControl("1", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1"))),
         column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
         column(3, zigguratInnerTailVerticalSeparationControl())
+      ),
+      fluidRow(
+        column(3, ziggurathoriz_kcoremax_tails_expand())
       ),
       fluidRow(
         column(3, zigguratfattailjumphorizA()),
@@ -183,7 +186,8 @@ zigguratConfigPanel <- function() {
         column(3, zigguratroot_weirdskcore2_vert())
       ),
       fluidRow(
-        column(3, zigguratroot_weird_boxesseparation())
+        column(3, zigguratroot_weird_boxesseparation()),
+        column(3, zigguratkcore1weirds_leafs_vertical_separation())
       )
     ),
     tabPanel(

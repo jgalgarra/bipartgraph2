@@ -240,6 +240,33 @@ zigguratKcore1TailDistToCoreControl <- function(name, description) {
   return(control)
 }
 
+# distancia de la cola kcore-1 al core central
+ziggurathoriz_kcoremax_tails_expand <- function() {
+  control<-sliderInput(
+    inputId = "ziggurathoriz_kcoremax_tails_expand",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_EDGE_TAIL_HORIZ_SEPARATION_CONTROL")),
+    min     = 0.5,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.1
+  )
+  return(control)
+}
+
+# distancia de la cola kcore-1 al core central
+zigguratkcore1weirds_leafs_vertical_separation <- function() {
+  control<-sliderInput(
+    inputId = "zigguratkcore1weirds_leafs_vertical_separation",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_K1_LEAFS_VERT_SEP")),
+    min     = 0.5,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.1
+  )
+  return(control)
+}
+
+
 # separacion vertical en las colas de los zigurats internos
 zigguratInnerTailVerticalSeparationControl <- function() {
   control<-sliderInput(

@@ -87,6 +87,19 @@ zigguratAspectRatioControl <- function() {
   return(control)
 }
 
+# Expand horizontal separation among inner ziggurats
+zigguratHopx <- function() {
+  control<-sliderInput(
+    inputId = "zigguratHopx",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_HOPX")),
+    min     = 0.6,
+    max     = 4.0,
+    value   = 1.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
 # control para el factor de transparencia
 zigguratAlphaLevelControl <- function() {
   control<-sliderInput(
@@ -207,7 +220,7 @@ zigguratKcore2TailVerticalSeparationControl <- function() {
     inputId = "zigguratKcore2TailVerticalSeparation",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_KCORE2_TAIL_VERTICAL_SEPARATION_CONTROL")),
     min     = 0.5,
-    max     = 2.0,
+    max     = 5.0,
     value   = 1.0,
     step    = 0.5
   )
@@ -220,25 +233,78 @@ zigguratKcore1TailDistToCoreControl <- function(name, description) {
     inputId = paste0("zigguratKcore1TailDistToCore", name),
     label   = controlLabel(description),
     min     = 0.5,
-    max     = 2.0,
+    max     = 5.0,
     value   = 1.0,
     step    = 0.1
   )
   return(control)
 }
 
-# separacion vertical interna en la cola
+# separacion vertical en las colas de los zigurats internos
 zigguratInnerTailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "zigguratInnerTailVerticalSeparation",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_INNER_TAIL_VERTICAL_SEPARATION_CONTROL")),
     min     = 0.5,
-    max     = 2.0,
+    max     = 5.0,
     value   = 1.0,
-    step    = 0.1
+    step    = 0.5
   )
   return(control)
 }
+
+# fattail A horizontal expansion
+zigguratfattailjumphorizA <- function() {
+  control<-sliderInput(
+    inputId = "zigguratfattailjumphorizA",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_FAT_TAIL_JUMP_HORIZ_A")),
+    min     = 0.2,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# fattail A vertical expansion
+zigguratfattailjumpvertA <- function() {
+  control<-sliderInput(
+    inputId = "zigguratfattailjumpvertA",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_FAT_TAIL_JUMP_VERT_A")),
+    min     = -2.0,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# fattail B horizontal expansion
+zigguratfattailjumphorizB <- function() {
+  control<-sliderInput(
+    inputId = "zigguratfattailjumphorizB",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_FAT_TAIL_JUMP_HORIZ_B")),
+    min     = 0.2,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
+# fattail B vertical expansion
+zigguratfattailjumpvertB <- function() {
+  control<-sliderInput(
+    inputId = "zigguratfattailjumpvertB",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_FAT_TAIL_JUMP_VERT_B")),
+    min     = -2.0,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.2
+  )
+  return(control)
+}
+
 
 # etiqueta clan A
 zigguratLabelGuildAControl<-function() {

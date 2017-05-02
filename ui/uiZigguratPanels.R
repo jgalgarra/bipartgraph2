@@ -90,7 +90,7 @@ zigguratConfigPanel <- function() {
       ),
       fluidRow(
         column(2, zigguratPaintOutsidersControl()),
-        column(2, zigguratAspectRatioControl()),
+        #column(2, zigguratAspectRatioControl()),                        Only works for non interactive ziggurats
         column(2, zigguratCoreBoxSizeControl())
       ),
       # fluidRow(
@@ -136,28 +136,9 @@ zigguratConfigPanel <- function() {
       ),
 
       fluidRow(
-        column(3, zigguratKcore2TailVerticalSeparationControl()),
-        column(3, zigguratKcore1TailDistToCoreControl("1", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1"))),
-        column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
-        column(3, zigguratInnerTailVerticalSeparationControl())
+        column(3, zigguratHopx())
       )
     ),
-    # tabPanel(
-    #   strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_PANEL"),
-    #   fluidRow(
-    #     column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
-    #   ),
-    #   fluidRow(
-    #     column(4, zigguratAlphaLevelControl())
-    #   ),
-    #   fluidRow(
-    #     column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), "#4169E1")),
-    #     column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), "#00008B")),
-    #     column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), "#F08080")),
-    #     column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
-    #   )
-    #
-    # ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_PANEL"),
       fluidRow(
@@ -186,6 +167,24 @@ zigguratConfigPanel <- function() {
       fluidRow(
         column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
         column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
+      )
+    ),
+    tabPanel(
+      strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),
+      fluidRow(
+        column(12, groupHeader(text="Plot", image="tails.png"))
+      ),
+      fluidRow(
+        column(3, zigguratKcore2TailVerticalSeparationControl()),
+        column(3, zigguratKcore1TailDistToCoreControl("1", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1"))),
+        column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
+        column(3, zigguratInnerTailVerticalSeparationControl())
+      ),
+      fluidRow(
+        column(3, zigguratfattailjumphorizA()),
+        column(3, zigguratfattailjumpvertA()),
+        column(3, zigguratfattailjumphorizB()),
+        column(3, zigguratfattailjumpvertB())
       )
     ),
     tabPanel(

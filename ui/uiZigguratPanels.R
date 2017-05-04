@@ -50,9 +50,6 @@ zigguratDiagramPanel <- function() {
         column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"))),
         column(2, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"))),
         column(4, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"))),
-        #column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE"))),
-        # column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS"))),
-        # column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE")))
         column(1, tags$small("kshell")),
         column(1, tags$small("krad") ),
         column(1, tags$small("kdeg"))
@@ -108,8 +105,8 @@ zigguratConfigPanel <- function() {
       ),
       fluidRow(
         column(2, zigguratHeightExpandControl()),
-        column(2, ziggurat1shellExpandControl()),
         column(2, zigguratHopx()),
+        column(2, ziggurat1shellExpandControl()),
         column(2, zigguratCoreMaxHExp()),
         column(2, zigguratCoreMaxWExp())
 
@@ -166,21 +163,21 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_SIZE_HEADER"), image="generic_text.png"))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("kCoreMax", strings$value("LABEL_ZIGGURAT_KCOREMAX_LABEL_SIZE_CONTROL"), 7)),
-        column(2, zigguratLabelsSizeControl("Ziggurat", strings$value("LABEL_ZIGGURAT_ZIGGURAT_LABEL_SIZE_CONTROL"), 6)),
-        column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 5))
+        column(2, zigguratLabelsSizeControl("kCoreMax", strings$value("LABEL_ZIGGURAT_KCOREMAX_LABEL_SIZE_CONTROL"), 5)),
+        column(2, zigguratLabelsSizeControl("Ziggurat", strings$value("LABEL_ZIGGURAT_ZIGGURAT_LABEL_SIZE_CONTROL"), 4.5)),
+        column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 4))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 6)),
-        column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 6))
+        column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 5)),
+        column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 5))
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_COLOUR_HEADER"), image="border_color.png"))
-      ),
-      fluidRow(
-        column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
-        column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
-      )
+      )#,
+      # fluidRow(
+      #   column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
+      #   column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
+      # )
     ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),
@@ -224,6 +221,18 @@ zigguratConfigPanel <- function() {
       fluidRow(
         column(4, zigguratSVGup()),
         column(4, zigguratSvgScaleFactorControl())
+      )
+    ),
+
+    tabPanel(
+      strings$value("LABEL_DOWNLOAD_MAIN_HEADER"),
+      # fluidRow(
+      #   column(12, groupHeader(text="Plot", image="download.png"))
+      # ),
+      fluidRow(
+        column(3, paperLandscape()),
+        column(3, paperSizeControl()),
+        column(3, ppiControl())
       )
     )
   )

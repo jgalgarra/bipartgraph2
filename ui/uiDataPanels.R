@@ -1,8 +1,8 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : uiDataPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
@@ -34,6 +34,11 @@ selectDataPanel<-function() {
     fluidRow(
       column(12, selectDataFileControl(path=dataDir, pattern=dataFilePattern))
     ),
+
+    fluidRow(
+      column(3, DataLabelGuildAControl()),
+      column(3, DataLabelGuildBControl())
+    ),
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_DATA_CONTENT_HEADER"), image="grid.png"))
     ),
@@ -58,6 +63,7 @@ manageFilesPanel<-function() {
       ),
       column(6, dataTableOutput("uploadedFilesTable"))
     ),
+
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_AVAILABLE_FILES"), image="documents.png"))
     ),

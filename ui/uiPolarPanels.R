@@ -69,12 +69,12 @@ polarConfigPanel <- function() {
       column(2, polarDisplayHistograms())#,
       #column(2, polardownloadLink())
     ),
-    fluidRow(
-      column(2, polarGuildLabelControl("A", strings$value("LABEL_POLAR_GUILDA_LABEL_CONTROL"), "Plant")),
-      column(2, polarGuildLabelControl("B", strings$value("LABEL_POLAR_GUILDB_LABEL_CONTROL"), "Pollinator"))#,
-      # column(2, polarGuildLabelControl("AShort", strings$value("LABEL_POLAR_GUILDA_SHORT_LABEL_CONTROL"), "pl")),
-      # column(2, polarGuildLabelControl("BShort", strings$value("LABEL_POLAR_GUILDB_SHORT_LABEL_CONTROL"), "pol"))
-    ),
+    # fluidRow(
+    #   column(2, polarGuildLabelControl("A", strings$value("LABEL_POLAR_GUILDA_LABEL_CONTROL"), "Plant")),
+    #   column(2, polarGuildLabelControl("B", strings$value("LABEL_POLAR_GUILDB_LABEL_CONTROL"), "Pollinator"))#,
+    #   column(2, polarGuildLabelControl("AShort", strings$value("LABEL_POLAR_GUILDA_SHORT_LABEL_CONTROL"), "pl")),
+    #   column(2, polarGuildLabelControl("BShort", strings$value("LABEL_POLAR_GUILDB_SHORT_LABEL_CONTROL"), "pol"))
+    # ),
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_POLAR_LABELS_CONFIG_HEADER"), image="generic_text.png"))
     ),

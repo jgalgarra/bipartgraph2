@@ -216,7 +216,7 @@ zigguratYDisplaceControlS <- function(name, description)
 {
   control<-sliderInput(
     inputId = paste0("zigguratYDisplaceS", name, description),
-    label   = controlLabel(paste0(description,"-shell")),
+    label   = controlLabel(paste0(description,"-shell ",name)),
     min     = -2.0,
     max     = 2.0,
     value   = 0.0,
@@ -568,5 +568,49 @@ zigguratSVGup <- function() {
     value   = 0,
     step    = 5
   )
+  return(control)
+}
+
+
+# tamanyo del diagrama a descargar
+paperSizeControl <- function() {
+  values<-1:6
+  names(values)<-paste0("A", values)
+  control<-selectInput(
+    inputId   = "paperSize",
+    label     = controlLabel(strings$value("LABEL_PAPER_SIZE_CONTROL")),
+    choices   = values,
+    selected  = 4,
+    multiple  = FALSE
+  )
+  return(control)
+}
+
+# resolucion del diagrama a descargar
+ppiControl <- function() {
+  values<-c(72, 96, 150, 300, 600)
+  names(values)<-values
+  control<-selectInput(
+    inputId   = "ppi",
+    label     = controlLabel(strings$value("LABEL_RESOLUTION_SIZE_CONTROL")),
+    choices   = values,
+    selected  = 300,
+    multiple  = FALSE
+  )
+  return(control)
+}
+
+#Paper orientation
+paperLandscape <- function() {
+  control<-checkboxInput(
+    inputId = "paperLandscape",
+    label   = controlLabel(strings$value("LABEL_PAPER_ORIENTATION")),
+    value   = TRUE
+  )
+  return(control)
+}
+
+zigguratDownloadCtl <- function() {
+  control<-downloadButton("zigguratDownload",label     = "Ziggurat Download")
   return(control)
 }

@@ -96,6 +96,10 @@ zigguratConfigPanel <- function() {
         column(2, zigguratUseSplineControl()),
         column(2, zigguratSplinePointsControl()),
         column(2, zigguratLinkSizeControl()),
+        column(2, zigguratweighted_links())
+
+      ),
+      fluidRow(
         column(2, zigguratAlphaLevelLinkControl()),
         column(2, zigguratColorControl("Link", strings$value("LABEL_ZIGGURAT_LINKS_COLOR_CONTROL"), "#888888"))
       ),
@@ -103,9 +107,11 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
       ),
       fluidRow(
-        column(3, zigguratHeightExpandControl()),
-        column(3, zigguratCoreMaxHExp()),
-        column(3, zigguratCoreMaxWExp())
+        column(2, zigguratHeightExpandControl()),
+        column(2, ziggurat1shellExpandControl()),
+        column(2, zigguratHopx()),
+        column(2, zigguratCoreMaxHExp()),
+        column(2, zigguratCoreMaxWExp())
 
       ),
       fluidRow(
@@ -116,26 +122,35 @@ zigguratConfigPanel <- function() {
         column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
       ),
       fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_SIZES_HEADER"), image="ruler.png"))
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_Y_DISPLACE_CONTROL"), image="vertdis.png"))
       ),
 
       fluidRow(
-        column(3, zigguratYDisplaceControl("GuildA", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_A_CONTROL"))),
-        column(3, zigguratYDisplaceControl("GuildB", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_B_CONTROL")))
+        column(2, zigguratYDisplaceControlS("A", "2")),
+        column(2, zigguratYDisplaceControlS("A", "3")),
+        column(2, zigguratYDisplaceControlS("A", "4")),
+        column(2, zigguratYDisplaceControlS("A", "5")),
+        column(2, zigguratYDisplaceControlS("A", "6")),
+        column(2, zigguratYDisplaceControlS("A", "7"))
       ),
 
       fluidRow(
-        column(3, zigguratHopx())
+        column(2, zigguratYDisplaceControlS("B", "2")),
+        column(2, zigguratYDisplaceControlS("B", "3")),
+        column(2, zigguratYDisplaceControlS("B", "4")),
+        column(2, zigguratYDisplaceControlS("B", "5")),
+        column(2, zigguratYDisplaceControlS("B", "6")),
+        column(2, zigguratYDisplaceControlS("B", "7"))
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_HEADER"), image="outsiders.png"))
       ),
       fluidRow(
         column(2, zigguratPaintOutsidersControl()),
-        column(3, zigguratoutsiders_expand_horiz()),
-        column(3, zigguratoutsiders_expand_vert()),
-        column(3, zigguratoutsiders_separation_expand()),
-        column(3, zigguratoutsiders_legend_expand())
+        column(2, zigguratoutsiders_expand_horiz()),
+        column(2, zigguratoutsiders_expand_vert()),
+        column(2, zigguratoutsiders_separation_expand()),
+        column(2, zigguratoutsiders_legend_expand())
       )
     ),
     tabPanel(

@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------
 // Universidad Politécnica de Madrid - EUITT
 //  PFC
-//  Representación gráfica de redes bipartitas basadas en descomposición k-core 
-// 
+//  Representación gráfica de redes bipartitas basadas en descomposición k-core
+//
 // Autor         : Juan Manuel García Santi
 // Módulo        : redesbipartitas.js
 // Descricpción  : Funciones javascript que permiten la interacción del usuario
@@ -14,7 +14,7 @@
 function windowLoad() {
     // actualiza los tooltips de ayuda
     updateHelpTooltips();
-    
+
     // indica al servidor que el cliente esta listo
     Shiny.onInputChange("windowLoad", new Date());
 }
@@ -42,23 +42,23 @@ function updateHelpTooltips() {
 function updateSVGEvents() {
     // actualiza los eventos asociados a las etiquetas
     updateNodeEvents();
-    
+
     // actualiza los eventos asociados a los enlaces
     updateLinkEvents();
-    
+
     // actualiza los tooltips
     updateNodeTooltips();
-    
+
     // inicializa el scroll mediante "drag"
     $("#ziggurat").dragscrollable();
-    
+
     // inicializa el scroll
-    $("#ziggurat").perfectScrollbar({scrollXMarginOffset:4, scrollYMarginOffset:4});    
+    $("#ziggurat").perfectScrollbar({scrollXMarginOffset:4, scrollYMarginOffset:4});
     $("#zigguratNodesDetail").perfectScrollbar({scrollXMarginOffset:16, scrollYMarginOffset:4});
-    
+
     // almacena la informacion del tamaño del SVG
     svgZoomStore();
-    
+
     // establece el SVG a su tamaño real
     svgZoomFit();
 }
@@ -76,15 +76,15 @@ function updateNodeEvents() {
         var guildData   = zigguratData.data[guild];
         for (var kcore=1;kcore<=guildData.length;++kcore) {
             var pattern="kcore" + kcore + "-" + guild;
-    
+
             // estilo del cursor
             $("[id*=" + pattern + "]").css("cursor", "pointer");
-            
+
             // eventos para resaltar un nodo y los asociados
             $("[id*=" + pattern + "]").click(function() {
                 markRelatedNodes($(this).attr("id").replace("-text", "").replace("-rect",""));
             });
-    
+
             // datos asociados al nodo
             $("rect[id*=" + pattern + "]").each(function() {
                 var id=$(this).attr("id").replace("-rect", "");
@@ -102,7 +102,7 @@ function updateLinkEvents() {
     var pattern="link";
     // estilo del cursor
     $("g[id*=" + pattern + "]").css("cursor", "pointer");
-    
+
     // eventos
     $("g[id*=" + pattern + "]").mouseover(function() {
         var strokeWidth=parseFloat($(this).css("stroke-width"));
@@ -138,7 +138,7 @@ function updateNodeTooltips() {
                             position:   {my: "bottom left", at: "top left", target: "mouse"}
                         });
                     });
-                });            
+                });
             }
         }
     }
@@ -150,7 +150,7 @@ function markNode(nodeId) {
     $("#" + nodeId + "-text").each(function() {
         // incrementa la fuente
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
-        $(this).css("font-size", (fontSize+4) + "px");        
+        $(this).css("font-size", (fontSize+4) + "px");
     });
 
     // marca el nodo
@@ -158,7 +158,7 @@ function markNode(nodeId) {
         // incrementa el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth+2);
-        
+
         // indica que el nodo esta marcado
         $(this).data("marked", true);
     });
@@ -172,15 +172,16 @@ function unmarkNode(nodeId) {
         var fontSize=parseInt($(this).css("font-size").replace("px",""));
         $(this).css("font-size", (fontSize-4) + "px");
     });
-    
+
     // desmarca el nodo
     $("#" + nodeId + "-rect").each(function() {
         // reduce el borde
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2);
-        
+
         // indica que el nodo no esta marcado
         $(this).data("marked", false);
+
     });
 }
 
@@ -190,9 +191,11 @@ function markLink(linkId) {
         // incrementa el ancho del enlace
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth+2);
-        
+
         // indica que el enlace esta marcado
         $(this).data("marked", true);
+
+        $(this).css("stroke-dasharray","5,5");
     });
 }
 
@@ -202,9 +205,12 @@ function unmarkLink(linkId) {
         // reduce el ancho del enlace
         var strokeWidth=parseFloat($(this).css("stroke-width"));
         $(this).css("stroke-width", strokeWidth-2);
-        
+
         // indica que el enlace no esta marcado
         $(this).data("marked", false);
+
+
+        $(this).css("stroke-dasharray","5,0");
     });
 }
 
@@ -221,11 +227,11 @@ function markRelatedNodes(nodeId) {
     if (!$.isArray(neighbors)) {
         neighbors=[neighbors];
     }
-    
+
     // si el nodo estaba marcado solo deshace el marcado de todos los nodos, si no lo
     // estaba desmarca los nodos anteriores y marca los nuevos
     var nodes=$("rect[id*=kcore]");
-        
+
     // desmarca todos los nodos y enlaces marcados
     nodes.each(function() {
         if ($(this).data("marked")) {
@@ -237,10 +243,10 @@ function markRelatedNodes(nodeId) {
             unmarkLink($(this).attr("id"));
         }
     });
-    
+
     // elimina los nodos marcados
     Shiny.onInputChange("markedNodesData", new Date());
-    
+
     if (!marked) {
         // busca los nodos que son vecinos y los marca
         nodes.each(function() {
@@ -255,7 +261,7 @@ function markRelatedNodes(nodeId) {
                     }
                     ++i;
                 }
-                
+
                 // si es vecino lo marca
                 if (isNeighbor) {
                     markNode($(this).attr("id").replace("-rect", ""));
@@ -263,26 +269,26 @@ function markRelatedNodes(nodeId) {
                 }
             }
         });
-        
+
         // marca el nodo seleccionado
         markNode(node.attr("id").replace("-rect", ""));
         markedNodes.push(node.attr("id").replace("-rect", ""));
-        
+
         // comprueba los enlaces que intersectan
         $("g[id*=link-] path").each(function() {
-           var intersect=pathIntersectRect($(this)[0], node[0]); 
+           var intersect=pathIntersectRect($(this)[0], node[0]);
            if (intersect) {
                markLink($(this).parent().attr("id"));
            }
         });
-        
+
         // obtiene la informacion de los nodos marcados
         for (var i=0;i<markedNodes.length;++i) {
             var markedNode      = $("#" + markedNodes[i] + "-rect");
             var markedNodeData  = {};
             markedNodeData[(i+1)]={
-                guild:      markedNode.data("guild"), 
-                kcore:      markedNode.data("kcore"), 
+                guild:      markedNode.data("guild"),
+                kcore:      markedNode.data("kcore"),
                 nodeIds:    markedNode.data("nodeIds")
             };
             markedNodesData.push(markedNodeData);
@@ -299,7 +305,7 @@ function pathIntersectRect(path, rect) {
     var margin  = 1;
     var pr1     = {x:rect.x.baseVal.value-margin, y:rect.y.baseVal.value-margin};
     var pr2     = {x:rect.x.baseVal.value+rect.width.baseVal.value+margin, y:rect.y.baseVal.value+rect.height.baseVal.value+margin};
-    var result  = (pr1.x<pp1.x && pp1.x<pr2.x && pr1.y<pp1.y && pp1.y<pr2.y) || (pr1.x<pp2.x && pp2.x<pr2.x && pr1.y<pp2.y && pp2.y<pr2.y)  
+    var result  = (pr1.x<pp1.x && pp1.x<pr2.x && pr1.y<pp1.y && pp1.y<pr2.y) || (pr1.x<pp2.x && pp2.x<pr2.x && pr1.y<pp2.y && pp2.y<pr2.y)
     return result;
 }
 
@@ -325,7 +331,7 @@ function getNodeIds(aNodes) {
 // nodo del ziggurat
 function getTooltipContent(guildName, kcore, guildCoreData, nodeIds) {
     var content="";
-    
+
     // datos generales
     content+="<table class='rbtooltiptableinfo1'>";
     content+="<tr>";
@@ -337,7 +343,7 @@ function getTooltipContent(guildName, kcore, guildCoreData, nodeIds) {
     content+="<td>" + kcore + "</td>";
     content+="</tr>";
     content+="</table>";
-    
+
     // datos de cada elemento
     content+="<table class='rbtooltiptableinfo2'>";
     content+="<tr>";
@@ -372,7 +378,7 @@ function getNodeTooltipContent(guildCoreData, id) {
             ++i;
         }
     }
-    
+
     var name="(error)";
     var kdegree="(error)";
     var kradius="(error)";
@@ -392,10 +398,10 @@ function showWiki(type, id, name) {
     var wikiPanelName   = type + " [#" + id + "]";
     var wikiPanel       = $("#" + wikiPanelId);
     var wikiLoaded      = wikiPanel.data("loaded");
-        
+
     // selecciona el tab concreto
     Shiny.onInputChange("wikiPanelName", wikiPanelName);
-    
+
     // muestra el "tab" y el contenido
     $("#zigguratWikiDetail ul.nav-pills a").each(function() {
         if ($(this).html()==wikiPanelName) {
@@ -403,7 +409,7 @@ function showWiki(type, id, name) {
         }
     });
     $("#" + wikiPanelId).css("display", "block");
-        
+
     // carga los datos si no estan cargados
     if (typeof wikiLoaded=="undefined" || !wikiLoaded) {
         // http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=content&rvparse=&titles=Bombus%20dahlbomii
@@ -436,32 +442,32 @@ function showWiki(type, id, name) {
                     var revision=page.revisions[0];
                     var content=revision["*"];
                     wikiPanel.html(content);
-                    
+
                     // modifica todos los enlaces para que se abran en una nueva ventana
-                    // y los relativos para que apunten a wikipedia 
+                    // y los relativos para que apunten a wikipedia
                     $("#" + wikiPanelId + " a").each(function() {
                         var _href=$(this).attr("href");
                         // nueva ventana
                         if (_href.substring(0,1)!="#") {
                             $(this).attr("target", "_blank");
-    
+
                             // completa los enlaces relativos
                             if (_href.substring(0,1)=="/") {
                                 $(this).attr("href", wikiBase + _href);
                             }
                         }
                     });
-                    
+
                     // inicializa el scroll
                     wikiPanel.perfectScrollbar({scrollXMarginOffset:10, scrollYMarginOffset:4});
-                    wikiPanel.perfectScrollbar("update");           
+                    wikiPanel.perfectScrollbar("update");
                 }
-                
+
                 // marca el panel como cargado
                 wikiPanel.data("loaded", true);
             }
         });
-        
+
         // no funciona el "fail" con callback, pero lo dejo por si acaso algún día....
         jqXHR.fail(function(jqXHR, textStatus, errorThrown) {
             alert(getMessage("MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR") + " [status=" + textStatus+ ", error=" + errorThrown + "]");
@@ -495,8 +501,8 @@ function svgZoomFit() {
     var _height     = ziggurat.height();
     svg[0].setAttribute("width", _width);
     svg[0].setAttribute("height", _height);
-    
-    // restablece el scroll    
+
+    // restablece el scroll
     ziggurat.scrollTop(0);
     ziggurat.scrollLeft(0);
     ziggurat.perfectScrollbar("update");
@@ -509,8 +515,8 @@ function svgZoomReset() {
     var size        = svg.data("size");
     svg[0].setAttribute("width", size.width);
     svg[0].setAttribute("height", size.height);
-    
-    // restablece el scroll    
+
+    // restablece el scroll
     ziggurat.scrollTop(0);
     ziggurat.scrollLeft(0);
     ziggurat.perfectScrollbar("update");
@@ -537,11 +543,11 @@ Shiny.addCustomMessageHandler(
                 deleteFilesList.push($(this).html())
             }
         );
-        
+
         if (deleteFilesList.length>0) {
             var message=getMessage("MESSAGE_CONFIRM_DELETE_FILES") + ":\n";
             for (var i=0;i<deleteFilesList.length;++i) {
-                message=message + "  - " + deleteFilesList[i] + "\n"; 
+                message=message + "  - " + deleteFilesList[i] + "\n";
             }
             var bDelete=confirm(message);
             if (bDelete) {
@@ -567,7 +573,7 @@ Shiny.addCustomMessageHandler(
     }
 );
 
-// registra la funcion que se usa para mostrar los textos de los mensajes 
+// registra la funcion que se usa para mostrar los textos de los mensajes
 // en el lenguage seleccionado
 var messagesMap=null;
 Shiny.addCustomMessageHandler(
@@ -580,7 +586,7 @@ function getMessage(key) {
     return messagesMap[key];
 }
 
-//registra la funcion que se usa para mostrar los textos de los mensajes 
+//registra la funcion que se usa para mostrar los textos de los mensajes
 //en el lenguage seleccionado
 var zigguratData=null;
 Shiny.addCustomMessageHandler(

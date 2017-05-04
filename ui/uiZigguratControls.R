@@ -175,6 +175,16 @@ zigguratLinkSizeControl <- function() {
   return(control)
 }
 
+# Weight aggregation
+zigguratweighted_links <- function() {
+  control <- selectInput(inputId = "zigguratweighted_links", label = controlLabel(strings$value('LABEL_ZIGGURAT_LINKS_WEIGHT_CONTROL')),
+                         selected = "none",
+                         c("no" = "none",
+                           "ln" = "ln",
+                           "log10" = "log10"))
+  return(control)
+}
+
 # tamanyo de los core box
 zigguratCoreBoxSizeControl <- function() {
   control<-sliderInput(
@@ -201,6 +211,20 @@ zigguratYDisplaceControl <- function(name, description) {
   return(control)
 }
 
+# desplazamiento vertical
+zigguratYDisplaceControlS <- function(name, description)
+{
+  control<-sliderInput(
+    inputId = paste0("zigguratYDisplaceS", name, description),
+    label   = controlLabel(paste0(description,"-shell")),
+    min     = -2.0,
+    max     = 2.0,
+    value   = 0.0,
+    step    = 0.05
+  )
+  return(control)
+}
+
 # Expandir de la altura de la caja
 zigguratHeightExpandControl <- function() {
   control<-sliderInput(
@@ -213,6 +237,20 @@ zigguratHeightExpandControl <- function() {
   )
   return(control)
 }
+
+# 1-shell nodes area expand
+ziggurat1shellExpandControl <- function() {
+  control<-sliderInput(
+    inputId = "ziggurat1shellExpandControl",
+    label   = controlLabel(strings$value("LABEL_ZIGGURAT_1SHELL_EXPAND_CONTROL")),
+    min     = 0.5,
+    max     = 5.0,
+    value   = 1.0,
+    step    = 0.1
+  )
+  return(control)
+}
+
 
 # Coremax height expand control
 zigguratCoreMaxHExp <- function(){
@@ -449,6 +487,7 @@ zigguratroot_weirdskcore2_vert <- function() {
   )
   return(control)
 }
+
 # weird chain boxes separation expand
 zigguratroot_weird_boxesseparation <- function() {
   control<-sliderInput(

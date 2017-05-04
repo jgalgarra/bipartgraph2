@@ -610,7 +610,3 @@ paperLandscape <- function() {
   return(control)
 }
 
-zigguratDownloadCtl <- function() {
-  control<-downloadButton("zigguratDownload",label     = "Ziggurat Download")
-  return(control)
-}

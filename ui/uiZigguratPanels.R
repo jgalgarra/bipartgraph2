@@ -45,7 +45,6 @@ zigguratDiagramPanel <- function() {
     column(4,
       # fluidRow(
       #   groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_INFO_HEADER"), image="document.png")
-      # ),
       fluidRow(
         column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"))),
         column(2, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"))),
@@ -222,19 +221,8 @@ zigguratConfigPanel <- function() {
         column(4, zigguratSVGup()),
         column(4, zigguratSvgScaleFactorControl())
       )
-    ),
-
-    tabPanel(
-      strings$value("LABEL_DOWNLOAD_MAIN_HEADER"),
-      # fluidRow(
-      #   column(12, groupHeader(text="Plot", image="download.png"))
-      # ),
-      fluidRow(
-        column(3, paperLandscape()),
-        column(3, paperSizeControl()),
-        column(3, ppiControl())
-      )
     )
+
   )
   return(panel)
 }

@@ -371,7 +371,7 @@ shinyServer(function(input, output, session) {
       label_strguilda                               = trim(input$DataLabelGuildAControl),
       label_strguildb                               = trim(input$DataLabelGuildBControl),
       landscape_plot                                = input$LandscapeControl,
-      backg_color                                   = "white",
+      backg_color                                   = input$zigguratBckgdColorControl,
       show_title                                    = TRUE,
       use_spline                                    = input$zigguratUseSpline,
       spline_points                                 = input$zigguratSplinePoints,
@@ -379,8 +379,7 @@ shinyServer(function(input, output, session) {
       weighted_links                                = input$zigguratweighted_links,
       svg_scale_factor                              = 25*input$zigguratSvgScaleFactor,
       move_all_SVG_up                               = 0.01*input$zigguratSVGup,
-      flip_results                                  = FALSE, #input$zigguratFlipResults only works for non interactive ziggurats
-      aspect_ratio                                  = 1,     #input$zigguratAspectRatio only works for non interactive ziggurats
+      aspect_ratio                                  = input$zigguratAspectRatio,     #input$zigguratAspectRatio only works for non interactive ziggurats
       progress                                      = progress
     )
 

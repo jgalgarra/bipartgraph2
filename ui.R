@@ -47,15 +47,15 @@ shinyUI(
         strings$value("LABEL_MENU_ZIGGURAT_PANEL"),
         zigguratPanel()
       ),
-      # panel con el diagrama polar
-      tabPanel(
-        strings$value("LABEL_MENU_POLAR_PANEL"),
-        polarPanel()
-      ),
       #panel para descargar los diagramas
       tabPanel(
         strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
         downloadPanel()
+      ),
+      # panel con el diagrama polar
+      tabPanel(
+        strings$value("LABEL_MENU_POLAR_PANEL"),
+        polarPanel()
       ),
       # acerca de
       tabPanel(

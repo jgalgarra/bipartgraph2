@@ -22,11 +22,14 @@ library(shinyjs)
 
 
 zigguratDownloadControl <- function() {
-  #return(downloadLink('zigguratDownload', 'Download'))
     control<-downloadButton("zigguratDownload",label     = "Ziggurat Download")
     return(control)
-  }
+}
 
+polarDownloadControl <- function() {
+  control<-downloadButton("polarDownload",label     = "Polar Download")
+  return(control)
+}
 
 
 # # descarga del diagrama polar

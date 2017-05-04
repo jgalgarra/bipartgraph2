@@ -104,12 +104,12 @@ polarscreenwidthControl <- function() {
   return(control)
 }
 
-# download link
-polardownloadLink <- function() {
-  control<-checkboxInput(
-    inputId = "polardownloadLink",
-    label   = controlLabel(strings$value("LABEL_POLAR_DOWNLOAD_LINK")),
-    value   = TRUE
-  )
-  return(control)
-}
+# # download link
+# polardownloadLink <- function() {
+#   control<-checkboxInput(
+#     inputId = "polardownloadLink",
+#     label   = controlLabel(strings$value("LABEL_POLAR_DOWNLOAD_LINK")),
+#     value   = TRUE
+#   )
+#   return(control)
+# }

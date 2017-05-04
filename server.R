@@ -562,7 +562,7 @@ shinyServer(function(input, output, session) {
          width = input$screenwidthControl,
          height = input$screenwidthControl,
          alt = "Polar graph")
-    }, deleteFile = (!input$polardownloadLink) )
+    }, deleteFile = FALSE )
 
 
   # # muestra los histogramas
@@ -610,6 +610,20 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
+  output$polarDownload <- downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar." , diagramOptions()$ext)
+      return(file)
+    },
+    content <- function(file) {
+      options<-diagramOptions()
+      validateDiagramOptions(options)
+      p <- polar()
+      file.copy(normalizePath(p["polar_file"][[1]]), file)
+    },
+    contentType=paste0("image/", diagramOptions()$ext)
+  )
+
 
   # # boton de descarga del diagrama polar
   # output$polarDownload<-downloadHandler(
@@ -623,13 +637,28 @@ shinyServer(function(input, output, session) {
   #     validateDiagramOptions(options)
   #
   #     # obtiene el diagrama
-  #     p<-polar()
-  #     plot<-p["polar_plot"][[1]]
+  #     # p<-polar()
+  #     # plot<-p["polar_plot"][[1]]
+  #     #
+  #     # plotDiagram(file, plot, options)
   #
-  #     plotDiagram(file, plot, options)
+  #
+  #     renderImage({
+  #       p <- polar()
+  #       # Return a list containing the filename
+  #       list(src = normalizePath(p["polar_file"][[1]]),
+  #            contentType = 'image/png',
+  #            width = input$screenwidthControl,
+  #            height = input$screenwidthControl,
+  #            alt = "Polar graph")
+  #     }, deleteFile = FALSE )
+  #
+  #
+  #
   #   },
   #   contentType=paste0("image/", diagramOptions()$ext)
   # )
+
   #
   # # boton de descarga de los histogramas
   # output$histogramDownload<-downloadHandler(

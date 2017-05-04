@@ -25,29 +25,36 @@ polarPanel<-function() {
 
 # panel con el diagrama polar
 polarDiagramPanel <- function() {
+  if (exists("zgg"))
+    nfic <- zgg$polar_file
+  else
+    nfic <- ""
   control<-fluidRow(
     column(12,
-      fluidRow(groupHeader(text=strings$value("LABEL_POLAR_DIAGRAM_HEADER"), image="air_force.png")),
+      fluidRow(div(
+        tags$br()
+      )),
+      fluidRow(polarDownloadControl()),
       fluidRow(plotOutput("polar"))
-       )
+      )
   )
   return(control)
 }
 
-# panel con el gragico de histogramas
-histogramPanel <- function() {
-  control<-fluidRow(
-    column(12,
-      fluidRow(groupHeader(text=strings$value("LABEL_POLAR_HISTOGRAM_HEADER"), image="bar.png")),
-      fluidRow(
-        column(4, plotOutput("histogramDist")),
-        column(4, plotOutput("histogramCore")),
-        column(4, plotOutput("histogramDegree"))
-      )
-    )
-  )
-  return(control)
-}
+# # panel con el gragico de histogramas
+# histogramPanel <- function() {
+#   control<-fluidRow(
+#     column(12,
+#       fluidRow(groupHeader(text=strings$value("LABEL_POLAR_HISTOGRAM_HEADER"), image="bar.png")),
+#       fluidRow(
+#         column(4, plotOutput("histogramDist")),
+#         column(4, plotOutput("histogramCore")),
+#         column(4, plotOutput("histogramDegree"))
+#       )
+#     )
+#   )
+#   return(control)
+# }
 
 # panel de configuracion del diagrama polar
 polarConfigPanel <- function() {
@@ -59,14 +66,14 @@ polarConfigPanel <- function() {
       column(2, polarDisplayTextControl()),
       column(2, polarAlphaLevelControl()),
       column(2, polarFillNodesControl()),
-      column(2, polarDisplayHistograms()),
-      column(2, polardownloadLink())
+      column(2, polarDisplayHistograms())#,
+      #column(2, polardownloadLink())
     ),
     fluidRow(
       column(2, polarGuildLabelControl("A", strings$value("LABEL_POLAR_GUILDA_LABEL_CONTROL"), "Plant")),
-      column(2, polarGuildLabelControl("B", strings$value("LABEL_POLAR_GUILDB_LABEL_CONTROL"), "Pollinator")),
-      column(2, polarGuildLabelControl("AShort", strings$value("LABEL_POLAR_GUILDA_SHORT_LABEL_CONTROL"), "pl")),
-      column(2, polarGuildLabelControl("BShort", strings$value("LABEL_POLAR_GUILDB_SHORT_LABEL_CONTROL"), "pol"))
+      column(2, polarGuildLabelControl("B", strings$value("LABEL_POLAR_GUILDB_LABEL_CONTROL"), "Pollinator"))#,
+      # column(2, polarGuildLabelControl("AShort", strings$value("LABEL_POLAR_GUILDA_SHORT_LABEL_CONTROL"), "pl")),
+      # column(2, polarGuildLabelControl("BShort", strings$value("LABEL_POLAR_GUILDB_SHORT_LABEL_CONTROL"), "pol"))
     ),
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_POLAR_LABELS_CONFIG_HEADER"), image="generic_text.png"))

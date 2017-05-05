@@ -93,9 +93,9 @@ zigguratdisplace_legend_horiz <- function() {
     inputId = "zigguratdisplace_legend_horiz",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_LEGEND_DISPLACE_HORIZ")),
     min     = -2,
-    max     = 10.0,
+    max     = 5.0,
     value   = 0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -170,7 +170,7 @@ zigguratLinkSizeControl <- function() {
     min     = 0.0,
     max     = 5.0,
     value   = 0.5,
-    step    = 0.5
+    step    = 0.1
   )
   return(control)
 }

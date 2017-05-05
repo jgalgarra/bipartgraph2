@@ -200,6 +200,8 @@ plotPDF<-function(file, ziggurat, polar, options) {
 # proceso de servidor
 #
 shinyServer(function(input, output, session) {
+
+
   # recibe cuendo el cliente esta listo
   observeEvent(input$windowLoad, {
     # crea los mensajes que se usan desde javascript
@@ -295,6 +297,7 @@ shinyServer(function(input, output, session) {
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
   ziggurat<-reactive({
+
     validate(
       need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
     )
@@ -623,86 +626,5 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
-
-  # # boton de descarga del diagrama polar
-  # output$polarDownload<-downloadHandler(
-  #   filename=function() {
-  #     file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar." , diagramOptions()$ext)
-  #     return(file)
-  #   },
-  #   content=function(file) {
-  #     # valida las dimensiones/resolucion
-  #     options<-diagramOptions()
-  #     validateDiagramOptions(options)
-  #
-  #     # obtiene el diagrama
-  #     # p<-polar()
-  #     # plot<-p["polar_plot"][[1]]
-  #     #
-  #     # plotDiagram(file, plot, options)
-  #
-  #
-  #     renderImage({
-  #       p <- polar()
-  #       # Return a list containing the filename
-  #       list(src = normalizePath(p["polar_file"][[1]]),
-  #            contentType = 'image/png',
-  #            width = input$screenwidthControl,
-  #            height = input$screenwidthControl,
-  #            alt = "Polar graph")
-  #     }, deleteFile = FALSE )
-  #
-  #
-  #
-  #   },
-  #   contentType=paste0("image/", diagramOptions()$ext)
-  # )
-
-  #
-  # # boton de descarga de los histogramas
-  # output$histogramDownload<-downloadHandler(
-  #   filename=function() {
-  #     file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-histogram." , diagramOptions()$ext)
-  #     return(file)
-  #   },
-  #   content=function(file) {
-  #     # valida las dimensiones/resolucion
-  #     options<-diagramOptions()
-  #     validateDiagramOptions(options)
-  #
-  #     # obtiene el diagrama
-  #     p<-polar()
-  #     #plot<-grid.arrange(arrangeGrob(p["histo_dist"][[1]], p["histo_core"][[1]], p["histo_degree"][[1]], nrow=1, ncol=3))
-  #     grid.newpage()
-  #     vp <- viewport(width = unit(190, "mm"), height = unit(30, "mm"))
-  #     pushViewport(vp)
-  #     plot <- grid.arrange(arrangeGrob(p["histo_kradius"][[1]],
-  #                                      p["histo_kdegree"][[1]],
-  #                                      p["histo_core"][[1]],ncol=3, nrow=1,
-  #                                      widths=c(1/3,1/3,1/3)))
-  #
-  #     plotDiagram(file, plot, diagramOptions())
-  #   },
-  #   contentType=paste0("image/", diagramOptions()$ext)
-  # )
-  #
-  # # boton de descarga en PDF
-  # output$pdfDownload<-downloadHandler(
-  #   filename=function() {
-  #     file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-all.pdf")
-  #     return(file)
-  #   },
-  #   content=function(file) {
-  #     # valida las dimensiones/resolucion
-  #     options<-diagramOptions()
-  #     validateDiagramOptions(options)
-  #
-  #     # obtiene el diagrama
-  #     z<-ziggurat()
-  #     p<-polar()
-  #     plotPDF(file, z, p, options)
-  #   },
-  #   contentType="application/pdf"
-  # )
 })
 

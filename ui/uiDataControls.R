@@ -76,3 +76,16 @@ DataLabelGuildBControl<-function() {
   return(control)
 }
 
+# screen size control
+selectLanguage <- function() {
+  values<-c("en", "es")
+  names(values)<-values
+  control<-selectInput(
+    inputId   = "selectLanguage",
+    label     = "",
+    choices   = values,
+    selected  = "en",
+    multiple  = FALSE
+  )
+  return(control)
+}

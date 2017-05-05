@@ -93,7 +93,7 @@ zigguratdisplace_legend_horiz <- function() {
     inputId = "zigguratdisplace_legend_horiz",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_LEGEND_DISPLACE_HORIZ")),
     min     = -2,
-    max     = 5.0,
+    max     = 3.0,
     value   = 0,
     step    = 0.1
   )
@@ -107,9 +107,9 @@ zigguratdisplace_legend_vert<- function() {
     inputId = "zigguratdisplace_legend_vert",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_LEGEND_DISPLACE_VERT")),
     min     = -2,
-    max     = 10.0,
+    max     = 3.0,
     value   = 0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -167,9 +167,9 @@ zigguratLinkSizeControl <- function() {
   control<-sliderInput(
     inputId = "zigguratLinkSize",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_LINK_SIZE_CONTROL")),
-    min     = 0.0,
-    max     = 5.0,
-    value   = 0.5,
+    min     = 0.1,
+    max     = 2.0,
+    value   = 0.3,
     step    = 0.1
   )
   return(control)

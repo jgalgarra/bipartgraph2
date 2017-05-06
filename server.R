@@ -294,6 +294,11 @@ shinyServer(function(input, output, session) {
     availableFiles$list<-availableFilesList()
   })
 
+  observeEvent(input$ResetAll, {
+    session = getDefaultReactiveDomain()
+    session$reload()
+  })
+
   # actualiza el grafico ziggurat en base a los controles de
   # configuracion
   ziggurat<-reactive({

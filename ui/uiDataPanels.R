@@ -33,7 +33,8 @@ selectDataPanel<-function() {
       column(12, tags$h6(strings$value("LABEL_SELECT_DATA_TIP")))
     ),
     fluidRow(
-      column(12, selectDataFileControl(path=dataDir, pattern=dataFilePattern))
+      column(8, selectDataFileControl(path=dataDir, pattern=dataFilePattern)),
+      column(4, actionButton("ResetAll", label = strings$value("LABEL_ACTION_RESET")))
     ),
 
     fluidRow(

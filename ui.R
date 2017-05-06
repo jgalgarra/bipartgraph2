@@ -1,4 +1,4 @@
-###############################################################################
+﻿###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
 #   Representación gráfica de redes bipartitas basadas en descomposición k-core
@@ -34,8 +34,8 @@ shinyUI(
     ),
     navbarPage(
       title   = "BipartGraph",
-      theme   = shinytheme("united"),
-      #theme   = shinytheme("flatly"),
+      #theme   = shinytheme("united"),
+      theme   = shinytheme("flatly"),
       header  = headerPanel(),
       #footer  = footerPanel(),
       # controles de entrada para la gestion de los ficheros de datos

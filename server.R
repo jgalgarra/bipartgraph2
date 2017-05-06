@@ -542,7 +542,7 @@ shinyServer(function(input, output, session) {
       print_to_file       = TRUE,
       printable_labels    = input$polarDisplayText,
       show_histograms     = input$polarDisplayHistograms,
-      glabels             = c(input$DataLabelGuildAControl, input$DataLabelGuildAControl),
+      glabels             = c(input$DataLabelGuildAControl, input$DataLabelGuildBControl),
       gshortened          = c("pl","pol"),
       lsize_title         = input$polarLabelsSizeTitle,
       lsize_axis          = input$polarLabelsSizeAxis,

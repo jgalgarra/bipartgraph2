@@ -17,7 +17,6 @@ source("ui/uiPolarControls.R", encoding="UTF-8")
 polarPanel<-function() {
   panel<-tabsetPanel(
     tabPanel(strings$value("LABEL_POLAR_DIAGRAM_PANEL"),        tags$div(class="panelContent", polarDiagramPanel())),
-    # tabPanel(strings$value("LABEL_POLAR_HISTOGRAM_PANEL"),      tags$div(class="panelContent", histogramPanel())),
     tabPanel(strings$value("LABEL_POLAR_CONFIGURATION_PANEL"),  tags$div(class="panelContent", polarConfigPanel()))
   )
   return(panel)
@@ -34,27 +33,15 @@ polarDiagramPanel <- function() {
       fluidRow(div(
         tags$br()
       )),
-      fluidRow(polarDownloadControl()),
+      fluidRow(column(6,polarDownloadControl()),
+               column(6,polarcodeDownloadControl())
+      ),
       fluidRow(plotOutput("polar"))
       )
   )
   return(control)
 }
 
-# # panel con el gragico de histogramas
-# histogramPanel <- function() {
-#   control<-fluidRow(
-#     column(12,
-#       fluidRow(groupHeader(text=strings$value("LABEL_POLAR_HISTOGRAM_HEADER"), image="bar.png")),
-#       fluidRow(
-#         column(4, plotOutput("histogramDist")),
-#         column(4, plotOutput("histogramCore")),
-#         column(4, plotOutput("histogramDegree"))
-#       )
-#     )
-#   )
-#   return(control)
-# }
 
 # panel de configuracion del diagrama polar
 polarConfigPanel <- function() {

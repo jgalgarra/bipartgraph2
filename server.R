@@ -631,5 +631,38 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
+  output$polarcodeDownload <- downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar-code.txt")
+      return(file)
+    },
+    content <- function(file) {
+      p <- polar()
+      dir.create("tmpcode/", showWarnings = FALSE)
+      sink("tmpcode/codepolar.txt")
+      llamada <- p["polar_argg"]
+      comando <- paste0("polg <- polar_graph(\"",llamada$polar_argg$red,"\",")
+      comando <- paste0(comando, "directorystr = \"data/\"")
+      comando <- paste0(comando,",plotsdir = \"plot_results/polar/\",print_to_file = TRUE,")
+      comando <- paste0(comando,"glabels = c(\"",llamada$polar_argg$glabels[1],"\",\"",llamada$polar_argg$glabels[2],"\"),")
+      comando <- paste0(comando,"gshortened = c(\"",llamada$polar_argg$gshortened[1],"\",\"",llamada$polar_argg$gshortened[2],"\"),")
+      comando <- paste0(comando,"show_histograms =",llamada$polar_argg$show_histograms,",")
+      comando <- paste0(comando,"lsize_title =",llamada$polar_argg$lsize_title,",")
+      comando <- paste0(comando,"lsize_axis =",llamada$polar_argg$lsize_axis,",")
+      comando <- paste0(comando,"lsize_legend =",llamada$polar_argg$lsize_legend,",")
+      comando <- paste0(comando,"lsize_axis_title =",llamada$polar_argg$lsize_axis_title,",")
+      comando <- paste0(comando,"file_name_append =\"",llamada$polar_argg$file_name_append,"\",")
+      comando <- paste0(comando,"print_title =",llamada$polar_argg$print_title,",")
+      comando <- paste0(comando,"progress = NULL,")
+      comando <- paste0(comando,"fill_nodes =",llamada$polar_argg$fill_nodes,",")
+      comando <- paste0(comando,"alpha_nodes =",llamada$polar_argg$alpha_nodes,",")
+      comando <- paste0(comando,"printable_labels =",llamada$polar_argg$printable_labels,")")
+      cat(comando)
+      sink()
+      file.copy("tmpcode/codepolar.txt", file)
+    },
+    contentType="text/plain"
+  )
+
 })
 

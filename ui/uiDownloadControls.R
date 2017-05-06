@@ -12,15 +12,19 @@ library(shinyjs)
 
 
 zigguratDownloadControl <- function() {
-    control<-downloadButton("zigguratDownload",label     = "Zigurat Download")
+    control<-downloadButton("zigguratDownload",label = strings$value("LABEL_PLOT_DOWNLOAD"))
     return(control)
 }
 
 polarDownloadControl <- function() {
-  control<-downloadButton("polarDownload",label     = "Polar Download")
+  control<-downloadButton("polarDownload",label = strings$value("LABEL_PLOT_DOWNLOAD"))
   return(control)
 }
 
+polarcodeDownloadControl <- function() {
+  control<-downloadButton("polarcodeDownload",label = strings$value("LABEL_POLAR_CODE_DOWNLOAD"))
+  return(control)
+}
 # control generico para seleccion de color
 zigguratBckgdColorControl <- function() {
   control <- colourInput(

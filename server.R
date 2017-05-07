@@ -354,7 +354,7 @@ shinyServer(function(input, output, session) {
       kcore2tail_vertical_separation                = input$zigguratKcore2TailVerticalSeparation,
       kcore1tail_disttocore                         = c(input$zigguratKcore1TailDistToCore1, input$zigguratKcore1TailDistToCore2),
       innertail_vertical_separation                 = input$zigguratInnerTailVerticalSeparation,
-      horiz_kcoremax_tails_expand                   = input$ziggurathoriz_kcoremax_tails_expand,
+      #horiz_kcoremax_tails_expand                   = input$ziggurathoriz_kcoremax_tails_expand,
       factor_hop_x                                  = input$zigguratHopx,
       displace_legend                               = c(input$zigguratdisplace_legend_horiz,input$zigguratdisplace_legend_vert),
       fattailjumphoriz                              = c(input$zigguratfattailjumphorizA,input$zigguratfattailjumphorizB),
@@ -572,26 +572,6 @@ shinyServer(function(input, output, session) {
     }, deleteFile = FALSE )
 
 
-  # # muestra los histogramas
-  #   output$histogramDist<-renderPlot({
-  #   p<-polar()
-  #   print(p["histo_dist"][[1]])
-  # })
-  #
-  # # muestra los histogramas
-  # output$histogramCore<-renderPlot({
-  #   p<-polar()
-  #   print(p["histo_core"][[1]])
-  # })
-  #
-  # # muestra los histogramas
-  # output$histogramDegree<-renderPlot({
-  #   p<-polar()
-  #   if (!is.null(p)) {
-  #     print(p["histo_degree"][[1]])
-  #   }
-  # })
-
   # Opciones para generar el diagrama, indicando ancho,alto en pixels, calidad en ppi (points-per-inch)
   # y otras opciones para generar el diagrama (png/jpg/..., tipo "cairo" u otros)
   diagramOptions<-reactive({
@@ -631,6 +611,16 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
+  #Aux function to add a parameter and reproduce the function call
+  addCallParam <- function(com,lpar,param,quoteparam = FALSE)
+  {
+    if (quoteparam)
+      com <- paste0(com," ,",param," = \"",lpar[param],"\"")
+    else
+      com <- paste0(com," ,",param," = ",lpar[param])
+    return(com)
+  }
+
   output$polarcodeDownload <- downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar-code.txt")
@@ -642,27 +632,105 @@ shinyServer(function(input, output, session) {
       sink("tmpcode/codepolar.txt")
       llamada <- p["polar_argg"]
       comando <- paste0("polg <- polar_graph(\"",llamada$polar_argg$red,"\",")
-      comando <- paste0(comando, "directorystr = \"data/\"")
+      comando <- paste0(comando, "directorystr = \"",llamada$polar_argg$directorystr,"\"")
       comando <- paste0(comando,",plotsdir = \"plot_results/polar/\",print_to_file = TRUE,")
       comando <- paste0(comando,"glabels = c(\"",llamada$polar_argg$glabels[1],"\",\"",llamada$polar_argg$glabels[2],"\"),")
-      comando <- paste0(comando,"gshortened = c(\"",llamada$polar_argg$gshortened[1],"\",\"",llamada$polar_argg$gshortened[2],"\"),")
-      comando <- paste0(comando,"show_histograms =",llamada$polar_argg$show_histograms,",")
-      comando <- paste0(comando,"lsize_title =",llamada$polar_argg$lsize_title,",")
-      comando <- paste0(comando,"lsize_axis =",llamada$polar_argg$lsize_axis,",")
-      comando <- paste0(comando,"lsize_legend =",llamada$polar_argg$lsize_legend,",")
-      comando <- paste0(comando,"lsize_axis_title =",llamada$polar_argg$lsize_axis_title,",")
-      comando <- paste0(comando,"file_name_append =\"",llamada$polar_argg$file_name_append,"\",")
-      comando <- paste0(comando,"print_title =",llamada$polar_argg$print_title,",")
-      comando <- paste0(comando,"progress = NULL,")
-      comando <- paste0(comando,"fill_nodes =",llamada$polar_argg$fill_nodes,",")
-      comando <- paste0(comando,"alpha_nodes =",llamada$polar_argg$alpha_nodes,",")
-      comando <- paste0(comando,"printable_labels =",llamada$polar_argg$printable_labels,")")
+      comando <- paste0(comando,"gshortened = c(\"",llamada$polar_argg$gshortened[1],"\",\"",llamada$polar_argg$gshortened[2],"\")")
+      comando <- addCallParam(comando,llamada$polar_argg,"show_histograms")
+      comando <- addCallParam(comando,llamada$polar_argg,"lsize_title")
+      comando <- addCallParam(comando,llamada$polar_argg,"lsize_axis")
+      comando <- addCallParam(comando,llamada$polar_argg,"lsize_legend")
+      comando <- addCallParam(comando,llamada$polar_argg,"lsize_axis_title")
+      comando <- addCallParam(comando,llamada$polar_argg,"file_name_append",quote = TRUE)
+      comando <- addCallParam(comando,llamada$polar_argg,"print_title")
+      comando <- paste0(comando,",progress = NULL")
+      comando <- addCallParam(comando,llamada$polar_argg,"fill_nodes")
+      comando <- addCallParam(comando,llamada$polar_argg,"alpha_nodes")
+      comando <- addCallParam(comando,llamada$polar_argg,"printable_labels")
+      comando <- paste0(comando,")")
       cat(comando)
       sink()
       file.copy("tmpcode/codepolar.txt", file)
     },
     contentType="text/plain"
   )
+
+  output$zigguratcodeDownload <- downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-ziggurat-code.txt")
+      return(file)
+    },
+    content <- function(file) {
+      p <- ziggurat()
+      dir.create("tmpcode/", showWarnings = FALSE)
+      sink("tmpcode/codeziggurat.txt")
+      llamada <- zgg$ziggurat_argg
+      comando <- paste0("ziggurat_graph(\"data/\"",",\"",llamada$filename,"\"")
+      comando <- addCallParam(comando,llamada,"paintlinks")
+      comando <- paste0(comando,",print_to_file = TRUE")
+      comando <- paste0(comando,",plotsdir = \"plot_results/ziggurat\"")
+      comando <- addCallParam(comando,llamada,"alpha_level")
+      comando <- paste0(comando,",color_guild_a = c(\"",llamada$color_guild_a[1],"\",\"",llamada$color_guild_a[1],"\")")
+      comando <- paste0(comando,",color_guild_b = c(\"",llamada$color_guild_b[1],"\",\"",llamada$color_guild_b[1],"\")")
+      comando <- paste(comando,"\n")
+      comando <- addCallParam(comando,llamada,"alpha_link")
+      comando <- addCallParam(comando,llamada,"size_link")
+      comando <- addCallParam(comando,llamada,"color_link", quote = TRUE)
+      comando <- paste0(comando,",displace_y_b = ",paste("c(",paste(llamada$displace_y_b,collapse=",")),")")
+      comando <- paste0(comando,",displace_y_a = ",paste("c(",paste(llamada$displace_y_a,collapse=",")),")")
+      comando <- addCallParam(comando,llamada,"lsize_kcoremax")
+      comando <- addCallParam(comando,llamada,"lsize_zig")
+      comando <- addCallParam(comando,llamada,"lsize_kcore1")
+      comando <- addCallParam(comando,llamada,"lsize_legend")
+      comando <- addCallParam(comando,llamada,"lsize_core_box")
+      comando <- addCallParam(comando,llamada,"labels_color")
+      comando <- addCallParam(comando,llamada,"height_box_y_expand")
+      comando <- addCallParam(comando,llamada,"kcore2tail_vertical_separation")
+      comando <- paste(comando,"\n")
+      comando <- paste0(comando,",kcore1tail_disttocore = ",paste("c(",paste(llamada$kcore1tail_disttocore,collapse=",")),")")
+      comando <- addCallParam(comando,llamada,"innertail_vertical_separation")
+      comando <- addCallParam(comando,llamada,"factor_hop_x")
+      comando <- paste0(comando,",displace_legend = ",paste("c(",paste(llamada$displace_legend,collapse=",")),")")
+      comando <- paste0(comando,",fattailjumphoriz = ",paste("c(",paste(llamada$fattailjumphoriz,collapse=",")),")")
+      comando <- paste0(comando,",fattailjumpvert = ",paste("c(",paste(llamada$fattailjumpvert,collapse=",")),")")
+      comando <- addCallParam(comando,llamada,"coremax_triangle_height_factor")
+      comando <- addCallParam(comando,llamada,"paint_outsiders")
+      comando <- paste0(comando,",displace_outside_component = ",paste("c(",paste(llamada$displace_outside_component,collapse=",")),")")
+      comando <- addCallParam(comando,llamada,"coremax_triangle_width_factor")
+      comando <- addCallParam(comando,llamada,"outsiders_separation_expand")
+      comando <- addCallParam(comando,llamada,"outsiders_legend_expand")
+      comando <- addCallParam(comando,llamada,"weirdskcore2_horizontal_dist_rootleaf_expand")
+      comando <- addCallParam(comando,llamada,"weirdskcore2_vertical_dist_rootleaf_expand")
+      comando <- addCallParam(comando,llamada,"weirds_boxes_separation_count")
+      comando <- paste(comando,"\n")
+      comando <- paste0(comando,",root_weird_expand = ",paste("c(",paste(llamada$root_weird_expand,collapse=",")),")")
+      comando <- addCallParam(comando,llamada,"hide_plot_border")
+      comando <- paste0(comando,",rescale_plot_area = ",paste("c(",paste(llamada$rescale_plot_area,collapse=",")),")")
+      comando <- addCallParam(comando,llamada,"kcore1weirds_leafs_vertical_separation")
+      comando <- addCallParam(comando,llamada,"corebox_border_size")
+      comando <- addCallParam(comando,llamada,"label_strguilda", quote = TRUE)
+      comando <- addCallParam(comando,llamada,"label_strguildb", quote = TRUE)
+      comando <- paste(comando,"\n")
+      comando <- addCallParam(comando,llamada,"landscape_plot")
+      comando <- addCallParam(comando,llamada,"backg_color", quote = TRUE)
+      comando <- addCallParam(comando,llamada,"show_title")
+      comando <- addCallParam(comando,llamada,"use_spline")
+      comando <- addCallParam(comando,llamada,"spline_points")
+      comando <- addCallParam(comando,llamada,"file_name_append", quote =TRUE)
+      comando <- addCallParam(comando,llamada,"svg_scale_factor")
+      comando <- addCallParam(comando,llamada,"weighted_links", quote =TRUE)
+      comando <- addCallParam(comando,llamada,"square_nodes_size_scale")
+      comando <- addCallParam(comando,llamada,"move_all_SVG_up")
+      comando <- paste0(comando,",progress = NULL")
+      comando <- paste0(comando,")")
+      cat(comando)
+      sink()
+      file.copy("tmpcode/codeziggurat.txt", file)
+    },
+    contentType="text/plain"
+  )
+
+
 
 })
 

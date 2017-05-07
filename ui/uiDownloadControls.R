@@ -25,6 +25,11 @@ polarcodeDownloadControl <- function() {
   control<-downloadButton("polarcodeDownload",label = strings$value("LABEL_POLAR_CODE_DOWNLOAD"))
   return(control)
 }
+
+zigguratcodeDownloadControl <- function() {
+  control<-downloadButton("zigguratcodeDownload",label = strings$value("LABEL_ZIGGURAT_CODE_DOWNLOAD"))
+  return(control)
+}
 # control generico para seleccion de color
 zigguratBckgdColorControl <- function() {
   control <- colourInput(

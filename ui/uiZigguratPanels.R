@@ -189,9 +189,9 @@ zigguratConfigPanel <- function() {
         column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
         column(3, zigguratInnerTailVerticalSeparationControl())
       ),
-      fluidRow(
-        column(3, ziggurathoriz_kcoremax_tails_expand())
-      ),
+      # fluidRow(
+      #   column(3, ziggurathoriz_kcoremax_tails_expand())
+      # ),
       fluidRow(
         column(3, zigguratfattailjumphorizA()),
         column(3, zigguratfattailjumpvertA()),

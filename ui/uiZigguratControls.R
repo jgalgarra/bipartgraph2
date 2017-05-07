@@ -66,9 +66,9 @@ zigguratSplinePointsControl <- function() {
   control<-sliderInput(
     inputId = "zigguratSplinePoints",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_SPLINE_POINTS_CONTROL")),
-    min     = 50,
+    min     = 20,
     max     = 150,
-    value   = 100,
+    value   = 50,
     step    = 10
   )
   return(control)
@@ -356,18 +356,18 @@ zigguratKcore1TailDistToCoreControl <- function(name, description) {
   return(control)
 }
 
-# distancia de la cola kcore-1 al core central
-ziggurathoriz_kcoremax_tails_expand <- function() {
-  control<-sliderInput(
-    inputId = "ziggurathoriz_kcoremax_tails_expand",
-    label   = controlLabel(strings$value("LABEL_ZIGGURAT_EDGE_TAIL_HORIZ_SEPARATION_CONTROL")),
-    min     = 0.5,
-    max     = 5.0,
-    value   = 1.0,
-    step    = 0.1
-  )
-  return(control)
-}
+# distancia de la cola kcore-1 al core central                DEPRECATED
+# ziggurathoriz_kcoremax_tails_expand <- function() {
+#   control<-sliderInput(
+#     inputId = "ziggurathoriz_kcoremax_tails_expand",
+#     label   = controlLabel(strings$value("LABEL_ZIGGURAT_EDGE_TAIL_HORIZ_SEPARATION_CONTROL")),
+#     min     = 0.5,
+#     max     = 5.0,
+#     value   = 1.0,
+#     step    = 0.1
+#   )
+#   return(control)
+# }
 
 # distancia de la cola kcore-1 al core central
 zigguratkcore1weirds_leafs_vertical_separation <- function() {

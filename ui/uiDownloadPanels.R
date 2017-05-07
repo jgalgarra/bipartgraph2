@@ -22,8 +22,11 @@ downloadPanel <- function() {
     #    column(12, tags$h6(strings$value("LABEL_INDIVIDUAL_DOWNLOAD_TIP")))
     # ),
     fluidRow(
-      column(11, zigguratDownloadControl())
+      column(6, zigguratDownloadControl()),
+      column(6, zigguratcodeDownloadControl())
     ),
+
+    
     fluidRow(
       column(3, paperLandscape()),
       column(3, paperSizeControl()),

@@ -1,8 +1,8 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : uiDataPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
@@ -18,6 +18,7 @@ dataPanel <- function() {
     id="dataPanel",
     tabPanel(strings$value("LABEL_SELECT_DATA_PANEL"),   tags$div(class="panelContent", selectDataPanel())),
     tabPanel(strings$value("LABEL_MANAGE_FILES_PANEL"),  tags$div(class="panelContent", manageFilesPanel()))
+    #tabPanel(strings$value("LABEL_SELECT_LANGUAGE"),  tags$div(class="panelContent", manageLanguages()))
   )
   return(panel)
 }
@@ -32,7 +33,13 @@ selectDataPanel<-function() {
       column(12, tags$h6(strings$value("LABEL_SELECT_DATA_TIP")))
     ),
     fluidRow(
-      column(12, selectDataFileControl(path=dataDir, pattern=dataFilePattern))
+      column(8, selectDataFileControl(path=dataDir, pattern=dataFilePattern)),
+      column(4, actionButton("ResetAll", label = strings$value("LABEL_ACTION_RESET")))
+    ),
+
+    fluidRow(
+      column(3, DataLabelGuildAControl()),
+      column(3, DataLabelGuildBControl())
     ),
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_DATA_CONTENT_HEADER"), image="grid.png"))
@@ -58,14 +65,32 @@ manageFilesPanel<-function() {
       ),
       column(6, dataTableOutput("uploadedFilesTable"))
     ),
+
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_AVAILABLE_FILES"), image="documents.png"))
     ),
+    # fluidRow(
+    #   column(12, dataTableOutput("availableFilesTable"))
+    # ),
     fluidRow(
-      column(12, dataTableOutput("availableFilesTable"))
+    column(12, DT::dataTableOutput('availableFilesTable'))
     ),
+
     fluidRow(
-      column(12, refreshFilesControl(), deleteFilesControl())
+      column(12, deleteFilesControl())
+    )
+  )
+  return(panel)
+}
+
+# panel de gestion de idiomas
+manageLanguages<-function() {
+  panel<-fluidRow(
+    # fluidRow(
+    #   column(12, groupHeader(text=strings$value("LABEL_SELECT_LANGUAGE"), image="generic_text.png"))
+    # ),
+    fluidRow(
+      column(3, selectLanguage())
     )
   )
   return(panel)

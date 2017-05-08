@@ -1,8 +1,8 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : ui.R
 # Descricpción  : Módulo de interfaz de usuario (UI) para la aplicación "shiny"
@@ -33,10 +33,11 @@ shinyUI(
       tags$script("$(window).load(function() {windowLoad()})")
     ),
     navbarPage(
-      title   = "Redes Bipartitas",
-      theme   = shinytheme("united"),
+      title   = "BipartGraph",
+      #theme   = shinytheme("united"),
+      theme   = shinytheme("flatly"),
       header  = headerPanel(),
-      footer  = footerPanel(),
+      #footer  = footerPanel(),
       # controles de entrada para la gestion de los ficheros de datos
       tabPanel(
         strings$value("LABEL_MENU_DATA_PANEL"),
@@ -47,20 +48,20 @@ shinyUI(
         strings$value("LABEL_MENU_ZIGGURAT_PANEL"),
         zigguratPanel()
       ),
+      #panel para descargar los diagramas
+      tabPanel(
+        strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
+        downloadPanel()
+      ),
       # panel con el diagrama polar
       tabPanel(
         strings$value("LABEL_MENU_POLAR_PANEL"),
         polarPanel()
       ),
-      # panel para descargar los diagramas
-      tabPanel(
-        strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
-        downloadPanel()
-      ),
       # acerca de
       tabPanel(
         strings$value("LABEL_MENU_ABOUT_PANEL"),
-        summaryPanel()    
+        summaryPanel()
       )
     )
   )

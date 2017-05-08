@@ -1,22 +1,68 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : uiPolarControls.R
 # Descricpción  : Funciones para la representación de los disintos controles
-#                 de configuración, relativos al diagrama polar, en el 
+#                 de configuración, relativos al diagrama polar, en el
 #                 interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
 
 # control para mostrar o no el texto
 polarDisplayTextControl <- function() {
-  control<-checkboxInput(
+  control<- sliderInput(
     inputId = "polarDisplayText",
     label   = controlLabel(strings$value("LABEL_POLAR_SHOW_LABELS_CONTROL")),
+    min     = 0,
+    max     = 100,
+    value   = 0,
+    step    = 1
+  )
+  return(control)
+}
+
+#Include histograms
+polarDisplayHistograms <- function() {
+  control<-checkboxInput(
+    inputId = "polarDisplayHistograms",
+    label   = controlLabel(strings$value("LABEL_POLAR_INCLUDE_HISTOGRAMS")),
     value   = TRUE
+  )
+  return(control)
+}
+
+#Download link
+downloadLink <- function() {
+  control<-checkboxInput(
+    inputId = "downloadLink",
+    label   = controlLabel(strings$value("LABEL_POLAR_INCLUDE_HISTOGRAMS")),
+    value   = TRUE
+  )
+  return(control)
+}
+
+#Fill nodes
+polarFillNodesControl <- function() {
+  control<-checkboxInput(
+    inputId = "polarFillNodesControl",
+    label   = controlLabel(strings$value("LABEL_POLAR_FILL_NODES")),
+    value   = FALSE
+  )
+  return(control)
+}
+
+# control para el factor de transparencia
+polarAlphaLevelControl <- function() {
+  control<-sliderInput(
+    inputId = "polarAlphaLevel",
+    label   = controlLabel(strings$value("LABEL_POLAR_ALPHA_LEVEL_CONTROL")),
+    min     = 0.0,
+    max     = 1.0,
+    value   = 0.5,
+    step    = 0.1
   )
   return(control)
 }
@@ -40,6 +86,20 @@ polarLabelsSizeControl <- function(name, description, default) {
     max     = 20,
     value   = default,
     step    = 1
+  )
+  return(control)
+}
+
+# screen size control
+polarscreenwidthControl <- function() {
+  values<-c(400, 600, 800, 1000, 1200)
+  names(values)<-values
+  control<-selectInput(
+    inputId   = "screenwidthControl",
+    label     = "pixels",
+    choices   = values,
+    selected  = 800,
+    multiple  = FALSE
   )
   return(control)
 }

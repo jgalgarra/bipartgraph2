@@ -1,8 +1,8 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : uiZigguratPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
@@ -25,14 +25,14 @@ zigguratPanel<-function() {
 # panel con el gragico ziggurat
 zigguratDiagramPanel <- function() {
   control<-fluidRow(
-    column(7,
-      fluidRow(
-        groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_HEADER"), image="network.png")
-      ),
+    column(8,
+      # fluidRow(
+      #   groupHeader(text=paste(strings$value("LABEL_ZIGGURAT_DIAGRAM_HEADER")), image="network.png")
+      # ),
       fluidRow(
         tags$span(
-          id="zoomPanel", 
-          tags$img(id="zoomin",     onclick="svgZoomIn()",    src="images/zoom_in.png"), 
+          id="zoomPanel",
+          tags$img(id="zoomin",     onclick="svgZoomIn()",    src="images/zoom_in.png"),
           tags$img(id="zoomout",    onclick="svgZoomOut()",   src="images/zoom_out.png"),
           tags$img(id="zoomfit",    onclick="svgZoomFit()",   src="images/fit_to_width.png"),
           tags$img(id="zoomreset",  onclick="svgZoomReset()", src="images/sinchronize.png")
@@ -42,17 +42,16 @@ zigguratDiagramPanel <- function() {
         uiOutput("ziggurat")
       )
     ),
-    column(5, 
+    column(4,
+      # fluidRow(
+      #   groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_INFO_HEADER"), image="document.png")
       fluidRow(
-        groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_INFO_HEADER"), image="document.png")
-      ),
-      fluidRow(
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID")))), 
-        column(2, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE")))), 
-        column(4, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME")))), 
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KCORE")))), 
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS")))), 
-        column(1, tags$b(tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE"))))
+        column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"))),
+        column(2, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"))),
+        column(4, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"))),
+        column(1, tags$small("kshell")),
+        column(1, tags$small("krad") ),
+        column(1, tags$small("kdeg"))
       ),
       fluidRow(
         uiOutput("zigguratNodesDetail")
@@ -71,75 +70,93 @@ zigguratDiagramPanel <- function() {
 # panel de configuracion del diagrama ziggurat
 zigguratConfigPanel <- function() {
   panel<-tabsetPanel(
-    #tabPanel(
-    #  "SVG",
-    #  fluidRow(
-    #    column(4, svgScaleFactorControl())
-    #  )
-    #),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_PANEL"),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
       ),
       fluidRow(
-        column(3, zigguratDisplayLabelsControl()),
-        column(3, zigguratPaintLinksControl())
+        #column(2, zigguratAspectRatioControl()),                        Only works for non interactive ziggurats
+        column(3, zigguratCoreBoxSizeControl()),
+        column(3, zigguratdisplace_legend_horiz()),
+        column(3, zigguratdisplace_legend_vert())
+      ),
+      # fluidRow(
+      #   #column(3, zigguratFlipResultsControl()),                      Only works for non interactive ziggurats
+      # ),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_LINKS_HEADER"), image="link.png"))
       ),
       fluidRow(
-        column(3, zigguratFlipResultsControl()),
-        column(3, zigguratPaintOutsidersControl())
+        column(2, zigguratPaintLinksControl()),
+        column(2, zigguratUseSplineControl()),
+        column(2, zigguratSplinePointsControl()),
+        column(2, zigguratLinkSizeControl()),
+        column(2, zigguratweighted_links())
+
       ),
       fluidRow(
-        column(3, zigguratUseSplineControl()),
-        column(3, zigguratSplinePointsControl())
+        column(2, zigguratAlphaLevelLinkControl()),
+        column(2, zigguratColorControl("Link", strings$value("LABEL_ZIGGURAT_LINKS_COLOR_CONTROL"), "#888888"))
       ),
-      fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_SIZES_HEADER"), image="ruler.png"))
-      ),
-      fluidRow(
-        column(3, zigguratAspectRatioControl())
-      ),
-      fluidRow(
-        column(3, zigguratLinkSizeControl()),
-        column(3, zigguratCoreBoxSizeControl())
-      ),
-      fluidRow(
-        column(3, zigguratYDisplaceControl("GuildA", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_A_CONTROL"))),
-        column(3, zigguratYDisplaceControl("GuildB", strings$value("LABEL_ZIGGURAT_Y_DISPLACE_B_CONTROL")))
-      ),
-      fluidRow(
-        column(3, zigguratHeightExpandControl())
-      ),
-      fluidRow(
-        column(3, zigguratKcore2TailVerticalSeparationControl()),
-        column(3, zigguratKcore1TailDistToCoreControl("1", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1"))),
-        column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
-        column(3, zigguratInnerTailVerticalSeparationControl())
-      )
-    ),
-    tabPanel(
-      strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_PANEL"),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_NODES_HEADER"), image="tree_structure.png"))
       ),
       fluidRow(
-        column(4, zigguratAlphaLevelControl())
+        column(2, zigguratHeightExpandControl()),
+        column(2, zigguratHopx()),
+        column(2, ziggurat1shellExpandControl()),
+        column(2, zigguratCoreMaxHExp()),
+        column(2, zigguratCoreMaxWExp())
+
       ),
       fluidRow(
+        column(2, zigguratAlphaLevelControl()),
         column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), "#4169E1")),
         column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), "#00008B")),
         column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), "#F08080")),
         column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
       ),
       fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_LINKS_HEADER"), image="link.png"))
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_Y_DISPLACE_CONTROL"), image="vertdis.png"))
+      ),
+
+      fluidRow(
+        column(1, zigguratYDisplaceControlS("A", "2")),
+        column(1, zigguratYDisplaceControlS("A", "3")),
+        column(1, zigguratYDisplaceControlS("A", "4")),
+        column(1, zigguratYDisplaceControlS("A", "5")),
+        column(1, zigguratYDisplaceControlS("A", "6")),
+        column(1, zigguratYDisplaceControlS("A", "7")),
+        column(1, zigguratYDisplaceControlS("A", "8")),
+        column(1, zigguratYDisplaceControlS("A", "9")),
+        column(1, zigguratYDisplaceControlS("A", "10")),
+        column(1, zigguratYDisplaceControlS("A", "11")),
+        column(1, zigguratYDisplaceControlS("A", "12"))
+      ),
+
+      fluidRow(
+        column(1, zigguratYDisplaceControlS("B", "2")),
+        column(1, zigguratYDisplaceControlS("B", "3")),
+        column(1, zigguratYDisplaceControlS("B", "4")),
+        column(1, zigguratYDisplaceControlS("B", "5")),
+        column(1, zigguratYDisplaceControlS("B", "6")),
+        column(1, zigguratYDisplaceControlS("B", "7")),
+        column(1, zigguratYDisplaceControlS("B", "8")),
+        column(1, zigguratYDisplaceControlS("B", "9")),
+        column(1, zigguratYDisplaceControlS("B", "10")),
+        column(1, zigguratYDisplaceControlS("B", "11")),
+        column(1, zigguratYDisplaceControlS("B", "12"))
       ),
       fluidRow(
-        column(4, zigguratAlphaLevelLinkControl())
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_HEADER"), image="outsiders.png"))
       ),
       fluidRow(
-        column(4, zigguratColorControl("Link", strings$value("LABEL_ZIGGURAT_LINKS_COLOR_CONTROL"), "#888888"))
+        column(2, zigguratPaintOutsidersControl()),
+        column(2, zigguratoutsiders_expand_horiz()),
+        column(2, zigguratoutsiders_expand_vert()),
+        column(2, zigguratoutsiders_separation_expand()),
+        column(2, zigguratoutsiders_legend_expand())
       )
     ),
     tabPanel(
@@ -155,23 +172,67 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_SIZE_HEADER"), image="generic_text.png"))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("kCoreMax", strings$value("LABEL_ZIGGURAT_KCOREMAX_LABEL_SIZE_CONTROL"), 10)),
-        column(2, zigguratLabelsSizeControl("Ziggurat", strings$value("LABEL_ZIGGURAT_ZIGGURAT_LABEL_SIZE_CONTROL"), 9)),
-        column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 8))
+        column(2, zigguratLabelsSizeControl("kCoreMax", strings$value("LABEL_ZIGGURAT_KCOREMAX_LABEL_SIZE_CONTROL"), 5)),
+        column(2, zigguratLabelsSizeControl("Ziggurat", strings$value("LABEL_ZIGGURAT_ZIGGURAT_LABEL_SIZE_CONTROL"), 4.5)),
+        column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 4))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("", strings$value("LABEL_ZIGGURAT_GENERAL_LABEL_SIZE_CONTROL"), 20)),
-        column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 8)),
-        column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 8))
+        column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 5)),
+        column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 5))
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_COLOUR_HEADER"), image="border_color.png"))
+      )#,
+      # fluidRow(
+      #   column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
+      #   column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
+      # )
+    ),
+    tabPanel(
+      strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"), image="tails.png"))
       ),
       fluidRow(
-        column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
-        column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
+        column(3, zigguratKcore2TailVerticalSeparationControl()),
+        column(3, zigguratKcore1TailDistToCoreControl("1", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1"))),
+        column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
+        column(3, zigguratInnerTailVerticalSeparationControl())
+      ),
+      # fluidRow(
+      #   column(3, ziggurathoriz_kcoremax_tails_expand())
+      # ),
+      fluidRow(
+        column(3, zigguratfattailjumphorizA()),
+        column(3, zigguratfattailjumpvertA()),
+        column(3, zigguratfattailjumphorizB()),
+        column(3, zigguratfattailjumpvertB())
+      ),
+      fluidRow(
+        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_WEIRD"), image="weird.png"))
+      ),
+      fluidRow(
+        column(3, zigguratroot_weird_expand_horiz()),
+        column(3, zigguratroot_weird_expand_vert()),
+        column(3, zigguratroot_weirdskcore2_horiz()),
+        column(3, zigguratroot_weirdskcore2_vert())
+      ),
+      fluidRow(
+        column(3, zigguratroot_weird_boxesseparation()),
+        column(3, zigguratkcore1weirds_leafs_vertical_separation())
+      )
+    ),
+    tabPanel(
+      strings$value("LABEL_ZIGGURAT_CONFIG_SVG_HEADER"),
+      fluidRow(
+        column(12, groupHeader(text="Plot", image="settings.png"))
+      ),
+      fluidRow(
+        column(4, zigguratSVGup()),
+        column(4, zigguratSvgScaleFactorControl())
       )
     )
+
   )
   return(panel)
 }

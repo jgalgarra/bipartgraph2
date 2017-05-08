@@ -6,32 +6,37 @@
 /* panel del ziggurat */
 #ziggurat {
     position:   relative;
-    height:     400px;
+    vertical-align: top;
+    /* height:     400px; */
+    height: 80%;
+    width: 90%;
     cursor:     move;
-    margin-top: 8px;
+    margin-top: 0px;
 }
 
 /* paneles de informacion del ziggurat */
 #zigguratNodesDetail, #zigguratWikiDetail {
-    padding:    0px 0px 5px 10px; 
+    padding:    0px 0px 5px 10px;
 }
 
 #zigguratNodesDetail {
     margin-top: 0px;
     position:   relative;
-    height:     180px; 
+    /* height:     180px; */
+    height: 40%
 }
 
 #zigguratWikiDetail ul.nav-pills a {
     font-size:  x-small;
-    padding:    5px 10px 5px 10px;
-    display:    none; 
+    padding:    5px 5px 5px 5px;
+    display:    none;
 }
 
 .wikiDetail {
     margin-top: 10px;
     position:   relative;
-    height:     180px; 
+    /* height:     180px; */
+    height: 20%;
     display:    none;
 }
 
@@ -49,9 +54,9 @@
 
 /* cabeceras de grupo */
 .groupHeader {
-    padding:        4px; 
-    margin:         4px; 
-    border-bottom:  1px dotted lightgray; 
+    padding:        2px;
+    margin:         2px;
+    border-bottom:  1px dotted lightgray;
 }
 
 .groupHeaderIcon {
@@ -89,8 +94,8 @@
 
 /* contenido de los paneles */
 .panelContent {
-    font-size:  small; 
-    padding:    10px;
+    font-size:  small;
+    padding:    3px;
     border:     0px;
 }
 
@@ -130,7 +135,7 @@
 }
 
 .footerPanelContentRight {
-    float:      right; 
+    float:      right;
 }
 
 /* tooltips */

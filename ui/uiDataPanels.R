@@ -77,7 +77,7 @@ manageFilesPanel<-function() {
     ),
 
     fluidRow(
-      column(12, refreshFilesControl(), deleteFilesControl())
+      column(12, deleteFilesControl())
     )
   )
   return(panel)

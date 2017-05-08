@@ -122,21 +122,31 @@ zigguratConfigPanel <- function() {
       ),
 
       fluidRow(
-        column(2, zigguratYDisplaceControlS("A", "2")),
-        column(2, zigguratYDisplaceControlS("A", "3")),
-        column(2, zigguratYDisplaceControlS("A", "4")),
-        column(2, zigguratYDisplaceControlS("A", "5")),
-        column(2, zigguratYDisplaceControlS("A", "6")),
-        column(2, zigguratYDisplaceControlS("A", "7"))
+        column(1, zigguratYDisplaceControlS("A", "2")),
+        column(1, zigguratYDisplaceControlS("A", "3")),
+        column(1, zigguratYDisplaceControlS("A", "4")),
+        column(1, zigguratYDisplaceControlS("A", "5")),
+        column(1, zigguratYDisplaceControlS("A", "6")),
+        column(1, zigguratYDisplaceControlS("A", "7")),
+        column(1, zigguratYDisplaceControlS("A", "8")),
+        column(1, zigguratYDisplaceControlS("A", "9")),
+        column(1, zigguratYDisplaceControlS("A", "10")),
+        column(1, zigguratYDisplaceControlS("A", "11")),
+        column(1, zigguratYDisplaceControlS("A", "12"))
       ),
 
       fluidRow(
-        column(2, zigguratYDisplaceControlS("B", "2")),
-        column(2, zigguratYDisplaceControlS("B", "3")),
-        column(2, zigguratYDisplaceControlS("B", "4")),
-        column(2, zigguratYDisplaceControlS("B", "5")),
-        column(2, zigguratYDisplaceControlS("B", "6")),
-        column(2, zigguratYDisplaceControlS("B", "7"))
+        column(1, zigguratYDisplaceControlS("B", "2")),
+        column(1, zigguratYDisplaceControlS("B", "3")),
+        column(1, zigguratYDisplaceControlS("B", "4")),
+        column(1, zigguratYDisplaceControlS("B", "5")),
+        column(1, zigguratYDisplaceControlS("B", "6")),
+        column(1, zigguratYDisplaceControlS("B", "7")),
+        column(1, zigguratYDisplaceControlS("B", "8")),
+        column(1, zigguratYDisplaceControlS("B", "9")),
+        column(1, zigguratYDisplaceControlS("B", "10")),
+        column(1, zigguratYDisplaceControlS("B", "11")),
+        column(1, zigguratYDisplaceControlS("B", "12"))
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_HEADER"), image="outsiders.png"))

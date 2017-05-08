@@ -18,6 +18,7 @@ zigguratDownloadControl <- function() {
 
 polarDownloadControl <- function() {
   control<-downloadButton("polarDownload",label = strings$value("LABEL_PLOT_DOWNLOAD"))
+  #shinyjs::hidden(p(id = "polarDownload", "Processing..."))
   return(control)
 }
 

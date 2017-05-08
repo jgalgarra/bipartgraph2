@@ -201,6 +201,10 @@ plotPDF<-function(file, ziggurat, polar, options) {
 #
 shinyServer(function(input, output, session) {
 
+  shinyjs::hide("polarDownload")
+  shinyjs::hide("polarcodeDownload")
+  # shinyjs::hide("zigguratDownload")
+  # shinyjs::hide("zigguratcodeDownload")
 
   # recibe cuendo el cliente esta listo
   observeEvent(input$windowLoad, {
@@ -339,11 +343,15 @@ shinyServer(function(input, output, session) {
       displace_y_a                                  = c(0, input$zigguratYDisplaceSA2, input$zigguratYDisplaceSA3,
                                                         input$zigguratYDisplaceSA4,input$zigguratYDisplaceSA5,
                                                         input$zigguratYDisplaceSA6,input$zigguratYDisplaceSA7,
-                                                        0,0,0,0,0,0,0,0,0),
+                                                        input$zigguratYDisplaceSA8,input$zigguratYDisplaceSA8,
+                                                        input$zigguratYDisplaceSA10,input$zigguratYDisplaceSA11,
+                                                        input$zigguratYDisplaceSA12),
       displace_y_b                                  = c(0, input$zigguratYDisplaceSB2, input$zigguratYDisplaceSB3,
                                                         input$zigguratYDisplaceSB4,input$zigguratYDisplaceSB5,
                                                         input$zigguratYDisplaceSB6,input$zigguratYDisplaceSB7,
-                                                        0,0,0,0,0,0,0,0,0),
+                                                        input$zigguratYDisplaceSB8,input$zigguratYDisplaceSB8,
+                                                        input$zigguratYDisplaceSB10,input$zigguratYDisplaceSB11,
+                                                        input$zigguratYDisplaceSB12),
       lsize_kcoremax                                = input$zigguratLabelsSizekCoreMax,
       lsize_zig                                     = input$zigguratLabelsSizeZiggurat,
       lsize_kcore1                                  = input$zigguratLabelsSizekCore1,
@@ -452,6 +460,8 @@ shinyServer(function(input, output, session) {
     z<-ziggurat()
     svg<-z$svg
     html<-paste0(svg$html(), "<script>updateSVGEvents()</script>")
+    # shinyjs::show("zigguratDownload")
+    # shinyjs::show("zigguratcodeDownload")
     return(HTML(html))
   })
 
@@ -563,13 +573,15 @@ shinyServer(function(input, output, session) {
 
   output$polar <- renderImage({
     p <- polar()
+    shinyjs::show("polarDownload")
+    shinyjs::show("polarcodeDownload")
     # Return a list containing the filename
     list(src = normalizePath(p["polar_file"][[1]]),
          contentType = 'image/png',
          width = input$screenwidthControl,
          height = input$screenwidthControl,
          alt = "Polar graph")
-    }, deleteFile = FALSE )
+    }, deleteFile = FALSE)
 
 
   # Opciones para generar el diagrama, indicando ancho,alto en pixels, calidad en ppi (points-per-inch)
@@ -686,7 +698,7 @@ shinyServer(function(input, output, session) {
       comando <- addCallParam(comando,llamada,"labels_color")
       comando <- addCallParam(comando,llamada,"height_box_y_expand")
       comando <- addCallParam(comando,llamada,"kcore2tail_vertical_separation")
-      comando <- paste(comando,"\n")
+      #comando <- paste(comando,"\n")
       comando <- paste0(comando,",kcore1tail_disttocore = ",paste("c(",paste(llamada$kcore1tail_disttocore,collapse=",")),")")
       comando <- addCallParam(comando,llamada,"innertail_vertical_separation")
       comando <- addCallParam(comando,llamada,"factor_hop_x")
@@ -702,7 +714,7 @@ shinyServer(function(input, output, session) {
       comando <- addCallParam(comando,llamada,"weirdskcore2_horizontal_dist_rootleaf_expand")
       comando <- addCallParam(comando,llamada,"weirdskcore2_vertical_dist_rootleaf_expand")
       comando <- addCallParam(comando,llamada,"weirds_boxes_separation_count")
-      comando <- paste(comando,"\n")
+      #comando <- paste(comando,"\n")
       comando <- paste0(comando,",root_weird_expand = ",paste("c(",paste(llamada$root_weird_expand,collapse=",")),")")
       comando <- addCallParam(comando,llamada,"hide_plot_border")
       comando <- paste0(comando,",rescale_plot_area = ",paste("c(",paste(llamada$rescale_plot_area,collapse=",")),")")
@@ -710,7 +722,9 @@ shinyServer(function(input, output, session) {
       comando <- addCallParam(comando,llamada,"corebox_border_size")
       comando <- addCallParam(comando,llamada,"label_strguilda", quote = TRUE)
       comando <- addCallParam(comando,llamada,"label_strguildb", quote = TRUE)
-      comando <- paste(comando,"\n")
+      #comando <- paste(comando,"\n")
+      if (is.null(llamada$landscape_plot))
+        llamada$landscape_plot <- TRUE
       comando <- addCallParam(comando,llamada,"landscape_plot")
       comando <- addCallParam(comando,llamada,"backg_color", quote = TRUE)
       comando <- addCallParam(comando,llamada,"show_title")

@@ -33,8 +33,8 @@ polarDiagramPanel <- function() {
       fluidRow(div(
         tags$br()
       )),
-      fluidRow(column(6,polarDownloadControl()),
-               column(6,polarcodeDownloadControl())
+      fluidRow(column(4,polarDownloadControl()),
+               column(4,polarcodeDownloadControl())
       ),
       fluidRow(div(
         tags$br()

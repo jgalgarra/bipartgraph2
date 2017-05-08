@@ -264,6 +264,10 @@ shinyServer(function(input, output, session) {
     # elimina las columnas sin nombre
     files<-files[!(names(files) %in% c(""))]
 
+    # Condition met when the application starts
+    if(is.null(files$Filename))
+      files <- data.frame(Filename = " ", Size = " ", Type = " ")
+
     # devuelve los ficheros cargados
     return(files)
   })

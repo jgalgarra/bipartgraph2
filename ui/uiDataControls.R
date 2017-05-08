@@ -38,14 +38,15 @@ uploadFilesControl <- function() {
   return(control)
 }
 
+
 # control para refrescar la lista de ficheros disponibles
-refreshFilesControl <- function() {
-  control<-actionButton(
-    inputId   = "refreshFiles",
-    label     = controlLabel(strings$value("LABEL_REFRESH_FILES_CONTROL"))
-  )
-  return(control)
-}
+# refreshFilesControl <- function() {
+#   control<-actionButton(
+#     inputId   = "refreshFiles",
+#     label     = controlLabel(strings$value("LABEL_REFRESH_FILES_CONTROL"))
+#   )
+#   return(control)
+# }
 
 # control para eliminar la lista de ficheros que se hayan seleccionado
 deleteFilesControl <- function() {

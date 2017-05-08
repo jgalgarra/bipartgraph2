@@ -16,7 +16,8 @@ library(gridExtra)
 library(grDevices)
 library(gtable)
 library(grid)
-library(cowplot)
+#library(cowplot)
+library(DT)
 library(kcorebip)
 
 # muestra la informacion de detalle sobre un nodo del ziggurat
@@ -199,6 +200,16 @@ plotPDF<-function(file, ziggurat, polar, options) {
 #
 # proceso de servidor
 #
+#' Title
+#'
+#' @param input
+#' @param output
+#' @param session
+#'
+#' @return
+#' @export
+#'
+#' @examples
 shinyServer(function(input, output, session) {
 
   shinyjs::hide("polarDownload")
@@ -279,24 +290,45 @@ shinyServer(function(input, output, session) {
   observeEvent(input$refreshFiles, {
     # refresca la lista de ficheros
     availableFiles$list<-availableFilesList()
+    output$availableFilesTable = DT::renderDataTable(availableFiles$details,
+                                                     options = list(pageLength = 5),
+                                                     server = TRUE)
   })
 
-  # borra los ficheros que se muestran en la lista de ficheros disponibles
+  output$availableFilesTable <-DT::renderDataTable(
+    availableFiles$details,
+    options = list(pageLength = 5)
+  )
+
   observeEvent(input$deleteFiles, {
+    s = input$availableFilesTable_rows_selected
+    output$availableFilesTable = DT::renderDataTable(availableFiles$details,
+                                                     options = list(pageLength = 5),
+                                                     server = TRUE)
+    q <- availableFiles$details[s,]
+    rn <- rownames(q)
+    for (j in rn)
+      file.remove(j)
+    availableFiles$list<-availableFilesList()
+    output$availableFilesTable = DT::renderDataTable(availableFiles$details,
+                                                     options = list(pageLength = 5),
+                                                     server = TRUE)
     # invoca a la funcion javascript que devuelve la lista de ficheros que se muestran para ser borrados
-    session$sendCustomMessage(type="deleteFilesHandler", "availableFilesTable")
-  })
+    #session$sendCustomMessage(type="deleteFilesHandler","availableFilesTable")
+      })
+
 
   # realiza la accion de borrado de los ficheros
-  observeEvent(input$deleteFilesData, {
-    # borra los ficheros
-    data      <- input$deleteFilesData
-    fileList  <- unlist(data$fileList)
-    file.remove(paste0(dataDir, "/", fileList))
-
-    # refresca la lista de ficheros
-    availableFiles$list<-availableFilesList()
-  })
+  # observeEvent(input$deleteFilesData, {
+  #   # borra los ficheros
+  #   data      <- input$deleteFilesData
+  #   print(data)
+  #   fileList  <- unlist(data$fileList)
+  #   #file.remove(paste0(dataDir, "/", fileList))
+  #
+  #   # refresca la lista de ficheros
+  #   availableFiles$list<-availableFilesList()
+  # })
 
   observeEvent(input$ResetAll, {
     session = getDefaultReactiveDomain()
@@ -449,10 +481,18 @@ shinyServer(function(input, output, session) {
   )
 
   # muestra la lista de los ficheros disponibles en el servidor
-  output$availableFilesTable<-renderDataTable(
-    availableFiles$details,
-    options=list(pageLength=5, lengthMenu=list(c(5, 10, 25, 50, -1), list('5', '10', '25', '50', 'Todos')), searching=TRUE)
-  )
+  # output$availableFilesTable<-renderDataTable(
+  #   availableFiles$details,
+  #   options=list(pageLength=5,
+  #                selection = "multiple",
+  #                lengthMenu=list(c(5, 10, 25, 50, -1),
+  #                                list('5', '10', '25', '50', 'Todos')),
+  #                searchDelay = 500,
+  #                searching=TRUE)
+  # )
+
+
+
 
   # muestra el diagrama ziggurat y lanza la funcion que actualiza los
   # eventos javascript para los elementos del grafico

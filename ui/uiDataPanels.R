@@ -69,9 +69,13 @@ manageFilesPanel<-function() {
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_AVAILABLE_FILES"), image="documents.png"))
     ),
+    # fluidRow(
+    #   column(12, dataTableOutput("availableFilesTable"))
+    # ),
     fluidRow(
-      column(12, dataTableOutput("availableFilesTable"))
+    column(12, DT::dataTableOutput('availableFilesTable'))
     ),
+
     fluidRow(
       column(12, refreshFilesControl(), deleteFilesControl())
     )

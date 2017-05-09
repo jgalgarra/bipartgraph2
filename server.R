@@ -670,7 +670,7 @@ shinyServer(function(input, output, session) {
          width = input$screenwidthControl,
          height = input$screenwidthControl,
          alt = "Polar graph")
-    }, deleteFile = TRUE)
+    }, deleteFile = FALSE)
 
 
   # Opciones para generar el diagrama, indicando ancho,alto en pixels, calidad en ppi (points-per-inch)
@@ -706,6 +706,7 @@ shinyServer(function(input, output, session) {
     content <- function(file) {
       options<-diagramOptions()
       validateDiagramOptions(options)
+      dir.create("tmppolar/", showWarnings = FALSE)
       p <- polar()
       file.copy(normalizePath(p["polar_file"][[1]]), file)
     },

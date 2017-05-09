@@ -712,7 +712,9 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
-  session$onSessionEnded(function() { unlink("analysis_indiv", recursive = TRUE) })
+  session$onSessionEnded(function() { unlink("analysis_indiv", recursive = TRUE) 
+                                      unlink("tmpcode", recursive = TRUE)
+                                      unlink("tmppolar", recursive = TRUE)})
   
   output$networkAnalysis <- downloadHandler(
     filename=function() {

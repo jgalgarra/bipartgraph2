@@ -214,6 +214,7 @@ shinyServer(function(input, output, session) {
 
   shinyjs::hide("polarDownload")
   shinyjs::hide("polarcodeDownload")
+  shinyjs::hide("networkAnalysis")
   # shinyjs::hide("zigguratDownload")
   # shinyjs::hide("zigguratcodeDownload")
 
@@ -235,6 +236,15 @@ shinyServer(function(input, output, session) {
       content<-read.csv(file=paste0(dataDir, "/", file), header=TRUE)
     } else {
       content<-data.frame()
+    }
+    if (!is.null(file) && nchar(file)>0){
+      shinyjs::show("networkAnalysis")
+      output$NodesGuildA <- renderText({ 
+        paste(nrow(content),strings$value("LABEL_SPECIES"))
+      })
+      output$NodesGuildB <- renderText({ 
+        paste(ncol(content)-1,strings$value("LABEL_SPECIES"))
+      })
     }
     return(content)
   })
@@ -563,6 +573,41 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, "wikiTabsetPanel", selected=input$wikiPanelName)
   })
 
+  netanalysis <- reactive({
+    # indicador de progreso
+    progress<-shiny::Progress$new()
+    progress$set(message=strings$value("MESSAGE_ANALYSIS_POGRESS"), value = 0)
+
+    # cierra el indicador al salir
+    on.exit(progress$close())
+
+    red <- input$selectedDataFile
+    red_name <- strsplit(red,".csv")[[1]][1]
+    result_analysis <- analyze_network(red, directory = paste0(dataDir, "/"),
+                                       guild_a = input$DataLabelGuildAControl, guild_b = input$DataLabelGuildBControl, plot_graphs = FALSE)
+    numlinks <- result_analysis$links
+    results_indiv <- data.frame(Name = c(), Species = c(), kradius = c(), kdegree = c(), kshell = c(), krisk = c())
+    clase <- grepl(input$DataLabelGuildAControl,V(result_analysis$graph)$name)
+    
+    for (i in V(result_analysis$graph)){
+      if (clase[i])
+        nom_spe <- names(result_analysis$matrix[1,])[as.integer(strsplit(V(result_analysis$graph)$name[i],input$DataLabelGuildAControl)[[1]][2])]
+      else
+        nom_spe <- names(result_analysis$matrix[,1])[as.integer(strsplit(V(result_analysis$graph)$name[i],input$DataLabelGuildBControl)[[1]][2])]
+      results_indiv <- rbind(results_indiv,data.frame(Name = gsub("\\."," ",nom_spe),
+                                                      Species =V(result_analysis$graph)$name[i], 
+                                                      kradius = V(result_analysis$graph)$kradius[i],
+                                                      kdegree = V(result_analysis$graph)[i]$kdegree, kshell = V(result_analysis$graph)[i]$kcorenum,
+                                                      krisk = V(result_analysis$graph)[i]$krisk))
+    }
+    results_indiv$degree <- igraph::degree(result_analysis$graph)
+    dir.create("analysis_indiv/", showWarnings = FALSE)
+    fsal <- paste0("analysis_indiv/",red_name,"_analysis.csv")
+    write.table(results_indiv,file=fsal,row.names=FALSE,sep = ";")
+    return(fsal)
+  })
+
+
   # actualiza el grafico polar en base a los controles de
   # configuracion
   polar<-reactive({
@@ -625,7 +670,7 @@ shinyServer(function(input, output, session) {
          width = input$screenwidthControl,
          height = input$screenwidthControl,
          alt = "Polar graph")
-    }, deleteFile = FALSE)
+    }, deleteFile = TRUE)
 
 
   # Opciones para generar el diagrama, indicando ancho,alto en pixels, calidad en ppi (points-per-inch)
@@ -666,6 +711,19 @@ shinyServer(function(input, output, session) {
     },
     contentType=paste0("image/", diagramOptions()$ext)
   )
+
+  session$onSessionEnded(function() { unlink("analysis_indiv", recursive = TRUE) })
+  
+  output$networkAnalysis <- downloadHandler(
+    filename=function() {
+      file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-analyisis.csv")
+      return(file)
+    },
+    content <- function(file) {
+      fresults <- netanalysis()
+      file.copy(fresults, file)    },
+    contentType="text/csv"
+  ) 
 
   #Aux function to add a parameter and reproduce the function call
   addCallParam <- function(com,lpar,param,quoteparam = FALSE)

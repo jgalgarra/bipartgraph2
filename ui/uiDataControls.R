@@ -39,14 +39,6 @@ uploadFilesControl <- function() {
 }
 
 
-# control para refrescar la lista de ficheros disponibles
-# refreshFilesControl <- function() {
-#   control<-actionButton(
-#     inputId   = "refreshFiles",
-#     label     = controlLabel(strings$value("LABEL_REFRESH_FILES_CONTROL"))
-#   )
-#   return(control)
-# }
 
 # control para eliminar la lista de ficheros que se hayan seleccionado
 deleteFilesControl <- function() {
@@ -54,6 +46,13 @@ deleteFilesControl <- function() {
     inputId   = "deleteFiles",
     label     = controlLabel(strings$value("LABEL_DELETE_FILES_CONTROL"))
   )
+  return(control)
+}
+
+
+networkAnalysisControl <- function() {
+  control<-downloadButton("networkAnalysis",label = strings$value("LABEL_NETORK_ANALYSIS"))
+  shinyjs::hidden(p(id = "networkAnalysis", "Processing..."))
   return(control)
 }
 

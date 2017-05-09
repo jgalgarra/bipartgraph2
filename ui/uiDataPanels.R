@@ -38,8 +38,13 @@ selectDataPanel<-function() {
     ),
 
     fluidRow(
-      column(3, DataLabelGuildAControl()),
-      column(3, DataLabelGuildBControl())
+      column(2, DataLabelGuildAControl()),
+      column(2, tags$h4(textOutput("NodesGuildA"))),
+      
+      column(2, DataLabelGuildBControl()),
+      column(2, tags$h4(textOutput("NodesGuildB"))),
+      
+      column(2, networkAnalysisControl())
     ),
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_DATA_CONTENT_HEADER"), image="grid.png"))
@@ -69,9 +74,7 @@ manageFilesPanel<-function() {
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_AVAILABLE_FILES"), image="documents.png"))
     ),
-    # fluidRow(
-    #   column(12, dataTableOutput("availableFilesTable"))
-    # ),
+
     fluidRow(
     column(12, DT::dataTableOutput('availableFilesTable'))
     ),

@@ -374,7 +374,7 @@ zigguratkcore1weirds_leafs_vertical_separation <- function() {
   control<-sliderInput(
     inputId = "zigguratkcore1weirds_leafs_vertical_separation",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_K1_LEAFS_VERT_SEP")),
-    min     = 0.5,
+    min     = 0.1,
     max     = 5.0,
     value   = 1.0,
     step    = 0.1
@@ -493,10 +493,10 @@ zigguratroot_weird_boxesseparation <- function() {
   control<-sliderInput(
     inputId = "zigguratroot_weird_boxesseparation",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_WEIRD_BOXES_SEPARATION")),
-    min     = 1,
-    max     = 10,
+    min     = 0.25,
+    max     = 8,
     value   = 1,
-    step    = 0
+    step    = 0.25
   )
   return(control)
 }

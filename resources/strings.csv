@@ -1,4 +1,5 @@
 key, es, en
+LABEL_NETWORK, "Red", "Network"
 LABEL_MENU_DATA_PANEL, "Datos", "Data"
 LABEL_MENU_ZIGGURAT_PANEL, "Zigurat interactivo", "Interactive Ziggurat"
 LABEL_MENU_POLAR_PANEL, "Polar", "Polar"

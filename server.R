@@ -218,6 +218,7 @@ shinyServer(function(input, output, session) {
   # shinyjs::hide("zigguratDownload")
   # shinyjs::hide("zigguratcodeDownload")
 
+
   # recibe cuendo el cliente esta listo
   observeEvent(input$windowLoad, {
     # crea los mensajes que se usan desde javascript
@@ -239,12 +240,16 @@ shinyServer(function(input, output, session) {
     }
     if (!is.null(file) && nchar(file)>0){
       shinyjs::show("networkAnalysis")
-      output$NodesGuildA <- renderText({ 
+      output$NodesGuildA <- renderText({
         paste(nrow(content),strings$value("LABEL_SPECIES"))
       })
-      output$NodesGuildB <- renderText({ 
+      output$NodesGuildB <- renderText({
         paste(ncol(content)-1,strings$value("LABEL_SPECIES"))
       })
+    }
+    else{
+      output$NodesGuildA <- renderText("")
+      output$NodesGuildB <- renderText("")
     }
     return(content)
   })
@@ -331,19 +336,6 @@ shinyServer(function(input, output, session) {
     #session$sendCustomMessage(type="deleteFilesHandler","availableFilesTable")
       })
 
-
-  # realiza la accion de borrado de los ficheros
-  # observeEvent(input$deleteFilesData, {
-  #   # borra los ficheros
-  #   data      <- input$deleteFilesData
-  #   print(data)
-  #   fileList  <- unlist(data$fileList)
-  #   #file.remove(paste0(dataDir, "/", fileList))
-  #
-  #   # refresca la lista de ficheros
-  #   availableFiles$list<-availableFilesList()
-  # })
-
   observeEvent(input$ResetAll, {
     session = getDefaultReactiveDomain()
     session$reload()
@@ -385,7 +377,6 @@ shinyServer(function(input, output, session) {
       color_link                                    = input$zigguratColorLink,
       alpha_link                                    = input$zigguratAlphaLevelLink,
       size_link                                     = input$zigguratLinkSize,
-      #displace_y_b                                  = rep(0, input$zigguratYDisplaceGuildB),
       displace_y_a                                  = c(0, input$zigguratYDisplaceSA2, input$zigguratYDisplaceSA3,
                                                         input$zigguratYDisplaceSA4,input$zigguratYDisplaceSA5,
                                                         input$zigguratYDisplaceSA6,input$zigguratYDisplaceSA7,
@@ -494,20 +485,6 @@ shinyServer(function(input, output, session) {
     options=list(pageLength=5, lengthMenu=list(c(5, 10, 25, 50, -1), list('5', '10', '25', '50', 'Todos')), searching=FALSE)
   )
 
-  # muestra la lista de los ficheros disponibles en el servidor
-  # output$availableFilesTable<-renderDataTable(
-  #   availableFiles$details,
-  #   options=list(pageLength=5,
-  #                selection = "multiple",
-  #                lengthMenu=list(c(5, 10, 25, 50, -1),
-  #                                list('5', '10', '25', '50', 'Todos')),
-  #                searchDelay = 500,
-  #                searching=TRUE)
-  # )
-
-
-
-
   # muestra el diagrama ziggurat y lanza la funcion que actualiza los
   # eventos javascript para los elementos del grafico
   output$ziggurat<-renderUI({
@@ -552,6 +529,14 @@ shinyServer(function(input, output, session) {
     return(HTML(details))
   })
 
+  # informacion de la red
+  output$networkinfoDetail<-renderUI({
+    z <- ziggurat()
+    details <- paste("&nbsp;&nbsp;&nbsp; <B>",strings$value("LABEL_NETWORK"),"&nbsp;",zgg$network_name,"</B>&nbsp;", zgg$result_analysis$num_guild_a, zgg$name_guild_a,
+                     zgg$result_analysis$num_guild_b, zgg$name_guild_b,"<hr>")
+    return(HTML(details))
+  })
+
   # informacion de Wiki
   output$zigguratWikiDetail<-renderUI({
       z         <- ziggurat()
@@ -588,14 +573,14 @@ shinyServer(function(input, output, session) {
     numlinks <- result_analysis$links
     results_indiv <- data.frame(Name = c(), Species = c(), kradius = c(), kdegree = c(), kshell = c(), krisk = c())
     clase <- grepl(input$DataLabelGuildAControl,V(result_analysis$graph)$name)
-    
+
     for (i in V(result_analysis$graph)){
       if (clase[i])
         nom_spe <- names(result_analysis$matrix[1,])[as.integer(strsplit(V(result_analysis$graph)$name[i],input$DataLabelGuildAControl)[[1]][2])]
       else
         nom_spe <- names(result_analysis$matrix[,1])[as.integer(strsplit(V(result_analysis$graph)$name[i],input$DataLabelGuildBControl)[[1]][2])]
       results_indiv <- rbind(results_indiv,data.frame(Name = gsub("\\."," ",nom_spe),
-                                                      Species =V(result_analysis$graph)$name[i], 
+                                                      Species =V(result_analysis$graph)$name[i],
                                                       kradius = V(result_analysis$graph)$kradius[i],
                                                       kdegree = V(result_analysis$graph)[i]$kdegree, kshell = V(result_analysis$graph)[i]$kcorenum,
                                                       krisk = V(result_analysis$graph)[i]$krisk))
@@ -606,7 +591,6 @@ shinyServer(function(input, output, session) {
     write.table(results_indiv,file=fsal,row.names=FALSE,sep = ";")
     return(fsal)
   })
-
 
   # actualiza el grafico polar en base a los controles de
   # configuracion
@@ -713,10 +697,10 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
-  session$onSessionEnded(function() { unlink("analysis_indiv", recursive = TRUE) 
+  session$onSessionEnded(function() { unlink("analysis_indiv", recursive = TRUE)
                                       unlink("tmpcode", recursive = TRUE)
                                       unlink("tmppolar", recursive = TRUE)})
-  
+
   output$networkAnalysis <- downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-analyisis.csv")
@@ -726,7 +710,7 @@ shinyServer(function(input, output, session) {
       fresults <- netanalysis()
       file.copy(fresults, file)    },
     contentType="text/csv"
-  ) 
+  )
 
   #Aux function to add a parameter and reproduce the function call
   addCallParam <- function(com,lpar,param,quoteparam = FALSE)
@@ -848,8 +832,6 @@ shinyServer(function(input, output, session) {
     },
     contentType="text/plain"
   )
-
-
 
 })
 

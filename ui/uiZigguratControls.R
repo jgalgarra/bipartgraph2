@@ -10,6 +10,7 @@
 #                 interfaz de usuario (UI)
 ###############################################################################
 library(shinyjs)
+library(colourpicker)
 
 # control para mostrar o no los enlaces
 zigguratPaintLinksControl <- function() {

@@ -1,8 +1,8 @@
 ###############################################################################
 # Universidad Politécnica de Madrid - EUITT
 #   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
+#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+#
 # Autor         : Juan Manuel García Santi
 # Módulo        : uiCommonPanels.R
 # Descricpción  : Contiene las funciones que permiten representar los distintos
@@ -25,11 +25,11 @@ footerPanel <- function() {
     tags$div(
       class="footerPanelContent",
       tags$p(
-        class="footerPanelContentLeft", 
+        class="footerPanelContentLeft",
         strings$value("LABEL_FOOTER_CONTENT_LEFT")
       ),
       tags$p(
-        class="footerPanelContentRight", 
+        class="footerPanelContentRight",
         strings$value("LABEL_FOOTER_CONTENT_RIGHT")
       )
     )
@@ -40,14 +40,12 @@ footerPanel <- function() {
 # panel de resumen
 summaryPanel <- function() {
   info    <- tags$div(
-                tags$p("Interfaz gráfico para la representación de redes bipartitas basada en la técnica de descomposición k-core, desarrollado como Proyecto Fin de Carrera en la Universidad Politécnica de Madrid a propuesta del Departamento de Ingeniería Telemática y Electrónica."),
-                  tags$p("El intefaz gráfico consume un \"backend\" desarrollado en R, que implementa la lógica para el análisis y la representación de los distintos diagramas que se ofrecen desde el interfaz gráfico: el diagrama ziggurat y los diagramas polar e histogramas."),
-                  tags$p("Este backend está desarrollado por Javier García Algarra como parte de su estudio de nuevas formas de representar gráficamente las redes mutualistas.")
+                tags$p("Interactive visualization tool of bipartite ecological networks")
   )
-  author  <- "Juan Manuel García Santi"
-  version <- "v1.0 - Diciembre'15"
+  author  <- "Juan Manuel García Santi & Javier García Algarra"
+  version <- "v1.0 - June'2017"
   panel<-tags$div(class="panelContent", fluidRow(
-      column(12, 
+      column(12,
         fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_INFO_HEADER"), image="info.png")),
         fluidRow(tags$h5(class="aboutInfo", info)),
         fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_AUTHOR_HEADER"), image="worker.png")),

@@ -24,45 +24,50 @@ zigguratPanel<-function() {
 
 # panel con el gragico ziggurat
 zigguratDiagramPanel <- function() {
-  control<-fluidRow(
-    column(8,
-      # fluidRow(
-      #   groupHeader(text=paste(strings$value("LABEL_ZIGGURAT_DIAGRAM_HEADER")), image="network.png")
-      # ),
+  control<- fluidRow(
       fluidRow(
-        tags$span(
-          id="zoomPanel",
-          tags$img(id="zoomin",     onclick="svgZoomIn()",    src="images/zoom_in.png"),
-          tags$img(id="zoomout",    onclick="svgZoomOut()",   src="images/zoom_out.png"),
-          tags$img(id="zoomfit",    onclick="svgZoomFit()",   src="images/fit_to_width.png"),
-          tags$img(id="zoomreset",  onclick="svgZoomReset()", src="images/sinchronize.png")
+        column(8,
+          fluidRow(
+            tags$span(
+              id="zoomPanel",
+
+              tags$img(id="zoomin",     onclick="svgZoomIn()",    src="images/zoom_in.png"),
+              tags$img(id="zoomout",    onclick="svgZoomOut()",   src="images/zoom_out.png"),
+              tags$img(id="zoomfit",    onclick="svgZoomFit()",   src="images/fit_to_width.png"),
+              tags$img(id="zoomreset",  onclick="svgZoomReset()", src="images/sinchronize.png")
+            )
+          ),
+          fluidRow(
+            uiOutput("ziggurat")
+          )
+        ),
+        column(4,
+          # fluidRow(
+          #        column(4, tags$p(paste(biparg$network_name,biparg$nguilda,biparg$labelguilda,biparg$nguildb,biparg$labelguildb)))
+          # ),
+          fluidRow(
+            uiOutput("networkinfoDetail")
+          ),
+          fluidRow(
+            column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"))),
+            column(2, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"))),
+            column(4, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"))),
+            column(1, tags$small("kshell")),
+            column(1, tags$small("krad") ),
+            column(1, tags$small("kdeg"))
+          ),
+
+          fluidRow(
+            uiOutput("zigguratNodesDetail")
+          ),
+          fluidRow(
+            groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_WIKI_HEADER"), image="wikipedia.png")
+          ),
+          fluidRow(
+            uiOutput("zigguratWikiDetail")
+          )
         )
-      ),
-      fluidRow(
-        uiOutput("ziggurat")
       )
-    ),
-    column(4,
-      # fluidRow(
-      #   groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_INFO_HEADER"), image="document.png")
-      fluidRow(
-        column(1, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_ID"))),
-        column(2, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_TYPE"))),
-        column(4, tags$small(strings$value("LABEL_ZIGGURAT_INFO_DETAILS_NAME"))),
-        column(1, tags$small("kshell")),
-        column(1, tags$small("krad") ),
-        column(1, tags$small("kdeg"))
-      ),
-      fluidRow(
-        uiOutput("zigguratNodesDetail")
-      ),
-      fluidRow(
-        groupHeader(text=strings$value("LABEL_ZIGGURAT_DIAGRAM_WIKI_HEADER"), image="wikipedia.png")
-      ),
-      fluidRow(
-        uiOutput("zigguratWikiDetail")
-      )
-    )
   )
   return(control)
 }
@@ -165,10 +170,6 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_GENERAL_HEADER"), image="settings.png"))
       ),
       fluidRow(
-        column(3, zigguratLabelGuildAControl()),
-        column(3, zigguratLabelGuildBControl())
-      ),
-      fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_SIZE_HEADER"), image="generic_text.png"))
       ),
       fluidRow(
@@ -182,11 +183,7 @@ zigguratConfigPanel <- function() {
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_COLOUR_HEADER"), image="border_color.png"))
-      )#,
-      # fluidRow(
-      #   column(2, zigguratColorControl("LabelGuildA", strings$value("LABEL_ZIGGURAT_GUILD_A_LABEL_COLOR_CONTROL"), "#4169E1")),
-      #   column(2, zigguratColorControl("LabelGuildB", strings$value("LABEL_ZIGGURAT_GUILD_B_LABEL_COLOR_CONTROL"), "#F08080"))
-      # )
+      )
     ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),

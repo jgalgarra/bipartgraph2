@@ -20,49 +20,58 @@ source("ui/uiDownloadPanels.R", encoding="UTF-8")
 # interfaz de usuario
 #
 shinyUI(
-  tagList(
-    tags$head(
-      tags$script(src="scripts/perfect-scrollbar.jquery.js"),
-      tags$script(src="scripts/jquery.qtip.js"),
-      tags$script(src="scripts/jquery.dragscrollable.js"),
-      tags$script(src="scripts/jquery.waituntilexists.js"),
-      tags$script(src="scripts/redesbipartitas.js"),
-      tags$link(rel="stylesheet", type="text/css", href="css/perfect-scrollbar.css"),
-      tags$link(rel="stylesheet", type="text/css", href="css/jquery.qtip.css"),
-      tags$link(rel="stylesheet", type="text/css", href="css/redesbipartitas.css"),
-      tags$script("$(window).load(function() {windowLoad()})")
-    ),
-    navbarPage(
-      title   = "BipartGraph",
-      #theme   = shinytheme("united"),
-      theme   = shinytheme("flatly"),
-      header  = headerPanel(),
-      #footer  = footerPanel(),
-      # controles de entrada para la gestion de los ficheros de datos
-      tabPanel(
-        strings$value("LABEL_MENU_DATA_PANEL"),
-        dataPanel()
+    tagList(
+        tags$head(
+
+        tags$script(src="scripts/perfect-scrollbar.jquery.js"),
+        tags$script(src="scripts/jquery.qtip.js"),
+        tags$script(src="scripts/jquery.dragscrollable.js"),
+        tags$script(src="scripts/jquery.waituntilexists.js"),
+        tags$script(src="scripts/redesbipartitas.js"),
+        tags$link(rel="stylesheet", type="text/css", href="css/perfect-scrollbar.css"),
+        tags$link(rel="stylesheet", type="text/css", href="css/jquery.qtip.css"),
+        tags$link(rel="stylesheet", type="text/css", href="css/redesbipartitas.css"),
+        tags$script("$(window).load(function() {windowLoad()})")#,
+#         tags$style(HTML("body {
+#                           background-image: url('images/white.png');
+#   background-position: top right;
+# background-repeat: no-repeat;
+#   background-color : #000000;
+#                         }
+#
+#                         "))
       ),
-      # panel con el diagrama ziggurat
-      tabPanel(
-        strings$value("LABEL_MENU_ZIGGURAT_PANEL"),
-        zigguratPanel()
-      ),
-      #panel para descargar los diagramas
-      tabPanel(
-        strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
-        downloadPanel()
-      ),
-      # panel con el diagrama polar
-      tabPanel(
-        strings$value("LABEL_MENU_POLAR_PANEL"),
-        polarPanel()
-      ),
-      # acerca de
-      tabPanel(
-        strings$value("LABEL_MENU_ABOUT_PANEL"),
-        summaryPanel()
+      FullPage <- navbarPage(
+        title = "BipartGraph",
+
+        #theme   = shinytheme("paper"),
+        theme   = shinytheme("flatly"),
+        header  = headerPanel(),
+        tabPanel(
+          strings$value("LABEL_MENU_DATA_PANEL"),
+          dataPanel()
+        ),
+        # panel con el diagrama ziggurat
+        tabPanel(
+          strings$value("LABEL_MENU_ZIGGURAT_PANEL"),
+          zigguratPanel()
+        ),
+        #panel para descargar los diagramas
+        tabPanel(
+          strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
+          downloadPanel()
+        ),
+        # panel con el diagrama polar
+        tabPanel(
+          strings$value("LABEL_MENU_POLAR_PANEL"),
+          polarPanel()
+        ),
+        # acerca de
+        tabPanel(
+          strings$value("LABEL_MENU_ABOUT_PANEL"),
+          summaryPanel()
+        )
       )
     )
-  )
+
 )

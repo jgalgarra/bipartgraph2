@@ -1,5 +1,5 @@
 rdef <- "http://cran.us.r-project.org"
-list.of.packages <- c('ggplot2', 'scales',
+list.of.packages <- c('ggplot2', 'scales', 'colourpicker',
                       'stringr', 'grid','igraph', 'bipartite',
                       'gridExtra', 'vegan', 'sna', 'fields',
                       'shiny', 'shinythemes', 'shinyjs')

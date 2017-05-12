@@ -16,10 +16,15 @@ source("strings.R", encoding="UTF-8")
 # paquete network
 get.edges<-igraph::get.edges
 
-# variable global  para la gestion de los mensajes y cadenas
-# de texto en los diferentes idiomas
-strings<<-LocalizedStrings("en")
-#strings<-LocalizedStrings("en")
+# Language selection. Script reads the CONFIG.txt file
+
+
+f <- "CONFIG.txt"
+if (file.exists(f)){
+  config_params <- read.table(f, stringsAsFactors=FALSE, header = TRUE)
+  strings<<-LocalizedStrings(config_params$LANGUAGE)
+} else
+  strings<<-LocalizedStrings("en")
 
 # ejecuta la aplicacion
 runApp(

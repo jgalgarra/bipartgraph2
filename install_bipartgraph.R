@@ -7,6 +7,10 @@ list.of.packages <- c('ggplot2', 'scales', 'colourpicker',
                       'shiny', 'shinythemes', 'shinyjs','devtools')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages, repos = rdef)
-remove.packages("kcorebip")
+
+# Check if kcorebip is installed and remove up to download the latest release
+plic <- data.frame(installed.packages())
+if (sum(grepl("kcorebip",plic$Package)))
+  remove.packages("kcorebip")
 library("devtools")
 install_github('jgalgarra/kcorebip')

@@ -481,7 +481,7 @@ zigguratroot_weirdskcore2_vert <- function() {
   control<-sliderInput(
     inputId = "zigguratroot_weirdskcore2_vert",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_WEIRD_2SHELL_EXPAND_VERT")),
-    min     = 1,
+    min     = 0.1,
     max     = 3.0,
     value   = 1.0,
     step    = 0.1

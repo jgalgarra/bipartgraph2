@@ -16,15 +16,20 @@ source("strings.R", encoding="UTF-8")
 # paquete network
 get.edges<-igraph::get.edges
 
-# Language selection. Script reads the CONFIG.txt file
-
-
+# Remove global ziggurat colors data frame
+if (exists("labelcolors"))
+  rm("labelcolors")
 f <- "CONFIG.txt"
 if (file.exists(f)){
   config_params <- read.table(f, stringsAsFactors=FALSE, header = TRUE)
   strings<<-LocalizedStrings(config_params$LANGUAGE)
-} else
+} else {
   strings<<-LocalizedStrings("en")
+}
+czA1 <<- "#4169E1"
+czA2 <<- "#00008B"
+czB1 <<- "#F08080"
+czB2 <<- "#FF0000"
 
 # ejecuta la aplicacion
 runApp(

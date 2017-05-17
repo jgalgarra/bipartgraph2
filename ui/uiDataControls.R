@@ -49,6 +49,14 @@ deleteFilesControl <- function() {
   return(control)
 }
 
+# control para restarurar los colores por defecto
+restoreColorsControl <- function() {
+  control<-actionButton(
+    inputId   = "restoreColors",
+    label     = controlLabel(strings$value("LABEL_ZIGGURAT_RESTORE_COLORS"))
+  )
+  return(control)
+}
 
 networkAnalysisControl <- function() {
   control<-downloadButton("networkAnalysis",label = strings$value("LABEL_NETORK_ANALYSIS"))

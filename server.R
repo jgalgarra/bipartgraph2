@@ -230,22 +230,124 @@ shinyServer(function(input, output, session) {
     session$sendCustomMessage(type="messagesHandler", as.list(messages))
   })
 
+  # Search labels and colors
+  searchlabcols <- function(fred="")
+  {
+    datoslabcol <- data.frame("file" = c(), "LabelGuildA" = c(), "LabelGuildB" = c(),
+                              "ColorZigGuildA1" = c(), "ColorZigGuildA2" = c(),
+                              "ColorZigGuildB1" = c(), "ColorZigGuildB2" = c())
+    if (file.exists("conf/labelcolors.csv")){
+      labelcolors <<- read.table("conf/labelcolors.csv",sep=";",header = TRUE)
+      if (nrow(labelcolors[toupper(labelcolors$file) == toupper(fred),])>0){
+        datoslabcol <- labelcolors[toupper(labelcolors$file) == toupper(fred),][1,]
+      }
+      
+    }
+    return(datoslabcol)
+  }
+  
+  writelabcols <- function()
+  {
+
+     datoslabcol <- data.frame("file" = input$selectedDataFile, 
+                                "LabelGuildA" = input$DataLabelGuildAControl, 
+                                "LabelGuildB" = input$DataLabelGuildBControl,
+                                "ColorZigGuildA1" = input$zigguratColorGuildA1, 
+                                "ColorZigGuildA2" = input$zigguratColorGuildA2,
+                                "ColorZigGuildB1" = input$zigguratColorGuildB1, 
+                                "ColorZigGuildB2" = input$zigguratColorGuildB2)
+     if (exists("labelcolors")){
+       labelcolors <<- labelcolors[toupper(labelcolors$file) != toupper(input$selectedDataFile),]
+       labelcolors <<- rbind(tail(labelcolors, 199),datoslabcol)
+     } else
+       labelcolors <<- datoslabcol
+     dir.create("conf/", showWarnings = FALSE)
+     write.table(labelcolors,file=paste0("conf/labelcolors.csv"),sep=";",row.names = FALSE)
+  }
+  
+  restoredefaultzigcolors <- function()
+  {
+    updateColourInput(session, "zigguratColorGuildA1",
+                    label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"),
+                    value = czA1
+    )
+    updateColourInput(session, "zigguratColorGuildA2",
+                    label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"),
+                    value = czA2
+    )
+    updateColourInput(session, "zigguratColorGuildB1",
+                    label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"),
+                    value = czB1
+    )
+    updateColourInput(session, "zigguratColorGuildB2",
+                    label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"),
+                    value = czB2
+    )
+  }
+  
   # contenido del fichero seleccionado
   selectedDataFileContent<-reactive({
+    
     file<-input$selectedDataFile
     if (!is.null(file) && nchar(file)>0) {
-      content<-read.csv(file=paste0(dataDir, "/", file), header=TRUE)
+      content<-read.csv(file=paste0(dataDir, "/", file), header=TRUE, stringsAsFactors = FALSE)
     } else {
       content<-data.frame()
     }
     if (!is.null(file) && nchar(file)>0){
       shinyjs::show("networkAnalysis")
+      
       output$NodesGuildA <- renderText({
         paste(nrow(content),strings$value("LABEL_SPECIES"))
       })
       output$NodesGuildB <- renderText({
         paste(ncol(content)-1,strings$value("LABEL_SPECIES"))
       })
+      dflabcols <- searchlabcols(fred = file)
+      if (ncol(dflabcols)>0){
+      updateTextInput(session, "DataLabelGuildAControl",
+                      label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDA"),
+                      value = dflabcols$LabelGuildA
+      )
+      updateTextInput(session, "DataLabelGuildBControl",
+                        label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDB"),
+                        value = dflabcols$LabelGuildB
+      )
+      
+      updateColourInput(session, "zigguratColorGuildA1",
+                        label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"),
+                        value = as.character(dflabcols$ColorZigGuildA1)
+      )
+      
+      updateColourInput(session, "zigguratColorGuildA2",
+                        label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"),
+                        value = as.character(dflabcols$ColorZigGuildA2)
+      )
+      
+      updateColourInput(session, "zigguratColorGuildB1",
+                        label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"),
+                        value = as.character(dflabcols$ColorZigGuildB1)
+      )
+      
+      updateColourInput(session, "zigguratColorGuildB2",
+                        label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"),
+                        value = as.character(dflabcols$ColorZigGuildB2)
+      )
+      
+     
+      }
+      else {
+        
+        updateTextInput(session, "DataLabelGuildAControl",
+                        label <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDA"),
+                        value <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDA_DEFAULT")
+        )
+        updateTextInput(session, "DataLabelGuildBControl",
+                        label <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDB"),
+                        value <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDB_DEFAULT")
+        )
+        restoredefaultzigcolors
+      }
     }
     else{
       output$NodesGuildA <- renderText("")
@@ -319,6 +421,10 @@ shinyServer(function(input, output, session) {
     options = list(pageLength = 5)
   )
 
+  observeEvent(input$restoreColors, {
+    restoredefaultzigcolors()
+  })
+  
   observeEvent(input$deleteFiles, {
     s = input$availableFilesTable_rows_selected
     output$availableFilesTable = DT::renderDataTable(availableFiles$details,
@@ -447,6 +553,10 @@ shinyServer(function(input, output, session) {
     guildANeighbors<-sapply(guildAVertex, function(x) {neighbors(g, x)$id})
     guildBNeighbors<-sapply(guildBVertex, function(x) {neighbors(g, x)$id})
 
+    # store labels and colors
+    writelabcols()
+    
+    
     # informa de los datos del ziggurat
     session$sendCustomMessage(type="zigguratDataHandler", list(ids=c("a", "b"), names=c(z$name_guild_a, z$name_guild_b), data=list(a=z$list_dfs_a, b=z$list_dfs_b), neighbors=list(a=guildANeighbors, b=guildBNeighbors)))
 

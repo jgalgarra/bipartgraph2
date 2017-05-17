@@ -117,10 +117,11 @@ zigguratConfigPanel <- function() {
       ),
       fluidRow(
         column(2, zigguratAlphaLevelControl()),
-        column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), "#4169E1")),
-        column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), "#00008B")),
-        column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), "#F08080")),
-        column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), "#FF0000"))
+        column(2, zigguratColorControl("GuildA1", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"), czA1)),
+        column(2, zigguratColorControl("GuildA2", strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"), czA2)),
+        column(2, zigguratColorControl("GuildB1", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"), czB1)),
+        column(2, zigguratColorControl("GuildB2", strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"), czB2)),
+        column(2, restoreColorsControl())
       ),
       fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_Y_DISPLACE_CONTROL"), image="vertdis.png"))
@@ -180,10 +181,10 @@ zigguratConfigPanel <- function() {
       fluidRow(
         column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 5)),
         column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 5))
-      ),
-      fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_COLOUR_HEADER"), image="border_color.png"))
-      )
+      )#,
+      # fluidRow(
+      #   column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_COLOUR_HEADER"), image="border_color.png"))
+      # )
     ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),

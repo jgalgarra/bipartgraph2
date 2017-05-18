@@ -2,7 +2,7 @@
 
 rdef <- "http://cran.us.r-project.org"
 list.of.packages <- c('ggplot2', 'scales', 'colourpicker',
-                      'stringr', 'grid','igraph', 'bipartite',
+                      'grid','igraph', 'bipartite',
                       'gridExtra', 'vegan', 'sna', 'fields','DT',
                       'shiny', 'shinythemes', 'shinyjs','devtools')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]

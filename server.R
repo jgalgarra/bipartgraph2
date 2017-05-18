@@ -11,14 +11,7 @@
 #                 configuración como mostrar los diagramas y actuar ante los
 #                 distintos eventos a los que responde la aplicación
 ###############################################################################
-library(shiny)
-library(gridExtra)
-library(grDevices)
-library(gtable)
-library(grid)
-#library(cowplot)
-library(DT)
-library(kcorebip)
+
 
 # muestra la informacion de detalle sobre un nodo del ziggurat
 showNodeDetails <- function(type, kcore, nodeDf) {

@@ -8,8 +8,8 @@
 # Descricpción  : Contiene las funciones que permiten representar los distintos
 #                 paneles de gestion de datos que se muestran en el interfaz
 ###############################################################################
-library(shiny)
-library(shinythemes)
+
+
 source("ui/uiDataControls.R", encoding="UTF-8")
 
 # panel de gestion de datos
@@ -46,12 +46,14 @@ selectDataPanel<-function() {
       
       column(2, networkAnalysisControl())
     ),
+
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_DATA_CONTENT_HEADER"), image="grid.png"))
-    ),
+    ),    
     fluidRow(
-      column(8, dataTableOutput("selectedDataFileContent"))
+      column(12, dataTableOutput("selectedDataFileContent"))
     )
+
   )
   return(panel)
 }

@@ -7,9 +7,18 @@
 # Módulo        : main.R
 # Descricpción  : Ejecución de la aplicación
 ###############################################################################
-library(shiny)
+
 source("global.R", encoding="UTF-8")
 source("strings.R", encoding="UTF-8")
+library(shiny)
+library(gridExtra)
+library(grDevices)
+library(gtable)
+library(grid)
+library(DT)
+library(kcorebip)
+library(shinythemes)
+
 
 # desambigua la funcion get.edges utilizada en el paquete kcorebip
 # ya que colisionan los nombres de esta funcion en el paquete igraph en el

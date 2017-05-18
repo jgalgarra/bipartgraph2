@@ -1,2 +1,2 @@
-LANGUAGE
-en
+LANGUAGE;LabelA;LabelB;ColorGuildA1;ColorGuildA2;ColorGuildB1;ColorGuildB2
+en;"Plant";"Pollinator";"#4169E1";"#00008B";"#F08080";"#FF0000"

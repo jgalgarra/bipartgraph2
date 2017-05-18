@@ -340,11 +340,11 @@ shinyServer(function(input, output, session) {
         
         updateTextInput(session, "DataLabelGuildAControl",
                         label <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDA"),
-                        value <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDA_DEFAULT")
+                        value <- labelA
         )
         updateTextInput(session, "DataLabelGuildBControl",
                         label <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDB"),
-                        value <- strings$value("LABEL_ZIGGURAT_LABEL_GUILDB_DEFAULT")
+                        value <- labelB
         )
         restoredefaultzigcolors
       }

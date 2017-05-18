@@ -69,7 +69,7 @@ DataLabelGuildAControl<-function() {
   control<-textInput(
     inputId = "DataLabelGuildAControl",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_LABEL_GUILDA")),
-    value   = strings$value("LABEL_ZIGGURAT_LABEL_GUILDA_DEFAULT")
+    value   = labelA
   )
   return(control)
 }
@@ -79,7 +79,7 @@ DataLabelGuildBControl<-function() {
   control<-textInput(
     inputId = "DataLabelGuildBControl",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_LABEL_GUILDB")),
-    value   = strings$value("LABEL_ZIGGURAT_LABEL_GUILDB_DEFAULT")
+    value   = labelB
   )
   return(control)
 }

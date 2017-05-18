@@ -21,15 +21,24 @@ if (exists("labelcolors"))
   rm("labelcolors")
 f <- "CONFIG.txt"
 if (file.exists(f)){
-  config_params <- read.table(f, stringsAsFactors=FALSE, header = TRUE)
-  strings<<-LocalizedStrings(config_params$LANGUAGE)
+  config_params <- read.table(f, stringsAsFactors=FALSE, header = TRUE, sep = ";")
+  strings<<-LocalizedStrings(config_params$LANGUAGE[1])
+  czA1 <<- config_params$ColorGuildA1[1]
+  czA2 <<- config_params$ColorGuildA2[1]
+  czB1 <<- config_params$ColorGuildB1[1]
+  czB2 <<- config_params$ColorGuildB2[1]
+  labelA <<- config_params$LabelA[1]
+  labelB <<- config_params$LabelB[1]
 } else {
   strings<<-LocalizedStrings("en")
+  czA1 <<- "#4169E1"
+  czA2 <<- "#00008B"
+  czB1 <<- "#F08080"
+  czB2 <<- "#FF0000"
+  labelA <<- strings$value("LABEL_ZIGGURAT_LABEL_GUILDA_DEFAULT")
+  labelB <<- strings$value("LABEL_ZIGGURAT_LABEL_GUILDB_DEFAULT")
 }
-czA1 <<- "#4169E1"
-czA2 <<- "#00008B"
-czB1 <<- "#F08080"
-czB2 <<- "#FF0000"
+
 
 # ejecuta la aplicacion
 runApp(

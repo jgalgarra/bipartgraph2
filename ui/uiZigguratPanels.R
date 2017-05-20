@@ -75,23 +75,11 @@ zigguratDiagramPanel <- function() {
 # panel de configuracion del diagrama ziggurat
 zigguratConfigPanel <- function() {
   panel<-tabsetPanel(
-    tabPanel(
-      strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_PANEL"),
-      fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_GENERAL_HEADER"), image="settings.png"))
-      ),
-      fluidRow(
-        #column(2, zigguratAspectRatioControl()),                        Only works for non interactive ziggurats
-        column(3, zigguratCoreBoxSizeControl()),
-        column(3, zigguratdisplace_legend_horiz()),
-        column(3, zigguratdisplace_legend_vert())
-      ),
-      # fluidRow(
-      #   #column(3, zigguratFlipResultsControl()),                      Only works for non interactive ziggurats
-      # ),
-      fluidRow(
-        column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_LINKS_HEADER"), image="link.png"))
-      ),
+      tabPanel(
+        strings$value("LABEL_ZIGGURAT_CONFIG_VISUALIZATION_PANEL"),
+        fluidRow(
+          column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_COLOURS_LINKS_HEADER"), image="link.png"))
+        ),
       fluidRow(
         column(2, zigguratPaintLinksControl()),
         column(2, zigguratUseSplineControl()),
@@ -171,7 +159,15 @@ zigguratConfigPanel <- function() {
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_GENERAL_HEADER"), image="settings.png"))
       ),
       fluidRow(
+        #column(2, zigguratAspectRatioControl()),                        Only works for non interactive ziggurats
+        column(3, zigguratdisplace_legend_horiz()),
+        column(3, zigguratdisplace_legend_vert())
+      ),
+      fluidRow(
         column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_SIZE_HEADER"), image="generic_text.png"))
+      ),
+      fluidRow(
+        column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 5))
       ),
       fluidRow(
         column(2, zigguratLabelsSizeControl("kCoreMax", strings$value("LABEL_ZIGGURAT_KCOREMAX_LABEL_SIZE_CONTROL"), 5)),
@@ -179,12 +175,9 @@ zigguratConfigPanel <- function() {
         column(2, zigguratLabelsSizeControl("kCore1", strings$value("LABEL_ZIGGURAT_KCORE1_LABEL_SIZE_CONTROL"), 4))
       ),
       fluidRow(
-        column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 5)),
-        column(2, zigguratLabelsSizeControl("Legend", strings$value("LABEL_ZIGGURAT_LEGEND_LABEL_SIZE_CONTROL"), 5))
-      )#,
-      # fluidRow(
-      #   column(12, groupHeader(text=strings$value("LABEL_ZIGGURAT_CONFIG_LABELS_COLOUR_HEADER"), image="border_color.png"))
-      # )
+        column(2, zigguratCoreBoxSizeControl()),
+        column(2, zigguratLabelsSizeControl("CoreBox", strings$value("LABEL_ZIGGURAT_COREBOX_LABEL_SIZE_CONTROL"), 5))
+      )
     ),
     tabPanel(
       strings$value("LABEL_ZIGGURAT_CONFIG_TAILS_PANEL"),

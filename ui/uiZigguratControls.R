@@ -132,7 +132,7 @@ zigguratAlphaLevelControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAlphaLevel",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_ALPHA_LEVEL_CONTROL")),
-    min     = 0.0,
+    min     = 0.1,
     max     = 1.0,
     value   = 0.2,
     step    = 0.1
@@ -155,7 +155,7 @@ zigguratAlphaLevelLinkControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAlphaLevelLink",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_ALPHA_LEVEL_LINK_CONTROL")),
-    min     = 0.0,
+    min     = 0.1,
     max     = 1.0,
     value   = 0.5,
     step    = 0.1

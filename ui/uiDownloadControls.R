@@ -49,7 +49,7 @@ zigguratAspectRatio <- function() {
     min     = 0.2,
     max     = 2,
     value   = 1,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }

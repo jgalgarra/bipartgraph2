@@ -221,7 +221,7 @@ zigguratYDisplaceControlS <- function(name, description)
     min     = -2.0,
     max     = 2.0,
     value   = 0.0,
-    step    = 0.05
+    step    = 0.1
   )
   return(control)
 }
@@ -234,7 +234,7 @@ zigguratHeightExpandControl <- function() {
     min     = 0.5,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.5
+    step    = 0.25
   )
   return(control)
 }
@@ -287,7 +287,7 @@ zigguratoutsiders_expand_horiz <- function() {
     min     = -5.0,
     max     = 5.0,
     value   = 0.0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -300,7 +300,7 @@ zigguratoutsiders_expand_vert <- function() {
     min     = -5.0,
     max     = 5.0,
     value   = 0.0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -310,10 +310,10 @@ zigguratoutsiders_separation_expand <- function() {
   control<-sliderInput(
     inputId = "zigguratoutsiders_separation_expand",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_SEP_EXPAND")),
-    min     = 0.5,
+    min     = 0.25,
     max     = 5.0,
     value   = 1,
-    step    = 0.2
+    step    = 0.25
   )
   return(control)
 }

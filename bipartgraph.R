@@ -38,6 +38,7 @@ if (file.exists(f)){
   czB2 <<- config_params$ColorGuildB2[1]
   labelA <<- config_params$LabelA[1]
   labelB <<- config_params$LabelB[1]
+  shinyport <<- config_params$PORT
 } else {
   strings<<-LocalizedStrings("en")
   czA1 <<- "#4169E1"
@@ -46,13 +47,14 @@ if (file.exists(f)){
   czB2 <<- "#FF0000"
   labelA <<- strings$value("LABEL_ZIGGURAT_LABEL_GUILDA_DEFAULT")
   labelB <<- strings$value("LABEL_ZIGGURAT_LABEL_GUILDB_DEFAULT")
+  shinyport <<- 8080
 }
 
 
 # ejecuta la aplicacion
 runApp(
   appDir        = ".",
-  port          = 8080,
+  port          = config_params$PORT,
   host          = "0.0.0.0",
   display.mode  = "normal"
 )

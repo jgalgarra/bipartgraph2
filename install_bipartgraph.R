@@ -1,5 +1,7 @@
 # Installation script for BipartGraph.
 
+# Create user library if it does not exist.
+dir.create(Sys.getenv("R_LIBS_USER"), recursive = TRUE)
 rdef <- "http://cran.us.r-project.org"
 list.of.packages <- c('ggplot2', 'scales', 'colourpicker',
                       'grid','igraph', 'bipartite',

@@ -40,7 +40,10 @@ summaryPanel <- function() {
                 tags$p("Interactive visualization tool of bipartite ecological networks"),
                 tags$p(
                 tags$a(href="https://github.com/jgalgarra/bipartgraph/blob/master/user_guide/BipartGraph%20Guide.pdf", target="_BLANK", "USER GUIDE")),
-                tags$p(tags$a(href="http://github.com/jgalgarra/bipartgraph", target="_BLANK", "Repository at github"))
+                tags$p(tags$a(href="http://github.com/jgalgarra/bipartgraph", target="_BLANK", "Repository at github")),
+                tags$p("Garcia-Algarra et al. (2017), Ranking of critical species to preserve the functionality of mutualistic networks using
+the k-core decomposition. PeerJ 5:e3321;DOI 10.7717/peerj.3321"),
+                  tags$a(href="https://peerj.com/articles/3321/", target="_BLANK", "https://peerj.com/articles/3321/")   
   )
   author  <- "Juan Manuel Garcia-Santi & Javier Garcia-Algarra"
   version <- "v1.0 - June 2017"

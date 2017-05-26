@@ -1,17 +1,14 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiPolarControls.R
-# Descricpción  : Funciones para la representación de los disintos controles
-#                 de configuración, relativos al diagrama polar, en el
-#                 interfaz de usuario (UI)
+# BipartGraph
+#  
+# Module         : uiPolarControls.R
+# Description    : Polar graph panel
+#                  
 ###############################################################################
+
 library(shinyjs)
 
-# control para mostrar o no el texto
+# Show text
 polarDisplayTextControl <- function() {
   control<- sliderInput(
     inputId = "polarDisplayText",
@@ -24,7 +21,7 @@ polarDisplayTextControl <- function() {
   return(control)
 }
 
-#Include histograms
+# Include histograms
 polarDisplayHistograms <- function() {
   control<-checkboxInput(
     inputId = "polarDisplayHistograms",
@@ -34,7 +31,7 @@ polarDisplayHistograms <- function() {
   return(control)
 }
 
-#Download link
+# Download link
 downloadLink <- function() {
   control<-checkboxInput(
     inputId = "downloadLink",
@@ -44,7 +41,7 @@ downloadLink <- function() {
   return(control)
 }
 
-#Fill nodes
+# Fill nodes
 polarFillNodesControl <- function() {
   control<-checkboxInput(
     inputId = "polarFillNodesControl",
@@ -54,7 +51,7 @@ polarFillNodesControl <- function() {
   return(control)
 }
 
-# control para el factor de transparencia
+# Node transparency
 polarAlphaLevelControl <- function() {
   control<-sliderInput(
     inputId = "polarAlphaLevel",
@@ -67,7 +64,7 @@ polarAlphaLevelControl <- function() {
   return(control)
 }
 
-# control para indicar las etiquetas de los "guild"
+# Guild label control
 polarGuildLabelControl <- function(name, description, value) {
   control<-textInput(
     inputId = paste0("polarGuildLabel", name),
@@ -77,7 +74,7 @@ polarGuildLabelControl <- function(name, description, value) {
   return(control)
 }
 
-# tamanyo de las etiquetas
+# Label size
 polarLabelsSizeControl <- function(name, description, default) {
   control<-sliderInput(
     inputId = paste0("polarLabelsSize", name),
@@ -90,7 +87,7 @@ polarLabelsSizeControl <- function(name, description, default) {
   return(control)
 }
 
-# screen size control
+# Screen size control
 polarscreenwidthControl <- function() {
   values<-c(400, 600, 800, 1000, 1200)
   names(values)<-values

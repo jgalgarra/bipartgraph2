@@ -1,19 +1,15 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiZigguratPanels.R
-# Descricpción  : Contiene las funciones que permiten representar los distintos
-#                 paneles que se muestran en el interfaz para el diagrama
-#                 ziggurat
+# BipartGraph
+#  
+# Module         : uiZigguratpanels.R
+# Description    : interactive Ziggurat panel
+#                  
 ###############################################################################
+
 library(shiny)
 library(shinythemes)
 source("ui/uiZigguratControls.R", encoding="UTF-8")
 
-# panel del ziggurat (configuracion + diagrama)
 zigguratPanel<-function() {
   panel<-tabsetPanel(
     tabPanel(strings$value("LABEL_ZIGGURAT_DIAGRAM_PANEL"), tags$div(class="panelContent", zigguratDiagramPanel())),
@@ -22,7 +18,7 @@ zigguratPanel<-function() {
   return(panel)
 }
 
-# panel con el gragico ziggurat
+# Ziggurat graph panel
 zigguratDiagramPanel <- function() {
   control<- fluidRow(
       fluidRow(
@@ -42,9 +38,6 @@ zigguratDiagramPanel <- function() {
           )
         ),
         column(4,
-          # fluidRow(
-          #        column(4, tags$p(paste(biparg$network_name,biparg$nguilda,biparg$labelguilda,biparg$nguildb,biparg$labelguildb)))
-          # ),
           fluidRow(
             uiOutput("networkinfoDetail")
           ),
@@ -72,7 +65,7 @@ zigguratDiagramPanel <- function() {
   return(control)
 }
 
-# panel de configuracion del diagrama ziggurat
+# Configuration
 zigguratConfigPanel <- function() {
   panel<-tabsetPanel(
       tabPanel(
@@ -190,9 +183,6 @@ zigguratConfigPanel <- function() {
         column(3, zigguratKcore1TailDistToCoreControl("2", strings$value("LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2"))),
         column(3, zigguratInnerTailVerticalSeparationControl())
       ),
-      # fluidRow(
-      #   column(3, ziggurathoriz_kcoremax_tails_expand())
-      # ),
       fluidRow(
         column(3, zigguratfattailjumphorizA()),
         column(3, zigguratfattailjumpvertA()),

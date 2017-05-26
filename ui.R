@@ -1,13 +1,10 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : ui.R
-# Descricpción  : Módulo de interfaz de usuario (UI) para la aplicación "shiny"
-#
+# BipartGraph
+#  
+# Module         : ui.R
+# Description    : User interfaz
 ###############################################################################
+
 library(shiny)
 library(shinythemes)
 source("ui/uiCommonPanels.R", encoding="UTF-8")
@@ -16,9 +13,6 @@ source("ui/uiZigguratPanels.R", encoding="UTF-8")
 source("ui/uiPolarPanels.R", encoding="UTF-8")
 source("ui/uiDownloadPanels.R", encoding="UTF-8")
 
-#
-# interfaz de usuario
-#
 shinyUI(
     tagList(
         tags$head(
@@ -32,41 +26,31 @@ shinyUI(
         tags$link(rel="stylesheet", type="text/css", href="css/jquery.qtip.css"),
         tags$link(rel="stylesheet", type="text/css", href="css/redesbipartitas.css"),
         tags$script("$(window).load(function() {windowLoad()})")#,
-#         tags$style(HTML("body {
-#                           background-image: url('images/white.png');
-#   background-position: top right;
-# background-repeat: no-repeat;
-#   background-color : #000000;
-#                         }
-#
-#                         "))
       ),
       FullPage <- navbarPage(
         title = "BipartGraph",
-
-        #theme   = shinytheme("paper"),
         theme   = shinytheme("flatly"),
         header  = headerPanel(),
         tabPanel(
           strings$value("LABEL_MENU_DATA_PANEL"),
           dataPanel()
         ),
-        # panel con el diagrama ziggurat
+        # Interactive Ziggurat panel
         tabPanel(
           strings$value("LABEL_MENU_ZIGGURAT_PANEL"),
           zigguratPanel()
         ),
-        #panel para descargar los diagramas
+        # Printable ziggurat
         tabPanel(
           strings$value("LABEL_MENU_DOWNLOAD_PANEL"),
           downloadPanel()
         ),
-        # panel con el diagrama polar
+        # Polar plot panel
         tabPanel(
           strings$value("LABEL_MENU_POLAR_PANEL"),
           polarPanel()
         ),
-        # acerca de
+        # About panel
         tabPanel(
           strings$value("LABEL_MENU_ABOUT_PANEL"),
           summaryPanel()

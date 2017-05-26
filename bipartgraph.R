@@ -1,11 +1,9 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+# BipartGraph
+#  
+# Module         : bipartgraph.R
+# Description    : Application launcer
 #
-# Autor         : Juan Manuel García Santi        
-# Módulo        : main.R
-# Descricpción  : Ejecución de la aplicación
 ###############################################################################
 
 source("global.R", encoding="UTF-8")
@@ -20,9 +18,6 @@ library(kcorebip)
 library(shinythemes)
 
 
-# desambigua la funcion get.edges utilizada en el paquete kcorebip
-# ya que colisionan los nombres de esta funcion en el paquete igraph en el
-# paquete network
 get.edges<-igraph::get.edges
 
 # Remove global ziggurat colors data frame
@@ -51,7 +46,7 @@ if (file.exists(f)){
 }
 
 
-# ejecuta la aplicacion
+# Launch Application
 runApp(
   appDir        = ".",
   port          = config_params$PORT,

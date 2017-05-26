@@ -1,18 +1,14 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiDataPanels.R
-# Descricpción  : Contiene las funciones que permiten representar los distintos
-#                 paneles de gestion de datos que se muestran en el interfaz
+# BipartGraph
+#  
+# Module         : uiDataPanels.R
+# 
+#                  
 ###############################################################################
 
 
 source("ui/uiDataControls.R", encoding="UTF-8")
 
-# panel de gestion de datos
 dataPanel <- function() {
   panel<-tabsetPanel(
     id="dataPanel",
@@ -23,7 +19,6 @@ dataPanel <- function() {
   return(panel)
 }
 
-# panel de seleccion de ficheros
 selectDataPanel<-function() {
   panel<-fluidRow(
     fluidRow(
@@ -53,12 +48,10 @@ selectDataPanel<-function() {
     fluidRow(
       column(12, dataTableOutput("selectedDataFileContent"))
     )
-
   )
   return(panel)
 }
 
-# panel de gestion de ficheros
 manageFilesPanel<-function() {
   panel<-fluidRow(
     fluidRow(
@@ -88,12 +81,8 @@ manageFilesPanel<-function() {
   return(panel)
 }
 
-# panel de gestion de idiomas
 manageLanguages<-function() {
   panel<-fluidRow(
-    # fluidRow(
-    #   column(12, groupHeader(text=strings$value("LABEL_SELECT_LANGUAGE"), image="generic_text.png"))
-    # ),
     fluidRow(
       column(3, selectLanguage())
     )

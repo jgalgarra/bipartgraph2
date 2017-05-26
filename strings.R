@@ -1,12 +1,8 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
-# Autor         : Juan Manuel García Santi
-# Módulo        : svg.R
-# Descricpción  : Funcion para definir todas las cadenas de texto en base al
-#                 idioma que se quiere utilizar en el interfaz de usuario
+# BipartGraph
+#  
+# Module         : strings.R
+# Description    : User interfaz
 ###############################################################################
 library(ggplot2)
 

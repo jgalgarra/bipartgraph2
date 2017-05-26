@@ -1,23 +1,20 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiCommonPanels.R
-# Descricpción  : Contiene las funciones que permiten representar los distintos
-#                 paneles comunes que se muestran en el interfaz
+# BipartGraph
+#  
+# Module         : uiCommonPanels.R
+# Description    : Data controls
+#                  
 ###############################################################################
 library(shiny)
 library(shinythemes)
 
-# cabecera de pagina comun
+# Common page header
 headerPanel <- function() {
   control<-""
   return(control)
 }
 
-# pie de pagina comun
+# Footer
 footerPanel <- function() {
   control<-tags$div(
     class="footerPanel",
@@ -37,17 +34,25 @@ footerPanel <- function() {
   return(control)
 }
 
-# panel de resumen
+
 summaryPanel <- function() {
   info    <- tags$div(
-                tags$p("Interactive visualization tool of bipartite ecological networks")
+                tags$p("Interactive visualization tool of bipartite ecological networks"),
+                tags$p(
+                tags$a(href="https://github.com/jgalgarra/bipartgraph/blob/master/user_guide/BipartGraph%20Guide.pdf", target="_BLANK", "USER GUIDE")),
+                tags$p(tags$a(href="http://github.com/jgalgarra/bipartgraph", target="_BLANK", "Repository at github"))
   )
-  author  <- "Juan Manuel García Santi & Javier García Algarra"
-  version <- "v1.0 - June'2017"
+  author  <- "Juan Manuel Garcia-Santi & Javier Garcia-Algarra"
+  version <- "v1.0 - June 2017"
   panel<-tags$div(class="panelContent", fluidRow(
       column(12,
         fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_INFO_HEADER"), image="info.png")),
         fluidRow(tags$h5(class="aboutInfo", info)),
+        fluidRow(tags$p(class="aboutInfo", "MIT License"),
+                 tags$p(class="aboutInfo", "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the 'Software'), 
+to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.")),
+        fluidRow(tags$p(class="aboutInfo","THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.")),
         fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_AUTHOR_HEADER"), image="worker.png")),
         fluidRow(tags$h5(class="aboutAuthor", author)),
         fluidRow(groupHeader(text=strings$value("LABEL_ABOUT_VERSION_HEADER"), image="product.png")),

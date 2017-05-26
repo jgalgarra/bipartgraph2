@@ -1,18 +1,15 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiZigguratControls.R
-# Descricpción  : Funciones para la representación de los disintos controles
-#                 de configuración, relativos al diagrama ziggurat, en el
-#                 interfaz de usuario (UI)
+# BipartGraph
+#  
+# Module         : uiZigguratControls.R
+# Description    : interactive Ziggurat controls
+#                  
 ###############################################################################
+
 library(shinyjs)
 library(colourpicker)
 
-# control para mostrar o no los enlaces
+# hide links
 zigguratPaintLinksControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratPaintLinks",
@@ -22,7 +19,7 @@ zigguratPaintLinksControl <- function() {
   return(control)
 }
 
-# control para mostrar o no las etiquetas
+# Show labels
 zigguratDisplayLabelsControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratDisplayLabels",
@@ -32,7 +29,7 @@ zigguratDisplayLabelsControl <- function() {
   return(control)
 }
 
-# control para invertir los resultados
+# DEPRECATED
 zigguratFlipResultsControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratFlipResults",
@@ -42,7 +39,7 @@ zigguratFlipResultsControl <- function() {
   return(control)
 }
 
-# control para dibujar los outsiders
+# Outsiders 
 zigguratPaintOutsidersControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratPaintOutsiders",
@@ -52,7 +49,7 @@ zigguratPaintOutsidersControl <- function() {
   return(control)
 }
 
-# control para usar splines
+# Spline control
 zigguratUseSplineControl <- function() {
   control<-checkboxInput(
     inputId = "zigguratUseSpline",
@@ -62,7 +59,7 @@ zigguratUseSplineControl <- function() {
   return(control)
 }
 
-# control para indicar os puntos de los splines
+# Spline points number control
 zigguratSplinePointsControl <- function() {
   control<-sliderInput(
     inputId = "zigguratSplinePoints",
@@ -75,7 +72,7 @@ zigguratSplinePointsControl <- function() {
   return(control)
 }
 
-# control para el factor de escala del grafico SVG
+# Aspect ratio for the SVG            DEPRECATED
 zigguratAspectRatioControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAspectRatio",
@@ -88,7 +85,7 @@ zigguratAspectRatioControl <- function() {
   return(control)
 }
 
-# Legend expansion horiz
+# horizontal legend expand
 zigguratdisplace_legend_horiz <- function() {
   control<-sliderInput(
     inputId = "zigguratdisplace_legend_horiz",
@@ -127,7 +124,7 @@ zigguratHopx <- function() {
   return(control)
 }
 
-# control para el factor de transparencia
+# Transparency
 zigguratAlphaLevelControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAlphaLevel",
@@ -140,7 +137,7 @@ zigguratAlphaLevelControl <- function() {
   return(control)
 }
 
-# control generico para seleccion de color
+# Color picker
 zigguratColorControl <- function(name, description, default) {
   control <- colourInput(
     paste0("zigguratColor" , name),
@@ -150,7 +147,7 @@ zigguratColorControl <- function(name, description, default) {
   return(control)
 }
 
-# control para el factor de transparencia de los enlaces
+# Link transparency
 zigguratAlphaLevelLinkControl <- function() {
   control<-sliderInput(
     inputId = "zigguratAlphaLevelLink",
@@ -163,7 +160,7 @@ zigguratAlphaLevelLinkControl <- function() {
   return(control)
 }
 
-# tamanyo de los enlaces
+# link width
 zigguratLinkSizeControl <- function() {
   control<-sliderInput(
     inputId = "zigguratLinkSize",
@@ -186,7 +183,7 @@ zigguratweighted_links <- function() {
   return(control)
 }
 
-# tamanyo de los core box
+# core box width
 zigguratCoreBoxSizeControl <- function() {
   control<-sliderInput(
     inputId = "zigguratCoreBoxSize",
@@ -199,7 +196,7 @@ zigguratCoreBoxSizeControl <- function() {
   return(control)
 }
 
-# desplazamiento vertical
+# ziggurat displacement
 zigguratYDisplaceControl <- function(name, description) {
   control<-sliderInput(
     inputId = paste0("zigguratYDisplace", name),
@@ -212,7 +209,7 @@ zigguratYDisplaceControl <- function(name, description) {
   return(control)
 }
 
-# desplazamiento vertical
+# 
 zigguratYDisplaceControlS <- function(name, description)
 {
   control<-sliderInput(
@@ -226,7 +223,7 @@ zigguratYDisplaceControlS <- function(name, description)
   return(control)
 }
 
-# Expandir de la altura de la caja
+# Node box height
 zigguratHeightExpandControl <- function() {
   control<-sliderInput(
     inputId = "zigguratHeightExpand",
@@ -331,7 +328,7 @@ zigguratoutsiders_legend_expand <- function() {
   return(control)
 }
 
-# separacion de la cola al kcore-2
+# 2-shell tail distance expansion
 zigguratKcore2TailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "zigguratKcore2TailVerticalSeparation",
@@ -344,7 +341,7 @@ zigguratKcore2TailVerticalSeparationControl <- function() {
   return(control)
 }
 
-# distancia de la cola kcore-1 al core central
+# 1-shell distance to max shell
 zigguratKcore1TailDistToCoreControl <- function(name, description) {
   control<-sliderInput(
     inputId = paste0("zigguratKcore1TailDistToCore", name),
@@ -370,7 +367,7 @@ zigguratKcore1TailDistToCoreControl <- function(name, description) {
 #   return(control)
 # }
 
-# distancia de la cola kcore-1 al core central
+# Chain of specialists to 1-shell
 zigguratkcore1weirds_leafs_vertical_separation <- function() {
   control<-sliderInput(
     inputId = "zigguratkcore1weirds_leafs_vertical_separation",
@@ -384,7 +381,7 @@ zigguratkcore1weirds_leafs_vertical_separation <- function() {
 }
 
 
-# separacion vertical en las colas de los zigurats internos
+# Vertical separation of inner tails
 zigguratInnerTailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "zigguratInnerTailVerticalSeparation",
@@ -462,7 +459,6 @@ zigguratroot_weird_expand_horiz <- function() {
   return(control)
 }
 
-
 # weird chain root distance to 2-shell horizontal expansion
 zigguratroot_weirdskcore2_horiz <- function() {
   control<-sliderInput(
@@ -524,7 +520,7 @@ zigguratLabelGuildAControl<-function() {
   )
 }
 
-# etiqueta clan B
+# Guild B label
 zigguratLabelGuildBControl<-function() {
   control<-textInput(
     inputId = "zigguratLabelGuildB",
@@ -533,7 +529,7 @@ zigguratLabelGuildBControl<-function() {
   )
 }
 
-# tamanyo de las etiquetas
+# label sizes
 zigguratLabelsSizeControl <- function(name, description, default) {
   control<-sliderInput(
     inputId = paste0("zigguratLabelsSize", name),
@@ -546,7 +542,7 @@ zigguratLabelsSizeControl <- function(name, description, default) {
   return(control)
 }
 
-# control para el factor de escala de los textos del grafico SVG
+
 zigguratSvgScaleFactorControl <- function() {
   control<-sliderInput(
     inputId = "zigguratSvgScaleFactor",
@@ -559,7 +555,7 @@ zigguratSvgScaleFactorControl <- function() {
   return(control)
 }
 
-# control para recortar la parte superior del SVG
+# Crop top SVG
 zigguratSVGup <- function() {
   control<-sliderInput(
     inputId = "zigguratSVGup",
@@ -573,7 +569,7 @@ zigguratSVGup <- function() {
 }
 
 
-# tamanyo del diagrama a descargar
+# Downlad diagram size
 paperSizeControl <- function() {
   values<-1:6
   names(values)<-paste0("A", values)
@@ -587,7 +583,7 @@ paperSizeControl <- function() {
   return(control)
 }
 
-# resolucion del diagrama a descargar
+# Diagram plot resolution
 ppiControl <- function() {
   values<-c(72, 96, 150, 300, 600)
   names(values)<-values
@@ -610,4 +606,3 @@ paperLandscape <- function() {
   )
   return(control)
 }
-

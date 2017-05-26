@@ -1,13 +1,11 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiDownloadPanels.R
-# Descricpción  : Contiene las funciones que permiten representar los distintos
-#                 paneles para la descarga de los diagramas
+# BipartGraph
+#  
+# Module         : uiDownloadPanels.R
+# Description    : printable Ziggurat panel
+#                  
 ###############################################################################
+
 library(shiny)
 library(shinythemes)
 library(shinyjs)
@@ -33,8 +31,6 @@ downloadPanel <- function() {
       column(3, zigguratDownloadControl()),
       column(3, zigguratcodeDownloadControl())
     )
-
-
   )
   return(panel)
 }

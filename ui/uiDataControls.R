@@ -1,17 +1,12 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiDataControls.R
-# Descricpción  : Funciones para la representación de los disintos controles
-#                 de configuración, relativos a los datos, en el interfaz
-#                 de usuario (UI)
+# BipartGraph
+#  
+# Module         : uiDataControls.R
+# 
+#                  
 ###############################################################################
 library(shinyjs)
 
-# control para la seleccion del fichero
 selectDataFileControl <- function(path, pattern) {
   filesList<-as.list(list.files(path=path, pattern=pattern))
   names(filesList)<-filesList
@@ -27,7 +22,6 @@ selectDataFileControl <- function(path, pattern) {
   return(control)
 }
 
-# control para subida de ficheros
 uploadFilesControl <- function() {
   control<-fileInput(
     inputId   = "uploadedFiles",
@@ -38,9 +32,6 @@ uploadFilesControl <- function() {
   return(control)
 }
 
-
-
-# control para eliminar la lista de ficheros que se hayan seleccionado
 deleteFilesControl <- function() {
   control<-actionButton(
     inputId   = "deleteFiles",
@@ -49,7 +40,6 @@ deleteFilesControl <- function() {
   return(control)
 }
 
-# control para restarurar los colores por defecto
 restoreColorsControl <- function() {
   control<-actionButton(
     inputId   = "restoreColors",
@@ -64,7 +54,6 @@ networkAnalysisControl <- function() {
   return(control)
 }
 
-# etiqueta clan A
 DataLabelGuildAControl<-function() {
   control<-textInput(
     inputId = "DataLabelGuildAControl",
@@ -74,7 +63,6 @@ DataLabelGuildAControl<-function() {
   return(control)
 }
 
-# etiqueta clan B
 DataLabelGuildBControl<-function() {
   control<-textInput(
     inputId = "DataLabelGuildBControl",
@@ -84,7 +72,6 @@ DataLabelGuildBControl<-function() {
   return(control)
 }
 
-# screen size control
 selectLanguage <- function() {
   values<-c("en", "es")
   names(values)<-values

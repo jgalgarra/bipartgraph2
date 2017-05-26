@@ -1,26 +1,19 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
-#
-# Autor         : Juan Manuel García Santi
-# Módulo        : server.R
-# Descricpción  : Módulo servidor para la aplicación "shiny". Contiene la
-#                 función principal "shinyServer" así como las funciones
-#                 restantes que permiten tanto reaccionar a los cambios en la
-#                 configuración como mostrar los diagramas y actuar ante los
-#                 distintos eventos a los que responde la aplicación
+# BipartGraph
+#  
+# Module         : server.R
+# Descriction    : Server module of the Shiny application, with the "shinyServer" 
+#                  function and the reactive environment
 ###############################################################################
 
 
-# muestra la informacion de detalle sobre un nodo del ziggurat
+# Showe the deatiled information of the selected node
 showNodeDetails <- function(type, kcore, nodeDf) {
-  # tamanyo de las columnas
   rows    <- eval(parse(text="fluidRow()"))
   columns <- ""
   sizes   <- c(1, 2, 4, 1, 1, 1)
 
-  # crea las filas
+  # Create rows
   name    <- nodeDf[1, c("name_species")]
   label   <- nodeDf[1, c("label")]
   label   <- paste0("tags$a(\"", label, "\", href=\"", paste0("javascript:showWiki('", type, "',", label, ", '", name , "')"), "\")")
@@ -42,7 +35,7 @@ showNodeDetails <- function(type, kcore, nodeDf) {
   return(rows)
 }
 
-# muestra la informacion de la wikioedia sobre un nodo
+# Shows the species information in Wikipedia
 showWiki <- function(types, nodesData) {
   content<-""
   if (is.null(nodesData)) {
@@ -75,64 +68,63 @@ showWiki <- function(types, nodesData) {
   return(content)
 }
 
-# obtiene la lista de ficheros disponibles
+# Get the list of available files
 availableFilesList<-function() {
-  # obtiene la lista de ficheros
+  # Get the list of files
   filesList<-list.files(path=dataDir, pattern=dataFilePattern)
   names(filesList)<-filesList
 
-  # anyade la primera entrada
+  # Add first entry
   empty<-c("")
   names(empty)<-c(strings$value("MESSAGE_SELECT_DATA_FILE_INPUT"))
   return(c(empty, filesList))
 }
 
-# obtiene la lista con los detalles de los ficheros disponibles
+# Get details of files
 availableFilesDetails<-function(filesList) {
-  # columnas de los detalles
+  # Columns with the deatils
   filesDetailsColumns<-c(strings$value("LABEL_AVAILABLE_FILES_DETAILS_NAME"), strings$value("LABEL_AVAILABLE_FILES_DETAILS_SIZE"), "", "", strings$value("LABEL_AVAILABLE_FILES_DETAILS_MODIFICATION_DATE"), "", strings$value("LABEL_AVAILABLE_FILES_DETAILS_ACCESS_DATE"))
 
-  # elimina las entradas vacias
+  # drop empty entries
   filesList<-filesList[filesList!=""]
 
-  # obtiene los detalles
+  # Get details
   if (length(filesList)>0) {
-    # obtiene los detalles de los ficheros disponibles
-    # y añade la columna con el nombre del fichero
+    # Get file sizes and adds a column with the file name
     filesDetails  <- file.info(paste0(dataDir, "/", filesList), extra_cols=FALSE)
     filesDetails  <- cbind(gsub(paste0(dataDir, "/"), "", rownames(filesDetails)), filesDetails)
   } else {
-    # crea un dataframe vacio
+    # Creates a void data frame
     filesDetails<-data.frame(name=character(), size=integer(), isdir=logical(), mode=integer(), mtime=character(), ctime=character(), atime=character())
   }
 
-  # renombra las columnas
+  # Rename columns
   colnames(filesDetails)<-filesDetailsColumns
 
-  # elimina las columnas sin nombre
+  # Drop unnamed columns
   filesDetails<-filesDetails[!(colnames(filesDetails) %in% c(""))]
 
   return(filesDetails)
 }
 
-# obtiene las opciones para generar un diagrama
+# Get the configurable options to print a plot
 #   paperSize: 0-DINA0, 1-DINA1, ...
 #   ppi: pixels per inch
 calculateDiagramOptions<-function(paperSize, ppi) {
   options<-list(paperSize=1, width=480, height=480, ppi=300, cairo=FALSE, ext="")
 
-  # dimensiones DIN-A, primero en mm y luego convertido a pulgadas
+  # Dimensions in DIN and inches
   widths    <- c(t(sapply(c(841, 841), function(x) {x*(1/2)^(0:3)})))
   heights   <- c(t(sapply(c(1189, 1189), function(x) {x*(1/2)^(0:3)})))
   pdfSizes  <- data.frame(width=widths[2:7], height=heights[3:8])
   inchesmm  <- (1/25.4)
   inches    <- inchesmm*pdfSizes[paperSize,]
 
-  # tipo
+  # Type
   type      <- capabilities(c("cairo"))
   ext       <- capabilities(c("jpeg", "png", "tiff"))
 
-  # actualiza los valores
+  # Update values
   options$paperSize <- paperSize
   options$ppi       <- ppi
   options$width     <- inches$width*ppi
@@ -143,7 +135,7 @@ calculateDiagramOptions<-function(paperSize, ppi) {
   return(options)
 }
 
-# valida si la resolucion y tamaño de papel son correctos
+# Check if resolutoin and paper size are velids
 validateDiagramOptions<-function(options) {
   return(validate(
     need(
@@ -153,7 +145,7 @@ validateDiagramOptions<-function(options) {
   ))
 }
 
-# imprime un diagrama en fichero
+# Print plot to file
 plotDiagram<-function(file, plot, options) {
   type<-ifelse(options$cairo, "cairo", "windows")
   pointsize<-12
@@ -177,7 +169,7 @@ plotDiagram<-function(file, plot, options) {
   dev.off()
 }
 
-# imprime el PDF con todos los diagramas un diagrama en fichero
+# Print PDF
 plotPDF<-function(file, ziggurat, polar, options) {
   type<-ifelse(options$cairo, "cairo", "windows")
   pointsize<-12
@@ -191,7 +183,7 @@ plotPDF<-function(file, ziggurat, polar, options) {
 }
 
 #
-# proceso de servidor
+# Server process
 #
 #' Title
 #'
@@ -208,18 +200,12 @@ shinyServer(function(input, output, session) {
   shinyjs::hide("polarDownload")
   shinyjs::hide("polarcodeDownload")
   shinyjs::hide("networkAnalysis")
-  # shinyjs::hide("zigguratDownload")
-  # shinyjs::hide("zigguratcodeDownload")
-
-
-  # recibe cuendo el cliente esta listo
+  
   observeEvent(input$windowLoad, {
-    # crea los mensajes que se usan desde javascript
+    # Create user messages for javascript
     messagesNames<-c("LABEL_ZIGGURAT_INFO_DETAILS_TYPE", "LABEL_ZIGGURAT_INFO_DETAILS_KCORE", "LABEL_ZIGGURAT_INFO_DETAILS_ID", "LABEL_ZIGGURAT_INFO_DETAILS_NAME", "LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS", "LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE", "MESSAGE_CONFIRM_DELETE_FILES", "MESSAGE_WIKIPEDIA_NO_INFO_ERROR", "MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR")
     messages<-strings$value(messagesNames)
     names(messages)<-messagesNames
-
-    # inicializa la lista de mensajes en javascript
     session$sendCustomMessage(type="messagesHandler", as.list(messages))
   })
 
@@ -239,6 +225,7 @@ shinyServer(function(input, output, session) {
     return(datoslabcol)
   }
 
+  # Write labels and colors
   writelabcols <- function()
   {
 
@@ -258,6 +245,7 @@ shinyServer(function(input, output, session) {
      write.table(labelcolors,file=paste0("conf/labelcolors.csv"),sep=";",row.names = FALSE)
   }
 
+  #Restore the default ziggurat colors
   restoredefaultzigcolors <- function()
   {
     updateColourInput(session, "zigguratColorGuildA1",
@@ -278,7 +266,7 @@ shinyServer(function(input, output, session) {
     )
   }
 
-  # contenido del fichero seleccionado
+  # Reads the network data file
   selectedDataFileContent<-reactive({
 
     file<-input$selectedDataFile
@@ -349,58 +337,57 @@ shinyServer(function(input, output, session) {
     return(content)
   })
 
-  # seleccion de ficheros cargados
+  # Select uploaded files
   uploadedFilesList<-reactive({
-    # obtiene los ficheros cargados
+    # Get list of uploaded files
     files<-input$uploadedFiles
 
     if (is.null(files)) {
       files<-list(c(), c(), c(), c())
     } else {
-      # realiza la copia de los ficheros
+      # Copy file
       for (i in 1:length(files$datapath)) {
         from  <- files$datapath[i]
         to    <- paste0(dataDir, "/", files$name[i])
         file.copy(from, to)
       }
 
-      # refresca la lista de ficheros
+      # Update file list
       availableFiles$list<-availableFilesList()
     }
 
-    # renombra las columnas
+    # Rename columns
     names(files)<-c(strings$value("LABEL_UPLOADED_FILES_DETAILS_NAME"), strings$value("LABEL_UPLOADED_FILES_DETAILS_SIZE"), strings$value("LABEL_UPLOADED_FILES_DETAILS_TYPE"), "")
 
-    # elimina las columnas sin nombre
+    # Drop unnamed columns
     files<-files[!(names(files) %in% c(""))]
 
     # Condition met when the application starts
     if(is.null(files$Filename))
       files <- data.frame(Filename = " ", Size = " ", Type = " ")
 
-    # devuelve los ficheros cargados
     return(files)
   })
 
-  # lista de ficheros disponibles
+  # List of available files
   availableFiles<-reactiveValues(list=list(), details=list())
 
-  # lista de nodos marcados en el ziggurat
+  # list of selected nodes in the ziggurat
   markedNodes<-reactiveValues(data=data.frame())
 
-  # actua ante los cambios en la lista de ficheros disponibles
+  # Reacts when the list of available files changes
   observeEvent(availableFiles$list, {
       availableFiles$details<-availableFilesDetails(availableFiles$list)
       updateSelectInput(session, "selectedDataFile", choices=availableFiles$list)
   })
 
-  # actua ante los cambios de seleccion en el panel de datos
+  # Reacts when there are changes in the data selection panel
   observeEvent(input$dataPanel, {
-    # refresca la lista de ficheros
+    # update available files list
     availableFiles$list<-availableFilesList()
   })
 
-  # boton de refresco de la lista de ficheros
+  # Refresh file list button
   observeEvent(input$refreshFiles, {
     # refresca la lista de ficheros
     availableFiles$list<-availableFilesList()
@@ -409,15 +396,18 @@ shinyServer(function(input, output, session) {
                                                      server = TRUE)
   })
 
+  # Display the list of available files
   output$availableFilesTable <-DT::renderDataTable(
     availableFiles$details,
     options = list(pageLength = 5)
   )
 
+  # Restore default ziggurat colors
   observeEvent(input$restoreColors, {
     restoredefaultzigcolors()
   })
 
+  # Delete selected files
   observeEvent(input$deleteFiles, {
     s = input$availableFilesTable_rows_selected
     output$availableFilesTable = DT::renderDataTable(availableFiles$details,
@@ -431,39 +421,39 @@ shinyServer(function(input, output, session) {
     output$availableFilesTable = DT::renderDataTable(availableFiles$details,
                                                      options = list(pageLength = 5),
                                                      server = TRUE)
-    # invoca a la funcion javascript que devuelve la lista de ficheros que se muestran para ser borrados
-    #session$sendCustomMessage(type="deleteFilesHandler","availableFilesTable")
-      })
+    
+    })
 
+  # Restar session, set all values to default
   observeEvent(input$ResetAll, {
     session = getDefaultReactiveDomain()
     session$reload()
   })
 
-  # actualiza el grafico ziggurat en base a los controles de
-  # configuracion
+  
+  # Reactive ziggurat plotting
   ziggurat<-reactive({
 
     validate(
       need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
     )
-    # funcion para eliminar espacios
+    # Auxiliar trim function
     trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 
-    # vacia los nodos seleccionados
+    # Empties select nodes
     markedNodes$data<-data.frame()
 
-    # indicador de progreso
+    # Progress bar
     progress<-shiny::Progress$new()
     progress$set(message="", value = 0)
 
-    # cierra el indicador al salir
+    # Close progress bar
     on.exit(progress$close())
 
-    # deshabilita el contenedor del ziggurat
+    # Disables ziggurat container panel
     session$sendCustomMessage(type="disableDivHandler", list(id="ziggurat", disable=TRUE))
 
-    # genera el diagrama ziggurat
+    # Plot ziggurat
     z<-ziggurat_graph(
       datadir                                       = paste0(dataDir, "/"),
       filename                                      = input$selectedDataFile,
@@ -498,7 +488,7 @@ shinyServer(function(input, output, session) {
       kcore2tail_vertical_separation                = input$zigguratKcore2TailVerticalSeparation,
       kcore1tail_disttocore                         = c(input$zigguratKcore1TailDistToCore1, input$zigguratKcore1TailDistToCore2),
       innertail_vertical_separation                 = input$zigguratInnerTailVerticalSeparation,
-      #horiz_kcoremax_tails_expand                   = input$ziggurathoriz_kcoremax_tails_expand,
+      #horiz_kcoremax_tails_expand                   = input$ziggurathoriz_kcoremax_tails_expand,    # Deprecated
       factor_hop_x                                  = input$zigguratHopx,
       displace_legend                               = c(input$zigguratdisplace_legend_horiz,input$zigguratdisplace_legend_vert),
       fattailjumphoriz                              = c(input$zigguratfattailjumphorizA,input$zigguratfattailjumphorizB),
@@ -535,31 +525,29 @@ shinyServer(function(input, output, session) {
       progress                                      = progress
     )
 
-    # igraph del ziggurat
+    # ziggurat igraph object
     g<-z$result_analysis$graph
 
-    # posiciones de los nodos de cada guild
+    # Guild positions
     guildAVertex<-which(V(g)$guild_id=="a")
     guildBVertex<-which(V(g)$guild_id=="b")
 
-    # vecinos para cada nodo
+    # Neighbors of each node
     guildANeighbors<-sapply(guildAVertex, function(x) {neighbors(g, x)$id})
     guildBNeighbors<-sapply(guildBVertex, function(x) {neighbors(g, x)$id})
 
     # store labels and colors
     writelabcols()
 
-
-    # informa de los datos del ziggurat
     session$sendCustomMessage(type="zigguratDataHandler", list(ids=c("a", "b"), names=c(z$name_guild_a, z$name_guild_b), data=list(a=z$list_dfs_a, b=z$list_dfs_b), neighbors=list(a=guildANeighbors, b=guildBNeighbors)))
 
-    # habilita el contenedor del ziggurat
+    # Enables ziggurat container panel
     session$sendCustomMessage(type="disableDivHandler", list(id="ziggurat", disable=FALSE))
 
     return(z)
   })
 
-  # actualiza la informacion sobre los nodos del ziggurat seleccionados
+  # Updates selected nodes info
   observeEvent(input$markedNodesData, {
     result    <- data.frame(guild=character(0), kcore=integer(0), nodeId=integer(0), stringsAsFactors=FALSE)
     nodesData <- input$markedNodesData
@@ -576,38 +564,35 @@ shinyServer(function(input, output, session) {
     markedNodes$data<-result
   })
 
-  # muestra el contenido de un fichero subido al servidor
+  # Shows the contents of a data file
   output$selectedDataFileContent<-renderDataTable(
     selectedDataFileContent(),
     options = list(pageLength=10, lengthMenu=list(c(10, 25, 50, -1), list('10', '25', '50', 'Todos')), searching=TRUE)
   )
 
-  # muestra la lista de los ultimos ficheros subidos al servidor
+  # Shows the list of last uploaded files
   output$uploadedFilesTable<-renderDataTable(
     uploadedFilesList(),
     options=list(pageLength=5, lengthMenu=list(c(5, 10, 25, 50, -1), list('5', '10', '25', '50', 'Todos')), searching=FALSE)
   )
 
-  # muestra el diagrama ziggurat y lanza la funcion que actualiza los
-  # eventos javascript para los elementos del grafico
+  # Plots ziggurat object
   output$ziggurat<-renderUI({
     z<-ziggurat()
     svg<-z$svg
     html<-paste0(svg$html(), "<script>updateSVGEvents()</script>")
-    # shinyjs::show("zigguratDownload")
-    # shinyjs::show("zigguratcodeDownload")
     return(HTML(html))
   })
 
-  # muestra los destalles de un nodo seleccionado del grafico ziggurat
+  # Shows the details of a selected node in ziggurat
   output$zigguratNodesDetail<-renderUI({
     z         <- ziggurat()
     nodesData <- markedNodes$data
     details   <- ""
     if (nrow(nodesData)>0) {
-      # ordena los nodos seleccionados
+      # Sort selected nodes
       nodesData <- nodesData[order(ifelse(nodesData$guild=="a", 0, 1), -nodesData$kcore, nodesData$nodeId),]
-      # muestra los datos de cada nodo seleccionado
+      # Shows nodes data
       for (i in 1:nrow(nodesData)) {
         guild   <- nodesData[i, "guild"]
         type    <- ifelse(guild=="a", z$name_guild_a, z$name_guild_b)
@@ -615,24 +600,23 @@ shinyServer(function(input, output, session) {
         nodeId  <- as.integer(nodesData[i, "nodeId"])
 
         if (guild=="a") {
-          # selecciona los datos del k-core
+          # k-shell data
           kcore_df<-z$list_dfs_a[[kcore]]
         } else {
-          # selecciona los datos del k-core
           kcore_df<-z$list_dfs_b[[kcore]]
         }
-        # selecciona y muestra los elementos del dataframe a partir de la lista que se ha recibido
+        # Data frame with species details
         nodeDf  <- kcore_df[kcore_df$label==nodeId, c("label", "name_species", "kdegree", "kradius")]
         details <- paste(details, showNodeDetails(type, kcore, nodeDf), collapse="")
       }
     }
 
-    # truqui para el scroll
+    # Scroll
     details<-paste(details, "<script>updateZigguratNodesDetailScroll()</script>")
     return(HTML(details))
   })
 
-  # informacion de la red
+  # Network information
   output$networkinfoDetail<-renderUI({
     z <- ziggurat()
     details <- paste("&nbsp;&nbsp;&nbsp; <B>",strings$value("LABEL_NETWORK"),"&nbsp;",zgg$network_name,"</B>&nbsp;", zgg$result_analysis$num_guild_a, zgg$name_guild_a,
@@ -640,15 +624,14 @@ shinyServer(function(input, output, session) {
     return(HTML(details))
   })
 
-  # informacion de Wiki
+  # Wikipedia information
   output$zigguratWikiDetail<-renderUI({
       z         <- ziggurat()
       nodesData <- markedNodes$data
       details   <- ""
       if (nrow(nodesData)>0) {
-        # ordena los nodos seleccionados
+        # Sort selected nodes
         nodesData <- nodesData[order(ifelse(nodesData$guild=="a", 0, 1), -nodesData$kcore, nodesData$nodeId),]
-        # muestra la pestaña de cada nodo seleccionado
         types   <- ifelse(nodesData$guild=="a", z$name_guild_a, z$name_guild_b)
         details <- paste(details, showWiki(types, nodesData), collapse="")
       }
@@ -656,19 +639,18 @@ shinyServer(function(input, output, session) {
       return(HTML(details))
   })
 
-  # selelecciona la pestaña de detalle de la wikipedia
+  # Selects Wikipedia pane
   observeEvent(input$wikiPanelName, {
     updateTabsetPanel(session, "wikiTabsetPanel", selected=input$wikiPanelName)
   })
 
+  # Analyzes the network
   netanalysis <- reactive({
-    # indicador de progreso
     progress<-shiny::Progress$new()
     progress$set(message=strings$value("MESSAGE_ANALYSIS_POGRESS"), value = 0)
-
-    # cierra el indicador al salir
     on.exit(progress$close())
 
+    # Get network name
     red <- input$selectedDataFile
     red_name <- strsplit(red,".csv")[[1]][1]
     result_analysis <- analyze_network(red, directory = paste0(dataDir, "/"),
@@ -695,8 +677,7 @@ shinyServer(function(input, output, session) {
     return(fsal)
   })
 
-  # actualiza el grafico polar en base a los controles de
-  # configuracion
+  # Reactive function to plot the polar graph
   polar<-reactive({
     validate(
       need(nchar(input$selectedDataFile)>0, strings$value("MESSAGE_SELECT_DATE_FILE_ERROR"))
@@ -705,20 +686,17 @@ shinyServer(function(input, output, session) {
     swidth = input$screenwidthControl
     sheight = input$screenwidthControl
 
-    # indicador de progreso
     progress<-shiny::Progress$new()
     progress$set(message="", value = 0)
+  on.exit(progress$close())
 
-    # cierra el indicador al salir
-    on.exit(progress$close())
-
-    # deshabilita el contenedor del polar e histogramas
+    # Disables polar panel
     session$sendCustomMessage(type="disableDivHandler", list(id="polar", disable=TRUE))
     session$sendCustomMessage(type="disableDivHandler", list(id="histogramDist", disable=TRUE))
     session$sendCustomMessage(type="disableDivHandler", list(id="histogramCore", disable=TRUE))
     session$sendCustomMessage(type="disableDivHandler", list(id="histogramDegree", disable=TRUE))
 
-    # genera el diagrama polar y los histogramas
+    # Plots polar graph and histograms
     p<-polar_graph(
       red                 = input$selectedDataFile,
       directorystr        = paste0(dataDir, "/"),
@@ -738,7 +716,7 @@ shinyServer(function(input, output, session) {
       progress            = progress
     )
 
-    # habilita el contenedor del polar e histogramas
+    # Enables polar container
     session$sendCustomMessage(type="disableDivHandler", list(id="polar", disable=FALSE))
     session$sendCustomMessage(type="disableDivHandler", list(id="histogramDist", disable=FALSE))
     session$sendCustomMessage(type="disableDivHandler", list(id="histogramCore", disable=FALSE))
@@ -747,6 +725,7 @@ shinyServer(function(input, output, session) {
     return(p)
   })
 
+  # Plot the polar graph
   output$polar <- renderImage({
     p <- polar()
     shinyjs::show("polarDownload")
@@ -760,24 +739,21 @@ shinyServer(function(input, output, session) {
     }, deleteFile = FALSE)
 
 
-  # Opciones para generar el diagrama, indicando ancho,alto en pixels, calidad en ppi (points-per-inch)
-  # y otras opciones para generar el diagrama (png/jpg/..., tipo "cairo" u otros)
   diagramOptions<-reactive({
     return(calculateDiagramOptions(as.numeric(input$paperSize), as.numeric(input$ppi)))
   })
 
-  # boton de descarga del diagrama ziggurat
+  # Ziggurat plot download button
   output$zigguratDownload<-downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-ziggurat." , diagramOptions()$ext)
       return(file)
     },
     content=function(file) {
-      # valida las dimensiones/resolucion
       options<-diagramOptions()
       validateDiagramOptions(options)
 
-      # obtiene el diagrama
+      # Gets the diagram
       z<-ziggurat()
       plot<-z$plot
       plotDiagram(file, plot, options)
@@ -785,6 +761,7 @@ shinyServer(function(input, output, session) {
     contentType=paste0("image/", diagramOptions()$ext)
   )
 
+  # Download the polar plot
   output$polarDownload <- downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar." , diagramOptions()$ext)
@@ -804,6 +781,7 @@ shinyServer(function(input, output, session) {
                                       unlink("tmpcode", recursive = TRUE)
                                       unlink("tmppolar", recursive = TRUE)})
 
+  # Downlod the network analysis
   output$networkAnalysis <- downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-analyisis.csv")
@@ -824,7 +802,8 @@ shinyServer(function(input, output, session) {
       com <- paste0(com," ,",param," = ",lpar[param])
     return(com)
   }
-
+  
+  # Downloads the polar generating code
   output$polarcodeDownload <- downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-polar-code.txt")
@@ -858,7 +837,8 @@ shinyServer(function(input, output, session) {
     },
     contentType="text/plain"
   )
-
+  
+  #Downloads the ziggurat generating code
   output$zigguratcodeDownload <- downloadHandler(
     filename=function() {
       file<-paste0(gsub(fileExtension, "", input$selectedDataFile), "-ziggurat-code.txt")
@@ -937,4 +917,3 @@ shinyServer(function(input, output, session) {
   )
 
 })
-

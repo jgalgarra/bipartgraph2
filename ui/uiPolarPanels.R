@@ -1,19 +1,16 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core
+# BipartGraph
+#  
+# Module         : PolarPanels.R
+# Description    : Polar plot panel 
 #
-# Autor         : Juan Manuel García Santi
-# Módulo        : uiPolarPanels.R
-# Descricpción  : Contiene las funciones que permiten representar los distintos
-#                 paneles que se muestran en el interfaz para el diagrama
-#                 polar
 ###############################################################################
+
 library(shiny)
 library(shinythemes)
 source("ui/uiPolarControls.R", encoding="UTF-8")
 
-# panel del polar (configuracion + diagrama)
+# Polar plot panel and control configuration
 polarPanel<-function() {
   panel<-tabsetPanel(
     tabPanel(strings$value("LABEL_POLAR_DIAGRAM_PANEL"),        tags$div(class="panelContent", polarDiagramPanel())),
@@ -22,7 +19,7 @@ polarPanel<-function() {
   return(panel)
 }
 
-# panel con el diagrama polar
+# Polar graph
 polarDiagramPanel <- function() {
   if (exists("zgg"))
     nfic <- zgg$polar_file
@@ -46,7 +43,7 @@ polarDiagramPanel <- function() {
 }
 
 
-# panel de configuracion del diagrama polar
+# Config panel
 polarConfigPanel <- function() {
   panel<-fluidRow(
     fluidRow(
@@ -58,9 +55,7 @@ polarConfigPanel <- function() {
       column(2, polarFillNodesControl()),
       column(2, polarDisplayHistograms()),
       column(2, polarscreenwidthControl())
-
     ),
-
     fluidRow(
       column(12, groupHeader(text=strings$value("LABEL_POLAR_LABELS_CONFIG_HEADER"), image="generic_text.png"))
     ),
@@ -71,7 +66,6 @@ polarConfigPanel <- function() {
       column(2, polarLabelsSizeControl("AxisTitle", strings$value("LABEL_POLAR_AXIS_TITLE_LABEL_SIZE_CONTROL"), 10)),
       column(2, polarLabelsSizeControl("LegendTitle", strings$value("LABEL_POLAR_LEGEND_TITLE_LABEL_SIZE_CONTROL"), 10))
     )
-
   )
   return(panel)
 }

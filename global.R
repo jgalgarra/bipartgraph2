@@ -1,20 +1,17 @@
 ###############################################################################
-# Universidad Politécnica de Madrid - EUITT
-#   PFC
-#   Representación gráfica de redes bipartitas basadas en descomposición k-core 
-# 
-# Autor         : Juan Manuel García Santi
-# Módulo        : global.R
-# Descricpción  : Constantes y funciones de uso global
+# BipartGraph
+#  
+# Module         : global.R
+# Description    : Global function and panels
+#
 ###############################################################################
 
-# directorio de datos y patron para buscar los ficheros
+# Search data files
 dataDir         <- "data"
 fileExtension   <- ".csv"
-#dataFilePattern <- paste0("M_.*", fileExtension)
 dataFilePattern <- paste0("*.*", fileExtension)
 
-# cabecera de un grupo en un panel
+# New group header
 groupHeader<-function(text, image) {
   header<-tags$div(
     class="groupHeader",
@@ -30,7 +27,7 @@ groupHeader<-function(text, image) {
   return(header)
 }
 
-# etiqueta para los controles
+# Control label
 controlLabel <- function(text) {
   label<-tags$span(
     class="controlLabel",
@@ -39,7 +36,7 @@ controlLabel <- function(text) {
   return(label)
 }
 
-# etiqueta con imagen para enlaces
+# Links label
 linkLabel <- function(text, img) {
   label<-tags$span(
     class="linkLabel",

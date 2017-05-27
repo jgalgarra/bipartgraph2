@@ -1,3 +1,2 @@
-Rscript bipartgraph.R &
-sleep 5
+Rscript bipartgraph.R
 xdg-open http://localhost:8080

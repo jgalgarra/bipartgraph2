@@ -79,7 +79,7 @@ LABEL_ZIGGURAT_1SHELL_EXPAND_CONTROL, "Expandir nodos 1-shell", "1-shell nodes e
 LABEL_ZIGGURAT_COREMAX_HEIGHT_EXPAND_CONTROL, "Expandir la altura de la shell máxima", "Max shell height expand"
 LABEL_ZIGGURAT_COREMAX_WIDTH_EXPAND_CONTROL, "Expandir la anchura de la shell máxima", "Max shell width expand"
 LABEL_ZIGGURAT_HOPX, "Separación horizontal de los zigurats", "Horizontal inner shells separation"
-LABEL_ZIGGURAT_KCORE2_TAIL_VERTICAL_SEPARATION_CONTROL, "Separación cola/2-shell", "Tail/2-shell 2 distance"
+LABEL_ZIGGURAT_KCORE2_TAIL_VERTICAL_SEPARATION_CONTROL, "Separación cola/2-shell", "Tail/2-shell distance"
 LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_1, "Distancia horizontal cola/1-shell", "Horizontal tail/1-shell distance"
 LABEL_ZIGGURAT_KCORE1_TAIL_DIST_TO_CORE_CONTROL_2, "Distancia vertical cola/1-shell", "Vertical tail/1-shell distance"
 LABEL_ZIGGURAT_FAT_TAIL_JUMP_HORIZ_A, "Separación horiz. cola izquierda A 1-shell", "Left A tail/1-shell horiz. distance"

@@ -1,1 +1,0 @@
-Rscript.exe main.R

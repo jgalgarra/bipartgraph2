@@ -1,3 +1,0 @@
-Rscript bipartgraph.R
-sleep 10
-xdg-open http://localhost:8080

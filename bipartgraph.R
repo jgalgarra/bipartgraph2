@@ -51,5 +51,6 @@ runApp(
   appDir        = ".",
   port          = config_params$PORT,
   host          = "0.0.0.0",
-  display.mode  = "normal"
+  display.mode  = "normal",
+  launch.browser = TRUE
 )

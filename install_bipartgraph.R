@@ -6,7 +6,7 @@ print(.libPaths())
 list.of.packages <- c('ggplot2', 'scales', 'colourpicker',
                       'grid','igraph', 'bipartite',
                       'gridExtra', 'vegan', 'sna', 'fields','DT',
-                      'shiny', 'shinythemes', 'shinyjs','devtools')
+                      'shiny', 'shinythemes', 'shinyjs')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages,repos="http://cran.us.r-project.org")
 install.packages("devtools",repos="http://cran.us.r-project.org")

@@ -9,5 +9,6 @@ list.of.packages <- c('ggplot2', 'scales', 'colourpicker',
                       'shiny', 'shinythemes', 'shinyjs','devtools')
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages,repos="http://cran.us.r-project.org")
+install.packages("devtools",repos="http://cran.us.r-project.org")
 library("devtools")
 install_github('jgalgarra/kcorebip',force=TRUE)

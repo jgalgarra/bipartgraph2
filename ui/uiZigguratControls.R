@@ -320,10 +320,10 @@ zigguratoutsiders_legend_expand <- function() {
   control<-sliderInput(
     inputId = "zigguratoutsiders_legend_expand",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_CONFIG_OUTSIDERS_LEGEND_EXPAND")),
-    min     = 0.5,
+    min     = 0.1,
     max     = 5.0,
     value   = 1,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -386,10 +386,10 @@ zigguratInnerTailVerticalSeparationControl <- function() {
   control<-sliderInput(
     inputId = "zigguratInnerTailVerticalSeparation",
     label   = controlLabel(strings$value("LABEL_ZIGGURAT_INNER_TAIL_VERTICAL_SEPARATION_CONTROL")),
-    min     = 0.5,
+    min     = 0.2,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.5
+    step    = 0.2
   )
   return(control)
 }
@@ -402,7 +402,7 @@ zigguratfattailjumphorizA <- function() {
     min     = 0.2,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -415,7 +415,7 @@ zigguratfattailjumpvertA <- function() {
     min     = -2.0,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -428,7 +428,7 @@ zigguratfattailjumphorizB <- function() {
     min     = 0.2,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }
@@ -441,7 +441,7 @@ zigguratfattailjumpvertB <- function() {
     min     = -2.0,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.2
+    step    = 0.1
   )
   return(control)
 }

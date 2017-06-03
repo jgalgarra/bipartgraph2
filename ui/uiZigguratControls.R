@@ -231,7 +231,7 @@ zigguratHeightExpandControl <- function() {
     min     = 0.5,
     max     = 5.0,
     value   = 1.0,
-    step    = 0.25
+    step    = 0.1
   )
   return(control)
 }

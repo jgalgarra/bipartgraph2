@@ -1,8 +1,8 @@
 ###############################################################################
 # BipartGraph
-#  
+#
 # Module         : server.R
-# Descriction    : Server module of the Shiny application, with the "shinyServer" 
+# Descriction    : Server module of the Shiny application, with the "shinyServer"
 #                  function and the reactive environment
 ###############################################################################
 
@@ -195,12 +195,14 @@ plotPDF<-function(file, ziggurat, polar, options) {
 #' @export
 #'
 #' @examples
+#'
+
 shinyServer(function(input, output, session) {
 
   shinyjs::hide("polarDownload")
   shinyjs::hide("polarcodeDownload")
   shinyjs::hide("networkAnalysis")
-  
+
   observeEvent(input$windowLoad, {
     # Create user messages for javascript
     messagesNames<-c("LABEL_ZIGGURAT_INFO_DETAILS_TYPE", "LABEL_ZIGGURAT_INFO_DETAILS_KCORE", "LABEL_ZIGGURAT_INFO_DETAILS_ID", "LABEL_ZIGGURAT_INFO_DETAILS_NAME", "LABEL_ZIGGURAT_INFO_DETAILS_KRADIUS", "LABEL_ZIGGURAT_INFO_DETAILS_KDEGREE", "MESSAGE_CONFIRM_DELETE_FILES", "MESSAGE_WIKIPEDIA_NO_INFO_ERROR", "MESSAGE_WIKIPEDIA_DOWNLOAD_ERROR")
@@ -208,6 +210,18 @@ shinyServer(function(input, output, session) {
     names(messages)<-messagesNames
     session$sendCustomMessage(type="messagesHandler", as.list(messages))
   })
+
+  # If the file has been analyzed and core max > 1 is stored in conf/safefiles.csv
+  searchsafefile <- function(fred="")
+  {
+    datossafefiles <- data.frame("file" = c())
+    if (file.exists("conf/datossafefiles.csv")){
+      sfiles <<- read.table("conf/datossafefiles.csv",sep=";",header = TRUE)
+      if (length(sfiles[toupper(sfiles$file) == toupper(fred),])>0)
+        return(TRUE)
+    }
+    return(FALSE)
+  }
 
   # Search labels and colors
   searchlabcols <- function(fred="")
@@ -229,53 +243,77 @@ shinyServer(function(input, output, session) {
   writelabcols <- function()
   {
 
-     datoslabcol <- data.frame("file" = input$selectedDataFile,
-                                "LabelGuildA" = input$DataLabelGuildAControl,
-                                "LabelGuildB" = input$DataLabelGuildBControl,
-                                "ColorZigGuildA1" = input$zigguratColorGuildA1,
-                                "ColorZigGuildA2" = input$zigguratColorGuildA2,
-                                "ColorZigGuildB1" = input$zigguratColorGuildB1,
-                                "ColorZigGuildB2" = input$zigguratColorGuildB2)
-     if (exists("labelcolors")){
-       labelcolors <<- labelcolors[toupper(labelcolors$file) != toupper(input$selectedDataFile),]
-       labelcolors <<- rbind(tail(labelcolors, 199),datoslabcol)
-     } else
-       labelcolors <<- datoslabcol
-     dir.create("conf/", showWarnings = FALSE)
-     write.table(labelcolors,file=paste0("conf/labelcolors.csv"),sep=";",row.names = FALSE)
+    datoslabcol <- data.frame("file" = input$selectedDataFile,
+                              "LabelGuildA" = input$DataLabelGuildAControl,
+                              "LabelGuildB" = input$DataLabelGuildBControl,
+                              "ColorZigGuildA1" = input$zigguratColorGuildA1,
+                              "ColorZigGuildA2" = input$zigguratColorGuildA2,
+                              "ColorZigGuildB1" = input$zigguratColorGuildB1,
+                              "ColorZigGuildB2" = input$zigguratColorGuildB2)
+    if (exists("labelcolors")){
+      labelcolors <<- labelcolors[toupper(labelcolors$file) != toupper(input$selectedDataFile),]
+      labelcolors <<- rbind(tail(labelcolors, 199),datoslabcol)
+    } else
+      labelcolors <<- datoslabcol
+    dir.create("conf/", showWarnings = FALSE)
+    write.table(labelcolors,file=paste0("conf/labelcolors.csv"),sep=";",row.names = FALSE)
   }
 
   #Restore the default ziggurat colors
   restoredefaultzigcolors <- function()
   {
     updateColourInput(session, "zigguratColorGuildA1",
-                    label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"),
-                    value = czA1
+                      label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"),
+                      value = czA1
     )
     updateColourInput(session, "zigguratColorGuildA2",
-                    label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"),
-                    value = czA2
+                      label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"),
+                      value = czA2
     )
     updateColourInput(session, "zigguratColorGuildB1",
-                    label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"),
-                    value = czB1
+                      label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"),
+                      value = czB1
     )
     updateColourInput(session, "zigguratColorGuildB2",
-                    label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"),
-                    value = czB2
+                      label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"),
+                      value = czB2
     )
   }
 
   # Reads the network data file
   selectedDataFileContent<-reactive({
-
+    max_core <- 0
+    analyze_file <- FALSE
     file<-input$selectedDataFile
     if (!is.null(file) && nchar(file)>0) {
       content<-read.csv(file=paste0(dataDir, "/", file), header=TRUE, stringsAsFactors = FALSE)
+      if (!searchsafefile(fred=file)){
+      result_prim <- analyze_network(file, directory = paste0(dataDir, "/"),
+                                     guild_a = "Plant", guild_b = "Pollinator")
+      max_core <- result_prim$max_core
+      analyze_file <- TRUE
+      }
+      if (max_core == 1){
+        updateTextInput(session, "DataLabelGuildAControl",
+                        label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDA"),
+                        value = "ERROR: max core is 1"
+        )
+        updateTextInput(session, "DataLabelGuildBControl",
+                        label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDB"),
+                        value = "Choose a different file"
+        )
+        content<-data.frame()
+      } else if (analyze_file) {
+        if (exists("sfiles"))
+          sfiles <<- rbind(sfiles,data.frame("file"=file))
+        else
+          sfiles <<- data.frame("file"=file)
+        write.table(sfiles,file="conf/datossafefiles.csv",row.names=FALSE)
+      }
     } else {
       content<-data.frame()
     }
-    if (!is.null(file) && nchar(file)>0){
+    if (!is.null(file) && nchar(file)>0 && (max_core != 1)){
       shinyjs::show("networkAnalysis")
 
       output$NodesGuildA <- renderText({
@@ -286,34 +324,34 @@ shinyServer(function(input, output, session) {
       })
       dflabcols <- searchlabcols(fred = file)
       if (ncol(dflabcols)>0){
-      updateTextInput(session, "DataLabelGuildAControl",
-                      label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDA"),
-                      value = dflabcols$LabelGuildA
-      )
-      updateTextInput(session, "DataLabelGuildBControl",
+        updateTextInput(session, "DataLabelGuildAControl",
+                        label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDA"),
+                        value = dflabcols$LabelGuildA
+        )
+        updateTextInput(session, "DataLabelGuildBControl",
                         label = strings$value("LABEL_ZIGGURAT_LABEL_GUILDB"),
                         value = dflabcols$LabelGuildB
-      )
+        )
 
-      updateColourInput(session, "zigguratColorGuildA1",
-                        label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"),
-                        value = as.character(dflabcols$ColorZigGuildA1)
-      )
+        updateColourInput(session, "zigguratColorGuildA1",
+                          label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_1_CONTROL"),
+                          value = as.character(dflabcols$ColorZigGuildA1)
+        )
 
-      updateColourInput(session, "zigguratColorGuildA2",
-                        label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"),
-                        value = as.character(dflabcols$ColorZigGuildA2)
-      )
+        updateColourInput(session, "zigguratColorGuildA2",
+                          label = strings$value("LABEL_ZIGGURAT_GUILD_A_COLOR_2_CONTROL"),
+                          value = as.character(dflabcols$ColorZigGuildA2)
+        )
 
-      updateColourInput(session, "zigguratColorGuildB1",
-                        label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"),
-                        value = as.character(dflabcols$ColorZigGuildB1)
-      )
+        updateColourInput(session, "zigguratColorGuildB1",
+                          label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_1_CONTROL"),
+                          value = as.character(dflabcols$ColorZigGuildB1)
+        )
 
-      updateColourInput(session, "zigguratColorGuildB2",
-                        label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"),
-                        value = as.character(dflabcols$ColorZigGuildB2)
-      )
+        updateColourInput(session, "zigguratColorGuildB2",
+                          label = strings$value("LABEL_ZIGGURAT_GUILD_B_COLOR_2_CONTROL"),
+                          value = as.character(dflabcols$ColorZigGuildB2)
+        )
 
 
       }
@@ -377,8 +415,8 @@ shinyServer(function(input, output, session) {
 
   # Reacts when the list of available files changes
   observeEvent(availableFiles$list, {
-      availableFiles$details<-availableFilesDetails(availableFiles$list)
-      updateSelectInput(session, "selectedDataFile", choices=availableFiles$list)
+    availableFiles$details<-availableFilesDetails(availableFiles$list)
+    updateSelectInput(session, "selectedDataFile", choices=availableFiles$list)
   })
 
   # Reacts when there are changes in the data selection panel
@@ -421,8 +459,8 @@ shinyServer(function(input, output, session) {
     output$availableFilesTable = DT::renderDataTable(availableFiles$details,
                                                      options = list(pageLength = 5),
                                                      server = TRUE)
-    
-    })
+
+  })
 
   # Restar session, set all values to default
   observeEvent(input$ResetAll, {
@@ -430,7 +468,7 @@ shinyServer(function(input, output, session) {
     session$reload()
   })
 
-  
+
   # Reactive ziggurat plotting
   ziggurat<-reactive({
 
@@ -626,17 +664,17 @@ shinyServer(function(input, output, session) {
 
   # Wikipedia information
   output$zigguratWikiDetail<-renderUI({
-      z         <- ziggurat()
-      nodesData <- markedNodes$data
-      details   <- ""
-      if (nrow(nodesData)>0) {
-        # Sort selected nodes
-        nodesData <- nodesData[order(ifelse(nodesData$guild=="a", 0, 1), -nodesData$kcore, nodesData$nodeId),]
-        types   <- ifelse(nodesData$guild=="a", z$name_guild_a, z$name_guild_b)
-        details <- paste(details, showWiki(types, nodesData), collapse="")
-      }
+    z         <- ziggurat()
+    nodesData <- markedNodes$data
+    details   <- ""
+    if (nrow(nodesData)>0) {
+      # Sort selected nodes
+      nodesData <- nodesData[order(ifelse(nodesData$guild=="a", 0, 1), -nodesData$kcore, nodesData$nodeId),]
+      types   <- ifelse(nodesData$guild=="a", z$name_guild_a, z$name_guild_b)
+      details <- paste(details, showWiki(types, nodesData), collapse="")
+    }
 
-      return(HTML(details))
+    return(HTML(details))
   })
 
   # Selects Wikipedia pane
@@ -688,7 +726,7 @@ shinyServer(function(input, output, session) {
 
     progress<-shiny::Progress$new()
     progress$set(message="", value = 0)
-  on.exit(progress$close())
+    on.exit(progress$close())
 
     # Disables polar panel
     session$sendCustomMessage(type="disableDivHandler", list(id="polar", disable=TRUE))
@@ -736,7 +774,7 @@ shinyServer(function(input, output, session) {
          width = input$screenwidthControl,
          height = input$screenwidthControl,
          alt = "Polar graph")
-    }, deleteFile = FALSE)
+  }, deleteFile = FALSE)
 
 
   diagramOptions<-reactive({
@@ -778,8 +816,8 @@ shinyServer(function(input, output, session) {
   )
 
   session$onSessionEnded(function() { unlink("analysis_indiv", recursive = TRUE)
-                                      unlink("tmpcode", recursive = TRUE)
-                                      unlink("tmppolar", recursive = TRUE)})
+    unlink("tmpcode", recursive = TRUE)
+    unlink("tmppolar", recursive = TRUE)})
 
   # Downlod the network analysis
   output$networkAnalysis <- downloadHandler(
@@ -802,7 +840,7 @@ shinyServer(function(input, output, session) {
       com <- paste0(com," ,",param," = ",lpar[param])
     return(com)
   }
-  
+
   # Downloads the polar generating code
   output$polarcodeDownload <- downloadHandler(
     filename=function() {
@@ -837,7 +875,7 @@ shinyServer(function(input, output, session) {
     },
     contentType="text/plain"
   )
-  
+
   #Downloads the ziggurat generating code
   output$zigguratcodeDownload <- downloadHandler(
     filename=function() {
@@ -917,3 +955,4 @@ shinyServer(function(input, output, session) {
   )
 
 })
+

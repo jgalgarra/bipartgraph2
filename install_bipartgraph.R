@@ -12,3 +12,5 @@ if(length(new.packages)) install.packages(new.packages,repos="http://cran.us.r-p
 install.packages("devtools",repos="http://cran.us.r-project.org")
 library("devtools")
 install_github('jgalgarra/kcorebip',force=TRUE)
+print("This is the end, my friend. Installation completed")
+Sys.sleep(30)

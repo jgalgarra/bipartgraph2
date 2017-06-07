@@ -45,7 +45,6 @@ if (file.exists(f)){
   shinyport <<- 8080
 }
 
-
 # Launch Application
 runApp(
   appDir        = ".",
